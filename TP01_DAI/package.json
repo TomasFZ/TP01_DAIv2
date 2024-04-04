@@ -1,0 +1,17 @@
+{
+  "name": "tp01",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sever.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.1",
+    "pg": "^8.11.3"
+  }
+}
