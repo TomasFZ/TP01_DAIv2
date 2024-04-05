@@ -1,7 +1,7 @@
-import pg from "pg";
-import { dbConfig, client, connectToDatabase } from "./db.js";
-import { connectToDatabase } from "./db.js";
-
+// import pg from "pg";
+// import { dbConfig, client, connectToDatabase } from "./db.js";
+// import { connectToDatabase } from "./db.js";
+//todo esto mjs
 
 connectToDatabase();
 
@@ -10,7 +10,7 @@ async function traerTodosLosEventos(){
     const request = await client.query(traerTodosLosEventos);
 }
 
-
+// 
 
 
 //https://tembo.io/docs/getting-started/postgres_guides/connecting-to-postgres-with-nodejs

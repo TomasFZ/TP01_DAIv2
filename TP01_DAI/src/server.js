@@ -1,9 +1,10 @@
 import express from "express";
 
 import controller from "./controllers/eventos-controller.js";
-import servicios from "./servicios/servicios.js";
-import { connectToDatabase } from './repositories/db.js'; //mjs
-
+import UserController from "./controllers/usuarios-controller.js";
+import servicios from "./servicios/servicios-Eventos.js";
+// import { connectToDatabase } from './repositories/db.js'; //mjs
+//mjs
 
 const app = express(); 
 
@@ -14,13 +15,16 @@ const port = 3000;
 
 
 
-// app.use("/controller", controller);
+app.use("/event", controller); //ESTO ES MUY IMPORTANTE. 
+app.use("/user/login", UserController);
 
 app.listen(port, () => {
     console.log("server anda")
 })
 
-connectToDatabase();
+
+//para cuando este la db deseditar: mjs
+/* connectToDatabase(); */
 
 
 

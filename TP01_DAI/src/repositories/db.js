@@ -1,5 +1,9 @@
 
-// export const DBConfig = {
+
+//mjs
+// const { Client } = require('pg');
+
+// const dbConfig = {
 //     host: "localhost", 
 //     port: 3000,
 //     user: "root", 
@@ -7,30 +11,19 @@
 //     database: "DAI-eventos"
 // }
 
+// const client = new Client(dbConfig);
 
-const { Client } = require('pg');
+// async function connectToDatabase() {
+//     try {
+//         await client.connect();
+//         console.log('Conectado a PostgreSQL');
+//     } catch (error) {
+//         console.error('Error al conectar a PostgreSQL');
+//     }
+// }
 
-const dbConfig = {
-    host: "localhost", 
-    port: 3000,
-    user: "root", 
-    password: "root", 
-    database: "DAI-eventos"
-}
-
-const client = new Client(dbConfig);
-
-async function connectToDatabase() {
-    try {
-        await client.connect();
-        console.log('Conectado a PostgreSQL');
-    } catch (error) {
-        console.error('Error al conectar a PostgreSQL');
-    }
-}
-
-export { connectToDatabase };
-export {dbConfig, client};
+// export { connectToDatabase };
+// export {dbConfig, client};
 
 
 

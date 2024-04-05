@@ -1,7 +1,10 @@
 import express from "express";
 
-const controller = express.Router(); 
-
-controller.get("/user/login", async (req,res) => {
-
+const UserController = express.Router(); 
+console.log("que");
+UserController.get("/", (req,res) => {
+    console.log("entro a usercontroller");
+    return ":v"
 })
+
+export default UserController

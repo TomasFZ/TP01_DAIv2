@@ -1,5 +1,6 @@
-import pg from "pg";
+// import pg from "pg";
 
 
-export default class ProvinceRepository(); 
+// export default class ProvinceRepository(); 
 
+//mjs
