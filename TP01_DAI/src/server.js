@@ -24,3 +24,7 @@ connectToDatabase();
 
 
 
+//toda la capa de controladores. todos los endpoints, parametros, etc. 
+
+
+

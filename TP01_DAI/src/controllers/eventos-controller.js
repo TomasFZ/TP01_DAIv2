@@ -20,20 +20,28 @@ controller.get("/event", async (req, res) => {
 
 //busqueda de un evento
 controller.get("/event/:nombre, fecha, categoria, tag", (req, res) => {
-    const listaEventosBuscados = eventService.getEventBuscado(limit, offset, nombre, categoria, fecha, tag);
-    return res.status(201).send(
+    const eventoBuscado = eventService.getEventBuscado(limit, offset, nombre, categoria, fecha, tag);
+    if (eventoBuscado != null)
     {
-        "id": body.id, 
-        "nombre": body.nombre, 
-        "fecha": body.fecha, 
-        "categoria": body.categoria,
-        "tags": body.tags
+        return res.status(201).send(
+            {
+                "id": body.id, 
+                "nombre": body.nombre, 
+                "fecha": body.fecha, 
+                "categoria": body.categoria,
+                "tags": body.tags
+            }
+            )
     }
-    )
+    else
+    {
+        return res.status(404).send("Error no se encontró un evento");
+    }
+    
 })
 
 controller.get("/event:id", (req, res) =>{
-    const evento = eventService.getEventDetails(params.id);
+    const evento = eventService.getEventDetails(limit, offset, params.id);
     return res.status(201).send(
         {
             "id": body.id, 
@@ -42,7 +50,7 @@ controller.get("/event:id", (req, res) =>{
             "categoria": body.categoria,
             "tags": body.tags
         })
-}
+})
 
 
 
