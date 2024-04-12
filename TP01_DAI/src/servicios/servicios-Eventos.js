@@ -95,23 +95,30 @@ export default class EventService{
         // const provincia = 
         
         const evento = {
-                "id": 2, 
+                "id": idEvento, 
                 "name": "eventoJazz", 
                 "description": "el peor evento de jazz", 
                 "id_event_category": 2, 
                 "id_event_location": 3, 
-                "start_date": 12-11-24, 
+                "startDate": 12-11-24, 
                 "duration_in_minutes": 10, 
                 "price": 12000, 
                 "enabled_for_enrollment": false, 
                 "max_assistance": 100, 
-                "id_creator_user": 2
+                "id_creator_user": 2, 
+                "localidad": "Moron", 
+                "provincia": "Buenos Aires"
         }
         
         //falta el event locations y las provincias
         
         return {
             "collection": evento, 
+            "pagination": {
+                "limit": pageSize,
+                "offset": reqPage,
+                "nextPage": reqPage + 1, //poner el http
+                "total": "1" //no se que es esto
         }
 
     }
@@ -122,4 +129,4 @@ export default class EventService{
     // }
 
 
-}
+}}
