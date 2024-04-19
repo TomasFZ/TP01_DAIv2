@@ -5,10 +5,17 @@ const controller = express.Router(); //hacer gitignore para el module
 const eventService = new EventService();
 
 //listado de Eventos
+
+
+//lista de puntos hechos (sin contar servicios): 
+//listado de eventos (2)
+//Busqueda de un evento (3)
+//Detalle de un evento (4)
+//
+
+
+
 console.log("holaaaa")
-
-
-
 
 controller.get("/", (req, res) => {
     const limit = req.query.limit;
@@ -26,7 +33,9 @@ controller.get("/", (req, res) => {
     if (bool)
     {
         console.log("ok ahora si")
-        return res.status(500).send("sgcx") //aca manda el evento buscado
+        console.log(req.query.name)
+        const eventoBuscado = eventService.getEventBuscado(limit, offset, req.query.name, req.query.category, req.query.startDate, req.query.tag);
+        return res.status(500).send(eventoBuscado) //aca manda el evento buscado
     }
     else
     {
@@ -55,7 +64,18 @@ controller.get("/:id", (req, res) =>{
 
 
 
-controller.get("/participants", (req, res) => {
+controller.put("/", (req, res) => {
+
+
+})
+
+controller.post("/", (req, res) => {
+
+    const nuevoEvento = eventService.crearEvento(limit, offset, req.query.name, req.query.description, req.query.category, req.query.startDate, req.query.tag)
+
+})
+
+controller.delete("/", (req, res) => {
 
 
 })

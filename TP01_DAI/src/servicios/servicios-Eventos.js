@@ -63,8 +63,13 @@ export default class EventService{
         //     }else return null;
         //     }
         // )
+        var eventoBuscado
 
-        const eventoBuscado = {
+        // Esto es temporal, solo para la 1era entrega :/
+        if(nombre == "eventoJazz")
+        {//ESTA HARCODEADO PORQUE NO HAY BASE DE DATOS AUN
+
+        eventoBuscado = {
                 "id": 2, 
                 "name": "eventoJazz", 
                 "description": "el peor evento de jazz", 
@@ -76,6 +81,27 @@ export default class EventService{
                 "enabled_for_enrollment": false, 
                 "max_assistance": 100, 
                 "id_creator_user": 2
+            }
+        }
+        else if (nombre == "eventoRock")
+        {
+            eventoBuscado = {
+                "id": 1, 
+                "name": "eventoRock", 
+                "description": "el mejor evento de rock", 
+                "id_event_category": 1, 
+                "id_event_location": 1, 
+                "start_date": 12-12-24, 
+                "duration_in_minutes": 60, 
+                "price": 120, 
+                "enabled_for_enrollment": true, 
+                "max_assistance": 600, 
+                "id_creator_user": 1
+            }
+        }
+        else
+        {
+            eventoBuscado = {"error":"No existen eventos con ese nombre"}
         }
 
         return {
@@ -87,6 +113,7 @@ export default class EventService{
             "total": "1" //no se que es esto
             }
         }
+        
     }
     getEventDetails(pageSize, reqPage, idEvento)
     {
@@ -129,4 +156,24 @@ export default class EventService{
     // }
 
 
-}}
+}
+    crearEvento(pageSize, reqPage, name, description, category, startDate, tag){
+
+        var query = "insert into eventos..."
+        const nuevoEvento = {
+            "id": idEvento, 
+                "name": name, 
+                "description": description, 
+                "id_event_category": category, 
+                "id_event_location": 3, 
+                "startDate": startDate, 
+                "duration_in_minutes": 10, 
+                "price": 12000, 
+                "enabled_for_enrollment": false, 
+                "max_assistance": 100, 
+                "id_creator_user": 2, 
+                "localidad": "Moron", 
+                "provincia": "Buenos Aires"
+        }
+    }
+}

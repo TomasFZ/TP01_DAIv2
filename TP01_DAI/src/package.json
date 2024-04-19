@@ -1,7 +1,6 @@
 {
   "name": "tp01",
   "version": "1.0.0",
-  "description": "",
   "main": "sever.js",
   "type": "module",
   "scripts": {
@@ -13,7 +12,6 @@
   "dependencies": {
     "express": "^4.19.1",
     "pg": "^8.11.3"
-  }
+  },
+  "description": ""
 }
-
-
