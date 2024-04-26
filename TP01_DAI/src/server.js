@@ -11,10 +11,7 @@ const app = express();
 
 app.use(express.json());
 
-const port = 3000;
-
-
-
+const port = 3001;
 
 app.use("/event", controller); //ESTO ES MUY IMPORTANTE. 
 app.use("/user/login", UserController);

@@ -4,14 +4,14 @@ const pController = express.Router();
 const provinceService = new ProvinceService();
 
 
-pController.get("/", (req, res) => { //select todos. falta en servicios-Provincia la funcion. 
+pController.get("/", (req, res) => {
     const limit = req.query.limit;
     const offset = req.query.offset;
     const listaProvincias = provinceService.getAllProvincias(limit, offset);
     return res.status(501).send(listaProvincias)
 })
 
-pController.get("/:id", (req, res) => { //select por id. falta en servicios-Provincia la funcion. 
+pController.get("/:id", (req, res) => {  
     console.log("entro a parfait")
     const limit = req.query.limit;
     const offset = req.query.offset;
@@ -20,44 +20,35 @@ pController.get("/:id", (req, res) => { //select por id. falta en servicios-Prov
 })
 
 pController.post("/", (req, res) => {
-    const body = req.query //el body es lo que solicita el usuario por postman en formato json
-    //console.log(body)
-    var yaExiste
-    const listaProvincias = provinceService.getAllProvincias();
-    for(var i = 0; i<listaProvincias.length; i++){
-        console.log("Lo que veo es: " + listaProvincias[i].id)
-        if(req.query.id == listaProvincias[i].id){
-            yaExiste = true
-        }else if(yaExiste != true){
-            yaExiste = false
-            const provincia = {
-                "id": body.id, 
-                "name": body.name, 
-                "full_name": body.full_name, 
-                "latitude": body.latitude, 
-                "longitude": body.longitude, 
-                "display_order": body.display_order
-            }
-            provinceService.createProvincia(provincia); //escribir los parametros para la creacion
-        }else if(id <1){
-            return res.send("id imposible")
+    const body = req.query; // Utiliza req.body para obtener los datos del cuerpo de la solicitud. cual es la diferencia que tiene con query? no se, nunca lo vimos. 
+    var yaExiste = false;
+    var i = 0
+    console.log(body)
+    const provincias = provinceService.getAllProvincias().collection;
+    console.log(provincias[0])
+    while(i<provincias.length - 1 && yaExiste != true) {
+        console.log(i)
+        if (body.id == provincias[i].id) {
+            yaExiste = true;
+            console.log("id de la provincia looooooool: " + provincias[i].id)
         }
+        i++;
     }
-    console.log(yaExiste)
-    if(!yaExiste){
-    return res.send( //hacer el object.keys para la verificacion. 
-        { 
-        "id": body.id, 
-        "name": body.name, 
-        "full_name": body.full_name, 
-        "latitude": body.latitude, 
-        "longitude": body.longitude, 
-        "display_order": body.display_order
-        })//podria hacerse directamente return res.send(provincia)
-    }else{
-        res.status(404).send({ message: 'Provincia ya existente' });
+    if (yaExiste) {
+        return res.status(404).send({ message: 'Provincia ya existente' });
+    } else {
+        const provincia = {
+            "id": body.id,
+            "name": body.name,
+            "full_name": body.full_name,
+            "latitude": body.latitude,
+            "longitude": body.longitude,
+            "display_order": body.display_order
+        };
+        provinceService.createProvincia(provincia); 
+        return res.send(provincia);
     }
-})
+});
 
 pController.put('/:id', (req, res) => { //esto es put. entonces se modifica todo. Patch seria que modifica una parte. 
     try {
@@ -66,44 +57,23 @@ pController.put('/:id', (req, res) => { //esto es put. entonces se modifica todo
         const id = req.params.id;
         var bool = false
         var provinciaAUpdatear
-        var boolName, boolFullName, boolLatitude, boolLongitude, boolDisplayOrder = true;
-        const listaProvincias = provinceService.getAllProvincias(limit, offset);
-        /*for(var i = 0; i < listaProvincias.length; i++){
-            console.
-        }*/
-        console.log(provinceService.getAllProvincias(limit,offset)) //ESTO RETORNA BIEN. 
-        //var queryFilters = Object.keys(req.query).filter((key) => key.includes("name") | key.includes("full_name") | key.includes("latitude") | key.includes("longitude") | key.includes("display_order"))
-        // for(var i=0; i < queryFilters.length; i++)
-        // {
-        //     if(queryFilters[i] == "name" | queryFilters[i] == "full_name" | queryFilters[i] == "latitude" | queryFilters[i] == "longitude" | queryFilters[i] == "display_order"){
-        //         bool = true
-        //     }
-            /* if(req.query.full_name != null){ para cuando se quiera updatear solo un atributo de una provincia y no todo. 
-                boolFullName = false
-            }
-            if(req.query.latitude != null){
-                boolLatitude = false
-            }
-            if(req.query.longitude != null){
-                boolLongitude = false
-            }
-            if(req.query.display_order != null){
-                boolDisplayOrder = false
-            } */
-        // }
-            for(var i = 0; i < listaProvincias.length; i++){
+        const listaProvincias = provinceService.getAllProvincias(limit, offset).collection;
+            for(var i = 0; i < listaProvincias.length - 1; i++){
                 if(listaProvincias[i].id == req.params.id){
-                    provinciaAUpdatear = listaProvincias[i]
-                    bool = true
+                    provinciaAUpdatear = {
+                        "id": id, 
+                        "name": req.query.name, 
+                        "full_name": req.query.full_name, 
+                        "latitude": req.query.latitude, 
+                        "longitude": req.query.longitude, 
+                        "display_order": req.query.display_order
+                    }
                 }
             }
-            console.log(provinciaAUpdatear.nombre)
-            const provinciaUpdated = provinceService.updateProvincia(provinciaAUpdatear) //para cuando este la bd
+            console.log(provinciaAUpdatear.name)
+            const provinciaUpdated = provinceService.updateProvincia(provinciaAUpdatear, id) //para cuando este la bd
+            console.log("nombre nuevo de provincia: " + provinciaUpdated.name)
             return res.send(provinciaUpdated)
-        
-            if(bool == false) {
-                res.status(404).send({ message: 'Provincia no encontrada' });
-            }
     } catch (error) {
         console.error('Error al actualizar la provincia:', error);
         res.status(500).send({ message: 'Error al actualizar la provincia' });
@@ -113,11 +83,20 @@ pController.put('/:id', (req, res) => { //esto es put. entonces se modifica todo
 pController.delete("/:id", (req, res) => {    
     try {
         const id = req.params.id;
-        
-        const listaProvincias = provinceService.getAllProvincias();
-        const provincia = listaProvincias.find(provincia => provincia.id === id);
-
-        if (provincia) {
+        const listaProvincias = provinceService.getAllProvincias().collection;
+        //const provincia = listaProvincias.id.find(provincia => provincia.id === id);
+        var i = 0
+        var provincia
+        var encontrado = false
+        while(i < listaProvincias.length && encontrado == false){
+            if(listaProvincias[i].id == id){
+                encontrado = true
+                provincia = listaProvincias[i]
+            }
+            i++;
+        }
+        console.log("privocinsas nombrefjrkwns: " + provincia.name)
+        if (encontrado) {
             provinceService.deleteProvincia(id);
             return res.send("Provincia borrada exitosamente.");
         } else {

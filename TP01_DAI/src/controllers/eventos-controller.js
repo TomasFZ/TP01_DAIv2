@@ -64,8 +64,9 @@ controller.put("/", (req, res) => {
 
 controller.post("/", (req, res) => {
     const body = req.body
+    var queryFiltersUsuarios = Object.keys(req.query).filter((key) => key.includes("name") && key.includes("description") && key.includes("start_date") && key.includes("duration_in_minutes") && key.includes("price") && key.includes("enabled_for_enrollment") && key.includes("max_assistance"))
     const nuevoEvento = eventService.crearEvento(limit, offset, req.query.name, req.query.description, req.query.category, req.query.startDate, req.query.tag)
-
+    return res.send(nuevoEvento)
 })
 
 controller.delete("/", (req, res) => {

@@ -165,7 +165,6 @@ export default class EventService{
                 "name": name, 
                 "description": description, 
                 "id_event_category": category, 
-                "id_event_location": 3, 
                 "startDate": startDate, 
                 "duration_in_minutes": 10, 
                 "price": 12000, 
@@ -175,5 +174,13 @@ export default class EventService{
                 "localidad": "Moron", 
                 "provincia": "Buenos Aires"
         }
+        return {
+            "collection": nuevoEvento, 
+            "pagination": {
+                "limit": pageSize,
+                "offset": reqPage,
+                "nextPage": reqPage + 1, //poner el http
+                "total": "1" //no se que es esto
+        }
     }
-}
+}}
