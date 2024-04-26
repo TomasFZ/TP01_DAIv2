@@ -3,7 +3,7 @@
 export default class UserService
 {
 //no hacer el 6, 9, y 10. 
-    getUser(idEvento, username, password, nombreEvento, attended, pageSize, reqPage)
+    getUser(idEvento, username, password, nombreEvento, attended, pageSize, reqPage) //pasarle un objeto en vez de un monton de parametros
     {
         //const query = "select * from users where users.username = $(username) and users.password = $(password)"; //fetch user from db
         //const DBresponse = query.execute(); //DRAGON BALL RESPONSE WOOOOOOOOOOOO

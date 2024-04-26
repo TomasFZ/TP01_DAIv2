@@ -47,19 +47,12 @@ controller.get("/", (req, res) => {
     }
 });
 
-controller.get("/:id", (req, res) =>{
+controller.get("/:id", (req, res) =>{ //cuando se quiere buscar uno por id o lo que sea por params y no por query escrita por el usuario, se pone en postman http://localhost:3000/event/1 en lugar de poner una key con value. 
     const limit = req.query.limit;
     const offset = req.query.offset;
     console.log("entro a sans")
     const evento = eventService.getEventDetails(limit, offset, req.params.id);
     return res.status(201).send(evento)
-        // {
-        //     "id": body.id, 
-        //     "nombre": body.nombre, 
-        //     "fecha": body.fecha, 
-        //     "categoria": body.categoria,
-        //     "tags": body.tags
-        // })
 })
 
 
@@ -70,7 +63,7 @@ controller.put("/", (req, res) => {
 })
 
 controller.post("/", (req, res) => {
-
+    const body = req.body
     const nuevoEvento = eventService.crearEvento(limit, offset, req.query.name, req.query.description, req.query.category, req.query.startDate, req.query.tag)
 
 })
