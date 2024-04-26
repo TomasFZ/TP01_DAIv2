@@ -53,7 +53,7 @@ pController.post("/", (req, res) => {
         "latitude": body.latitude, 
         "longitude": body.longitude, 
         "display_order": body.display_order
-        })
+        })//podria hacerse directamente return res.send(provincia)
     }else{
         res.status(404).send({ message: 'Provincia ya existente' });
     }
