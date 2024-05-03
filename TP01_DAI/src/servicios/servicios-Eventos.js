@@ -3,46 +3,45 @@
 
 //ATENCIÓN: PARA LA PRIMERA ENTREGA SE TIENE QUE ENVIAR LOS CONTROLLERS CON TODO LO DEMÁS HARDCODEADO. ES DECIR, LOS OBJETOS EVENTO DE ACA SON ESCRITOS EN VEZ DE LLAMAR A LA DB ETC ETC. 
 
-
+import EventRepository from "../repositories/events-repository.js"
 export default class EventService{
     getAllEvents(pageSize, reqPage){
-        const query = "select * from events limit $(pageSize) offset $(reqPage) inner join categories on events.id_event_category = event_categories.id inner join "  //continuar haciendo los inner join de localizacion, usuario creador, etc.   //ver si en realidad tiene que ser la query en events-repository.js           //en realidad es pg. y el query pero por ahora a hardcodear
-        const query2 = ""
-        //en realidad las queerys tienen que ser igualadas a funciones de events-repository.js que van a ser exportadas aca. 
-        // const listaDB = query.execute();
+        //const query = "select * from events limit $(pageSize) offset $(reqPage) inner join categories on events.id_event_category = event_categories.id inner join "  //continuar haciendo los inner join de localizacion, usuario creador, etc.   //ver si en realidad tiene que ser la query en events-repository.js           //en realidad es pg. y el query pero por ahora a hardcodear
         
-        //hardcodear todos los objetos de la listaDB
-        const listaDB = [
-            {
-                "id": 1, 
-                "name": "eventoRock", 
-                "description": "el mejor evento de rock", 
-                "id_event_category": 1, 
-                "id_event_location": 1, 
-                "start_date": 12-12-24, 
-                "duration_in_minutes": 60, 
-                "price": 120, 
-                "enabled_for_enrollment": true, 
-                "max_assistance": 600, 
-                "id_creator_user": 1
-            }, 
-            {
-                "id": 2, 
-                "name": "eventoJazz", 
-                "description": "el peor evento de jazz", 
-                "id_event_category": 2, 
-                "id_event_location": 3, 
-                "start_date": 12-11-24, 
-                "duration_in_minutes": 10, 
-                "price": 12000, 
-                "enabled_for_enrollment": false, 
-                "max_assistance": 100, 
-                "id_creator_user": 2
-            }
-        ]
-        console.log("estamos en construccion: pasa por getAllEvents en servicios-Events")
+        // const listaDB = [
+        //     {
+        //         "id": 1, 
+        //         "name": "eventoRock", 
+        //         "description": "el mejor evento de rock", 
+        //         "id_event_category": 1, 
+        //         "id_event_location": 1, 
+        //         "start_date": 12-12-24, 
+        //         "duration_in_minutes": 60, 
+        //         "price": 120, 
+        //         "enabled_for_enrollment": true, 
+        //         "max_assistance": 600, 
+        //         "id_creator_user": 1
+        //     }, 
+        //     {
+        //         "id": 2, 
+        //         "name": "eventoJazz", 
+        //         "description": "el peor evento de jazz", 
+        //         "id_event_category": 2, 
+        //         "id_event_location": 3, 
+        //         "start_date": 12-11-24, 
+        //         "duration_in_minutes": 10, 
+        //         "price": 12000, 
+        //         "enabled_for_enrollment": false, 
+        //         "max_assistance": 100, 
+        //         "id_creator_user": 2
+        //     }
+        // ]
+        // console.log("estamos en construccion: pasa por getAllEvents en servicios-Events")
+        const eventRepository = new EventRepository(); 
+        const listaEventos = eventRepository.getAllEvents(pageSize, reqPage);
+
         return {
-            "collection": listaDB,
+            "collection": listaEventos.collection,
             "pagination": {
             "limit": pageSize,
             "offset": reqPage,
@@ -117,30 +116,32 @@ export default class EventService{
     }
     getEventDetails(pageSize, reqPage, idEvento)
     {
+       const eventRepository = new EventRepository(); 
         // const query = ""
         // const evento = query.execute(); 
         // const provincia = 
         
-        const evento = {
-                "id": idEvento, 
-                "name": "eventoJazz", 
-                "description": "el peor evento de jazz", 
-                "id_event_category": 2, 
-                "id_event_location": 3, 
-                "startDate": 12-11-24, 
-                "duration_in_minutes": 10, 
-                "price": 12000, 
-                "enabled_for_enrollment": false, 
-                "max_assistance": 100, 
-                "id_creator_user": 2, 
-                "localidad": "Moron", 
-                "provincia": "Buenos Aires"
-        }
+        // const evento = {
+        //         "id": idEvento, 
+        //         "name": "eventoJazz", 
+        //         "description": "el peor evento de jazz", 
+        //         "id_event_category": 2, 
+        //         "id_event_location": 3, 
+        //         "startDate": 12-11-24, 
+        //         "duration_in_minutes": 10, 
+        //         "price": 12000, 
+        //         "enabled_for_enrollment": false, 
+        //         "max_assistance": 100, 
+        //         "id_creator_user": 2, 
+        //         "localidad": "Moron", 
+        //         "provincia": "Buenos Aires"
+        // }
         
         //falta el event locations y las provincias
+        const eventoBuscado = eventRepository.getEventoPorId(idEvento)
         
         return {
-            "collection": evento, 
+            "collection": eventoBuscado, 
             "pagination": {
                 "limit": pageSize,
                 "offset": reqPage,

@@ -20,17 +20,8 @@ console.log("holaaaa")
 controller.get("/", (req, res) => {
     const limit = req.query.limit;
     const offset = req.query.offset;
-    var queryFilters = Object.keys(req.query).filter((key) => key.includes("name") | key.includes("category") | key.includes("startDate") | key.includes("tag"))
-    //if (Object.keys(req.query).length > "0")
-    console.log(queryFilters[0])
     var bool = false
-    for(var i=0; i < queryFilters.length; i++)
-    {
-        if(queryFilters[i] == "name" | queryFilters[i] == "category" | queryFilters[i] == "tag" | queryFilters[i] == "startDate"){
-            bool = true
-        }
-    }
-    if (bool)
+    if (req.query.name != null | req.query.category != null | req.query.tag != null | req.query.startDate != null)
     {
         console.log("ok ahora si")
         console.log(req.query.name)
@@ -41,8 +32,8 @@ controller.get("/", (req, res) => {
     {
         console.log("escefmdiknoigd")  //aca manda la lista completa de eventos
         const allEvents = eventService.getAllEvents(limit, offset);
-        console.log("los all events: " + allEvents);
-        
+        //console.log("los all events: " + allEvents);
+        console.log("I'm about to BLOW")
         return res.send(allEvents);
     }
 });
