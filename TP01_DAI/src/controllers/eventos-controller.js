@@ -32,6 +32,8 @@ controller.get("/", (req, res) => {
     {
         console.log("escefmdiknoigd")  //aca manda la lista completa de eventos
         const allEvents = eventService.getAllEvents(limit, offset);
+        console.log("TYPEOF DE ALLEVENTS EN CONTROLLER: "+typeof allEvents)
+        console.log(allEvents) //no contiene nada. 
         //console.log("los all events: " + allEvents);
         console.log("I'm about to BLOW")
         return res.send(allEvents);

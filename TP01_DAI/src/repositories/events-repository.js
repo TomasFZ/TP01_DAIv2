@@ -3,33 +3,34 @@
 // import { connectToDatabase } from "./db.js";
 //todo esto mjs
 
-import pg from "pg"
+import pkg from "pg"
 import config from "../dbConfig.js"
 export default class EventRepository{
 constructor(){
-    const {Client} = pg
+    const {Client} = pkg
     this.DBClient = new Client(config)
     this.DBClient.connect();
 }
-async getAllEvents(limit, offset) {
+  getAllEvents(limit, offset) { //despues le agregamos el async y el await, el tema es que si lo hacemos ahora se queda pensando y no termina completa la funcion. 
     console.log("ESTOY AQUÍ")
+    limit = 10;
+    offset = 0;
+    console.log(typeof limit, typeof offset) //son undefined. los defini arriba como nums pero entran como undefined. 
     try {
-        const sql = "select * from events"; 
+        const sql = "SELECT * FROM events OFFSET ${offset} LIMIT ${limit};"; 
         console.log("PASÓ LA PRUEBA 1")
-        const eventos = await this.DBClient.query(sql, { limit, offset });
+        const eventos = this.DBClient.query(sql, [ limit, offset ]);
         console.log("PASÓ LA PRUEBA 2")
         // return {
-        //     collection: eventos.rows,
+        //     collection: eventos.rows,    
         //     limit: limit,
         //     offset: offset,
         //     nextPage: offset + 1
         // };
-        return {
-            collection: eventos.rows,
-        };
+        console.log("TYPEOF EVENTOS EN REPOSITORIES: "+typeof eventos);
+        return eventos.rows;
     } catch (error) {
         console.error("Error al obtener eventos:", error);
-        throw error; 
     }
 }
 

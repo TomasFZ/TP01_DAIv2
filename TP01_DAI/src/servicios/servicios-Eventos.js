@@ -2,28 +2,38 @@
 //mjs
 
 //ATENCIÓN: PARA LA PRIMERA ENTREGA SE TIENE QUE ENVIAR LOS CONTROLLERS CON TODO LO DEMÁS HARDCODEADO. ES DECIR, LOS OBJETOS EVENTO DE ACA SON ESCRITOS EN VEZ DE LLAMAR A LA DB ETC ETC. 
-
+import { query } from "express";
 import EventRepository from "../repositories/events-repository.js"
 export default class EventService{
-    async getAllEvents(pageSize, reqPage){
-        //const query = "select * from events limit $(pageSize) offset $(reqPage) inner join categories on events.id_event_category = event_categories.id inner join "  //continuar haciendo los inner join de localizacion, usuario creador, etc.   //ver si en realidad tiene que ser la query en events-repository.js           //en realidad es pg. y el query pero por ahora a hardcodear
-        // console.log("estamos en construccion: pasa por getAllEvents en servicios-Events")
-        const eventRepository = new EventRepository(); 
-        const listaEventos = await eventRepository.getAllEvents(pageSize, reqPage);
-        console.log("-----------------------------------------------------------------")
-        console.log(listaEventos)
+    // async getAllEvents(pageSize, reqPage){
+    //     //const query = "select * from events limit $(pageSize) offset $(reqPage) inner join categories on events.id_event_category = event_categories.id inner join "  //continuar haciendo los inner join de localizacion, usuario creador, etc.   //ver si en realidad tiene que ser la query en events-repository.js           //en realidad es pg. y el query pero por ahora a hardcodear
+    //     // console.log("estamos en construccion: pasa por getAllEvents en servicios-Events")
+    //     const eventRepository = new EventRepository(); 
+    //     const listaEventos = await eventRepository.getAllEvents(pageSize, reqPage);
+    //     console.log("-----------------------------------------------------------------")
+    //     console.log(listaEventos)
         
-        return {
-            "collection": listaEventos.collection,
-            "pagination": {
-            "limit": pageSize,
-            "offset": reqPage,
-            "nextPage": reqPage + 1, //poner el http
-            "total": "1" //que era esto de total? //Eran las páginas totales o algo así
-            }
-            
-        }
-    }
+    //     return {
+    //         "collection": listaEventos.collection,
+    //         "pagination": {
+    //         "limit": pageSize,
+    //         "offset": reqPage,
+    //         "nextPage": reqPage + 1, //poner el http
+    //         "total": "1" //que era esto de total? //Eran las páginas totales o algo así
+    //         }   
+    //     }
+    // }
+
+    async getAllEvents(limit, offset) {
+        const eventRepository = new EventRepository();
+        console.log("detdetdetdet")
+        const listaEventos = await eventRepository.getAllEvents(limit, offset);
+        console.log("akakakkakakkakakakak")
+        // Devuelve directamente los eventos (lista) del repositorio
+        console.log("TYPEOF LISTAEVENTOS EN SERVICE"+typeof listaEventos);
+        return listaEventos;
+      }
+      
     
 
     getEventBuscado(pageSize, reqPage, nombre, categoria, fecha, tag)
