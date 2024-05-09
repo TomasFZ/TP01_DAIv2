@@ -1,4 +1,4 @@
-// import 'dotenv/conifg'
+import 'dotenv/config';
 
 const config = {
     user: process.env.DB_USER, 

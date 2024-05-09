@@ -5,41 +5,14 @@
 
 import EventRepository from "../repositories/events-repository.js"
 export default class EventService{
-    getAllEvents(pageSize, reqPage){
+    async getAllEvents(pageSize, reqPage){
         //const query = "select * from events limit $(pageSize) offset $(reqPage) inner join categories on events.id_event_category = event_categories.id inner join "  //continuar haciendo los inner join de localizacion, usuario creador, etc.   //ver si en realidad tiene que ser la query en events-repository.js           //en realidad es pg. y el query pero por ahora a hardcodear
-        
-        // const listaDB = [
-        //     {
-        //         "id": 1, 
-        //         "name": "eventoRock", 
-        //         "description": "el mejor evento de rock", 
-        //         "id_event_category": 1, 
-        //         "id_event_location": 1, 
-        //         "start_date": 12-12-24, 
-        //         "duration_in_minutes": 60, 
-        //         "price": 120, 
-        //         "enabled_for_enrollment": true, 
-        //         "max_assistance": 600, 
-        //         "id_creator_user": 1
-        //     }, 
-        //     {
-        //         "id": 2, 
-        //         "name": "eventoJazz", 
-        //         "description": "el peor evento de jazz", 
-        //         "id_event_category": 2, 
-        //         "id_event_location": 3, 
-        //         "start_date": 12-11-24, 
-        //         "duration_in_minutes": 10, 
-        //         "price": 12000, 
-        //         "enabled_for_enrollment": false, 
-        //         "max_assistance": 100, 
-        //         "id_creator_user": 2
-        //     }
-        // ]
         // console.log("estamos en construccion: pasa por getAllEvents en servicios-Events")
         const eventRepository = new EventRepository(); 
-        const listaEventos = eventRepository.getAllEvents(pageSize, reqPage);
-
+        const listaEventos = await eventRepository.getAllEvents(pageSize, reqPage);
+        console.log("-----------------------------------------------------------------")
+        console.log(listaEventos)
+        
         return {
             "collection": listaEventos.collection,
             "pagination": {
@@ -48,6 +21,7 @@ export default class EventService{
             "nextPage": reqPage + 1, //poner el http
             "total": "1" //que era esto de total? //Eran las páginas totales o algo así
             }
+            
         }
     }
     
