@@ -9,11 +9,11 @@ import servicios from "./servicios/servicios-Eventos.js";
 
 const app = express(); 
 
-app.use(express.json());
+app.use(express.json()); //este tambien es middleware. 
 
-const port = 5432;
+const port = 3000;
 
-app.use("/event", controller); //ESTO ES MUY IMPORTANTE. 
+app.use("/event", controller); //ESTO ES MUY IMPORTANTE. Estos son middlewares. 
 app.use("/user/login", UserController);
 app.use("/province", pController);
 

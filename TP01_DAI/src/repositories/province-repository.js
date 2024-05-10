@@ -8,6 +8,17 @@ export default class ProvinceRepository {
     this.DBClient.connect();
 }
 
+
+async getAllProvincias(limit, offset){
+    try {
+        const sql = "SELECT * FROM provinces OFFSET $1 LIMIT $2;"; 
+        const provincias = await this.DBClient.query(sql, [ offset,limit ]);
+        return provincias.rows;
+    } catch (error) {
+        console.error("Error al obtener eventos:", error);
+    }
+}
+
 async getProvinceById (id){
     let returnEntity = null
     try{

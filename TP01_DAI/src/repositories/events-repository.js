@@ -8,42 +8,41 @@ import config from "../dbConfig.js"
 export default class EventRepository{
 constructor(){
     const {Client} = pkg
+    console.log(config)
     this.DBClient = new Client(config)
     this.DBClient.connect();
 }
-  getAllEvents(limit, offset) { //despues le agregamos el async y el await, el tema es que si lo hacemos ahora se queda pensando y no termina completa la funcion. 
+ async getAllEvents(limit, offset) {
     console.log("ESTOY AQUÍ")
-    limit = 10;
+    limit = 10;//despues fijarse si anda sacandole estos. 
     offset = 0;
-    console.log(typeof limit, typeof offset) //son undefined. los defini arriba como nums pero entran como undefined. 
     try {
-        const sql = "SELECT * FROM events OFFSET ${offset} LIMIT ${limit};"; 
-        console.log("PASÓ LA PRUEBA 1")
-        const eventos = this.DBClient.query(sql, [ limit, offset ]);
-        console.log("PASÓ LA PRUEBA 2")
-        // return {
-        //     collection: eventos.rows,    
-        //     limit: limit,
-        //     offset: offset,
-        //     nextPage: offset + 1
-        // };
-        console.log("TYPEOF EVENTOS EN REPOSITORIES: "+typeof eventos);
+        const sql = "SELECT * FROM events OFFSET $1 LIMIT $2;"; 
+        const eventos = await this.DBClient.query(sql, [ offset,limit ]);
         return eventos.rows;
     } catch (error) {
         console.error("Error al obtener eventos:", error);
     }
 }
 
-    
-    async getEventoPorId(idEvento){
-        const sql = "select * from events e where id = $id"
-        const values = [id= idEvento]
-        const evento = await this.DBClient.query(sql, values)
-        //const evento = query.execute();
+    async getEventoBuscado(limit, offset, arrayFiltros){
+
+        var sql = "Select * from events where" //temrinar
+
+    }
+
+    async getEventoPorId(limit, offset, id){
+        const sql = "select * from events where id = $id OFFSET $off LIMIT $lim" //chequear despues con $1, $2, y $3
+        const evento = await this.DBClient.query(sql, [id, offset, limit])
         return evento
     }
 
-    
+    async insertEvento(limit, offset, name, description, category, startDate, tag){
+        const sql = "Insert into Eventos e (name, description, category, startDate, tag) values ($name, $description, $category, $startDate, $tag OFFSET $off LIMIT $limit)"
+        const eventoCreado = await this.DBClient.query(sql, [name, description, category, startDate, tag, offset, limit])
+        return eventoCreado
+    }
+
 }
 
 

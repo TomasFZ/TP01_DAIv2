@@ -7,9 +7,5 @@ const config = {
     port: process.env.DB_PORT,
     database: process.env.DB_DATABASE, 
     host:process.env.DB_HOST,
-    options: {
-        trustServerCertificate: true, 
-        trustedConnection: true
-    }
 }
 export default config

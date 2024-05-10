@@ -5,29 +5,12 @@
 import { query } from "express";
 import EventRepository from "../repositories/events-repository.js"
 export default class EventService{
-    // async getAllEvents(pageSize, reqPage){
-    //     //const query = "select * from events limit $(pageSize) offset $(reqPage) inner join categories on events.id_event_category = event_categories.id inner join "  //continuar haciendo los inner join de localizacion, usuario creador, etc.   //ver si en realidad tiene que ser la query en events-repository.js           //en realidad es pg. y el query pero por ahora a hardcodear
-    //     // console.log("estamos en construccion: pasa por getAllEvents en servicios-Events")
-    //     const eventRepository = new EventRepository(); 
-    //     const listaEventos = await eventRepository.getAllEvents(pageSize, reqPage);
-    //     console.log("-----------------------------------------------------------------")
-    //     console.log(listaEventos)
-        
-    //     return {
-    //         "collection": listaEventos.collection,
-    //         "pagination": {
-    //         "limit": pageSize,
-    //         "offset": reqPage,
-    //         "nextPage": reqPage + 1, //poner el http
-    //         "total": "1" //que era esto de total? //Eran las páginas totales o algo así
-    //         }   
-    //     }
-    // }
 
     async getAllEvents(limit, offset) {
         const eventRepository = new EventRepository();
         console.log("detdetdetdet")
         const listaEventos = await eventRepository.getAllEvents(limit, offset);
+        //console.log("SANS SKIBIDI SIGMA: " + listaEventos[0].name)
         console.log("akakakkakakkakakakak")
         // Devuelve directamente los eventos (lista) del repositorio
         console.log("TYPEOF LISTAEVENTOS EN SERVICE"+typeof listaEventos);
@@ -36,7 +19,7 @@ export default class EventService{
       
     
 
-    getEventBuscado(pageSize, reqPage, nombre, categoria, fecha, tag)
+    async getEventBuscado(pageSize, reqPage, nombre, categoria, fecha, tag)
     {//tal vez se puede hacer un vector que contenga estos parametros y vaya buscando uno por uno en un ciclo. (cuando este la db)
         //const query = "" //tiene que ser UN solo evento especifico en base a los filtros. lo vamos a harcdodear asi que por ahora nada de bd
         //const listaEventosBuscados = query.execute(); 
@@ -46,47 +29,17 @@ export default class EventService{
         //     }else return null;
         //     }
         // )
-        var eventoBuscado
-
-        // Esto es temporal, solo para la 1era entrega :/
-        if(nombre == "eventoJazz")
-        {//ESTA HARCODEADO PORQUE NO HAY BASE DE DATOS AUN
-
-        eventoBuscado = {
-                "id": 2, 
-                "name": "eventoJazz", 
-                "description": "el peor evento de jazz", 
-                "id_event_category": 2, 
-                "id_event_location": 3, 
-                "start_date": 12-11-24, 
-                "duration_in_minutes": 10, 
-                "price": 12000, 
-                "enabled_for_enrollment": false, 
-                "max_assistance": 100, 
-                "id_creator_user": 2
+        var arrayFiltrosIniciales = [nombre, categoria, fecha, tag]
+        var arrayFiltros = []
+        for(var i = 0; i < arrayFiltrosIniciales.length; i++){
+            if(arrayFiltrosIniciales[i]){
+                arrayFiltros.push(arrayFiltrosIniciales[i])
             }
         }
-        else if (nombre == "eventoRock")
-        {
-            eventoBuscado = {
-                "id": 1, 
-                "name": "eventoRock", 
-                "description": "el mejor evento de rock", 
-                "id_event_category": 1, 
-                "id_event_location": 1, 
-                "start_date": 12-12-24, 
-                "duration_in_minutes": 60, 
-                "price": 120, 
-                "enabled_for_enrollment": true, 
-                "max_assistance": 600, 
-                "id_creator_user": 1
-            }
-        }
-        else
-        {
-            eventoBuscado = {"error":"No existen eventos con ese nombre"}
-        }
 
+        const eventRepository = new EventRepository();
+        const eventoBuscado = await eventRepository.getEventoBuscado(limit, offset, arrayFiltros) 
+        
         return {
             "collection": eventoBuscado,
             "pagination": {
@@ -98,31 +51,11 @@ export default class EventService{
         }
         
     }
-    getEventDetails(pageSize, reqPage, idEvento)
+    async getEventDetails(pageSize, reqPage, idEvento)
     {
        const eventRepository = new EventRepository(); 
-        // const query = ""
-        // const evento = query.execute(); 
-        // const provincia = 
-        
-        // const evento = {
-        //         "id": idEvento, 
-        //         "name": "eventoJazz", 
-        //         "description": "el peor evento de jazz", 
-        //         "id_event_category": 2, 
-        //         "id_event_location": 3, 
-        //         "startDate": 12-11-24, 
-        //         "duration_in_minutes": 10, 
-        //         "price": 12000, 
-        //         "enabled_for_enrollment": false, 
-        //         "max_assistance": 100, 
-        //         "id_creator_user": 2, 
-        //         "localidad": "Moron", 
-        //         "provincia": "Buenos Aires"
-        // }
-        
-        //falta el event locations y las provincias
-        const eventoBuscado = eventRepository.getEventoPorId(idEvento)
+       
+        const eventoBuscado = await eventRepository.getEventoPorId(pageSize, reqPage, idEvento)
         
         return {
             "collection": eventoBuscado, 
@@ -142,23 +75,9 @@ export default class EventService{
 
 
 }
-    crearEvento(pageSize, reqPage, name, description, category, startDate, tag){
-
-        var query = "insert into eventos..."
-        const nuevoEvento = {
-            "id": idEvento, 
-                "name": name, 
-                "description": description, 
-                "id_event_category": category, 
-                "startDate": startDate, 
-                "duration_in_minutes": 10, 
-                "price": 12000, 
-                "enabled_for_enrollment": false, 
-                "max_assistance": 100, 
-                "id_creator_user": 2, 
-                "localidad": "Moron", 
-                "provincia": "Buenos Aires"
-        }
+    async crearEvento(pageSize, reqPage, name, description, category, startDate, tag){
+        const eventRepository = new EventRepository(); 
+        const eventoCreado = await eventRepository.insertEvento(pageSize, reqPage, name, description, category, startDate, tag);
         return {
             "collection": nuevoEvento, 
             "pagination": {

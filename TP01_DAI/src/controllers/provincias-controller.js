@@ -4,14 +4,19 @@ const pController = express.Router();
 const provinceService = new ProvinceService();
 
 
-pController.get("/", (req, res) => {
+pController.get("/", async (req, res) => {
     const limit = req.query.limit;
     const offset = req.query.offset;
-    const listaProvincias = provinceService.getAllProvincias(limit, offset);
-    return res.status(501).send(listaProvincias)
+    if(limit >= 0 && offset >= 0){
+        const listaProvincias = provinceService.getAllProvincias(limit, offset);
+        return res.status(501).send(listaProvincias)
+    }
+    else{
+        return res.send("Offset o limit invalidos")
+    }
 })
 
-pController.get("/:id", (req, res) => {  
+pController.get("/:id", async (req, res) => {  
     console.log("entro a parfait")
     const limit = req.query.limit;
     const offset = req.query.offset;
@@ -19,7 +24,7 @@ pController.get("/:id", (req, res) => {
     return res.status(501).send(provincia)
 })
 
-pController.post("/", (req, res) => {
+pController.post("/", async (req, res) => {
     const body = req.query; // Utiliza req.body para obtener los datos del cuerpo de la solicitud. cual es la diferencia que tiene con query? no se, nunca lo vimos. 
     var yaExiste = false;
     var i = 0
@@ -50,7 +55,7 @@ pController.post("/", (req, res) => {
     }
 });
 
-pController.put('/:id', (req, res) => { //esto es put. entonces se modifica todo. Patch seria que modifica una parte. 
+pController.put('/:id', async (req, res) => { //esto es put. entonces se modifica todo. Patch seria que modifica una parte. 
     try {
         const limit = req.query.limit;
         const offset = req.query.offset;
@@ -80,7 +85,7 @@ pController.put('/:id', (req, res) => { //esto es put. entonces se modifica todo
     }
 })
 
-pController.delete("/:id", (req, res) => {    
+pController.delete("/:id", async (req, res) => {    
     try {
         const id = req.params.id;
         const listaProvincias = provinceService.getAllProvincias().collection;

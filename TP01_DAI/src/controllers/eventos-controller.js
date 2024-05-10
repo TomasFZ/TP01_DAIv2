@@ -17,52 +17,54 @@ const eventService = new EventService();
 
 console.log("holaaaa")
 
-controller.get("/", (req, res) => {
+controller.get("/", async (req, res) => {
     const limit = req.query.limit;
-    const offset = req.query.offset;
-    var bool = false
-    if (req.query.name != null | req.query.category != null | req.query.tag != null | req.query.startDate != null)
+    const offset = req.query.offset;//verificar si son num y si existen. 
+    if(limit >= 0 & offset >= 0)
     {
-        console.log("ok ahora si")
-        console.log(req.query.name)
-        const eventoBuscado = eventService.getEventBuscado(limit, offset, req.query.name, req.query.category, req.query.startDate, req.query.tag);
-        return res.status(500).send(eventoBuscado) //aca manda el evento buscado
+        if (req.query.name != null | req.query.category != null | req.query.tag != null | req.query.startDate != null)
+        {
+            console.log(req.query.name)
+            const eventoBuscado = eventService.getEventBuscado(limit, offset, req.query.name, req.query.category, req.query.startDate, req.query.tag);
+            return res.status(500).send(eventoBuscado) //aca manda el evento buscado
+        }
+        else
+        {
+            const allEvents = await eventService.getAllEvents(limit, offset); //aca van todos los events
+            return res.send(allEvents);
+        }
     }
     else
     {
-        console.log("escefmdiknoigd")  //aca manda la lista completa de eventos
-        const allEvents = eventService.getAllEvents(limit, offset);
-        console.log("TYPEOF DE ALLEVENTS EN CONTROLLER: "+typeof allEvents)
-        console.log(allEvents) //no contiene nada. 
-        //console.log("los all events: " + allEvents);
-        console.log("I'm about to BLOW")
-        return res.send(allEvents);
+        return res.send("Offset o limit invalidos")
     }
 });
 
-controller.get("/:id", (req, res) =>{ //cuando se quiere buscar uno por id o lo que sea por params y no por query escrita por el usuario, se pone en postman http://localhost:3000/event/1 en lugar de poner una key con value. 
+controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id o lo que sea por params y no por query escrita por el usuario, se pone en postman http://localhost:3000/event/1 en lugar de poner una key con value. 
     const limit = req.query.limit;
     const offset = req.query.offset;
+    if(limit >= 0 && offset >= 0){
     console.log("entro a sans")
     const evento = eventService.getEventDetails(limit, offset, req.params.id);
     return res.status(201).send(evento)
+    }else{
+        return res.send("Offset o limit invalidos")
+    }
 })
 
-
-
-controller.put("/", (req, res) => {
+controller.put("/", async (req, res) => {//implementar el token. Ponerle ("/", Middleware, async (req, res) mas tarde. 
 
 
 })
 
-controller.post("/", (req, res) => {
+controller.post("/", async (req, res) => { //implementar el token. Ponerle ("/", Middleware, async (req, res) mas tarde. 
     const body = req.body
     var queryFiltersUsuarios = Object.keys(req.query).filter((key) => key.includes("name") && key.includes("description") && key.includes("start_date") && key.includes("duration_in_minutes") && key.includes("price") && key.includes("enabled_for_enrollment") && key.includes("max_assistance"))
     const nuevoEvento = eventService.crearEvento(limit, offset, req.query.name, req.query.description, req.query.category, req.query.startDate, req.query.tag)
     return res.send(nuevoEvento)
 })
 
-controller.delete("/", (req, res) => {
+controller.delete("/", async (req, res) => { 
 
 
 })
