@@ -1,16 +1,29 @@
 import express from "express";
-import cors from "cors";
 const app = express();
 const port = 3000;
 
-export function primerMiddleware(req, res, next){
-    if(!req.headers.authorization){
 
 
-        next();
-    }else{
-
-    }
+function primerMiddleware(token){
+    
 }
 
-app.use(primerMiddleware);
+export function DecryptToken(req, res, next){
+    if(!req.headers.authorization){
+        res.status(401).send('forbidden')
+    }else{
+        const token = req.headers.authorization.split('')[1];
+        const decryptedToken = DecryptToken(token)
+        req.user = decryptedToken.payload
+        const secretKey = "officerboleswahahahahamcityyeahimmanjonklergottajonkleproaslumepillsgwenbonekillercockimproudofyoudickehtthebin"
+        try{
+            const payload = jwt.verify(token, secretKey)
+        }catch(error){
+        
+        }
+
+    }
+    next();
+}
+
+// app.use(primerMiddleware);

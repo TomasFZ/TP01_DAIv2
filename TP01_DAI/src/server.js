@@ -14,7 +14,7 @@ app.use(express.json()); //este tambien es middleware.
 const port = 3000;
 
 app.use("/event", controller); //ESTO ES MUY IMPORTANTE. Estos son middlewares. 
-app.use("/user/login", UserController);
+app.use("/user", UserController);
 app.use("/province", pController);
 
 

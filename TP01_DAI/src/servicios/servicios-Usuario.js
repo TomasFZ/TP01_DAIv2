@@ -1,5 +1,7 @@
 // import pg from "pg";
 //mjs
+import UserRepository from "../repositories/usuario-repository.js"
+import jwt from 'jsonwebtoken'
 export default class UserService
 {
 //no hacer el 6, 9, y 10. 
@@ -157,18 +159,71 @@ export default class UserService
         }
     }
 
-    writeUser(first_name, last_name, username, password)
-    {
-        const fetchQuery = "select * from users where users.username = $(username)";
-        const DBuserExists = fetchQuery.execute();
-        if(DBuserExists.username == username)
+    // writeUser(first_name, last_name, username, password)
+    // {
+    //     const fetchQuery = "select * from users where users.username = $(username)";
+    //     const DBuserExists = fetchQuery.execute();
+    //     if(DBuserExists.username == username)
+    //     {
+            
+            
+            
+            
+    //         return "Dos cuentas no pueden tener el mismo usuario";
+    //     }
+    //     else
+    //     {
+    //         const writeQuery = "insert into users (first_name, last_name, username, password) values ($(first_name), $(last_name), $(username), $(password))";
+    //     }
+    // }
+
+    async createUser(first_name, last_name, username, password){
+        const userRepository = new UserRepository();
+        console.log("FN: " + first_name + " LN: " + last_name + " US: " + username + " PA: " +password)
+        const real = userRepository.findUserByUsername(username)
+        if(real == true)
         {
-            return "Dos cuentas no pueden tener el mismo usuario";
+            console.log("Ya existe Usuario con ese Username")
+            return "Error"
         }
         else
         {
-            const writeQuery = "insert into users (first_name, last_name, username, password) values ($(first_name), $(last_name), $(username), $(password))";
+            console.log("Creando Usuario: " + username)
+            const nuevoUsuario = await userRepository.insertUser(first_name, last_name, username, password);
+            console.log("Usuario Creado")
+            return nuevoUsuario
         }
     }
 
+
+   ValidateBody(username, password){
+   
+   }
+
+    ObtenerToken(userId, nombreUsuario){
+        const payload = {
+            id: userId, 
+            username: nombreUsuario
+        }
+        const secretKey = "officerboleswahahahahamcityyeahimmanjonklergottajonkleproaslumepillsgwenbonekillercockimproudofyoudickehtthebin"
+
+        const options = {
+            expiresIn: '1h'
+        }
+
+        const token = jwt.sign({ payload }, secretKey, { options });
+        console.log(token)
+    }
+
+    async loginUserAsync(){
+        //si existe el user, firmo un token
+
+        //const user = getUser etc etc
+        // const token = jwt.sign{
+        //     payload{
+
+        //     }
+
+        // }
+    }
 }
