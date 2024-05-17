@@ -13,8 +13,6 @@ const eventService = new EventService();
 //Detalle de un evento (4)
 //
 
-
-
 console.log("holaaaa")
 
 controller.get("/", async (req, res) => {
@@ -46,9 +44,9 @@ controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id
     if(limit >= 0 && offset >= 0){
     console.log("entro a sans")
     const evento = eventService.getEventDetails(limit, offset, req.params.id);
-    return res.status(201).send(evento)
+    return res.status(200).send(evento) //agregar un return 404 si no reconoce el id
     }else{
-        return res.send("Offset o limit invalidos")
+        return res.status(404).send("Offset o limit invalidos")
     }
 })
 
