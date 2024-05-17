@@ -213,10 +213,21 @@ export default class UserService
 
         const token = jwt.sign({ payload }, secretKey, { options });
         console.log(token)
+        return token
     }
 
-    async loginUserAsync(){
+    async loginUserAsync(username, password){
         //si existe el user, firmo un token
+        const userRepository = new UserRepository();
+
+        const user = await userRepository.findUserByUsername(username);
+        if (!user || user.password !== password) {
+            throw new Error("Invalid username or password.");
+        }
+        const token = ObtenerToken(user.id, user.username);
+        return token;
+
+
 
         //const user = getUser etc etc
         // const token = jwt.sign{
