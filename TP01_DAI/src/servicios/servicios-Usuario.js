@@ -177,28 +177,30 @@ export default class UserService
     //     }
     // }
 
-    async createUser(first_name, last_name, username, password){
+    async createUser(first_name, last_name, username, password) {
         const userRepository = new UserRepository();
         console.log("FN: " + first_name + " LN: " + last_name + " US: " + username + " PA: " +password)
-        const real = userRepository.findUserByUsername(username)
-        if(real == true)
-        {
-            console.log("Ya existe Usuario con ese Username")
-            return "Error"
-        }
-        else
-        {
-            console.log("Creando Usuario: " + username)
-            const nuevoUsuario = await userRepository.insertUser(first_name, last_name, username, password);
-            console.log("Usuario Creado")
-            return nuevoUsuario
+        
+        try {
+            const real = await userRepository.findUserByUsername(username);
+            console.log("validacion: "+ real);
+            
+            if(real) {
+                console.log("Ya existe Usuario con ese Username");
+                return "Error. Ese usuario ya existe.";
+            } else {
+                console.log("Creando Usuario: " + username);
+                const nuevoUsuario = await userRepository.insertUser(first_name, last_name, username, password);
+                console.log("Usuario Creado");
+                return nuevoUsuario;
+            }
+        } catch (error) {
+            console.error("Error al crear usuario:", error);
+            return "Error al crear usuario.";
         }
     }
+    
 
-
-   ValidateBody(username, password){
-   
-   }
 
     ObtenerToken(userId, nombreUsuario){
         const payload = {
@@ -211,7 +213,7 @@ export default class UserService
             expiresIn: '1h'
         }
 
-        const token = jwt.sign({ payload }, secretKey, { options });
+        const token = jwt.sign({ payload }, secretKey); //, {options}
         console.log(token)
         return token
     }
@@ -221,13 +223,13 @@ export default class UserService
         const userRepository = new UserRepository();
 
         const user = await userRepository.findUserByUsername(username);
-        if (!user || user.password !== password) {
+        if (!user) { // || user.password !== password
             throw new Error("Invalid username or password.");
+        }else if (user){
+            console.log("success")
+            const token = this.ObtenerToken(user.id, user.username);
+            return token;
         }
-        const token = ObtenerToken(user.id, user.username);
-        return token;
-
-
 
         //const user = getUser etc etc
         // const token = jwt.sign{

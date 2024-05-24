@@ -31,14 +31,19 @@ export default class EventService{
         // )
         var arrayFiltrosIniciales = [nombre, categoria, fecha, tag]
         var arrayFiltros = []
+        var arrayCategorias = []
         for(var i = 0; i < arrayFiltrosIniciales.length; i++){
             if(arrayFiltrosIniciales[i]){
                 arrayFiltros.push(arrayFiltrosIniciales[i])
+                arrayCategorias.push()
+                console.log(arrayFiltros[i])
             }
         }
+        
 
         const eventRepository = new EventRepository();
-        const eventoBuscado = await eventRepository.getEventoBuscado(limit, offset, arrayFiltros) 
+        const eventoBuscado = await eventRepository.getEventoBuscado(pageSize, reqPage, arrayFiltros) 
+        //console.log("nombre evento: " + eventoBuscado.nombre)
         
         return {
             "collection": eventoBuscado,

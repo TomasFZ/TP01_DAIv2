@@ -26,15 +26,26 @@ constructor(){
 }
 
     async getEventoBuscado(limit, offset, arrayFiltros){
-
-        var sql = "Select * from events where" //temrinar
+        try {
+            const sql = "Select * from events where " //temrinar
+            const eventos = await this.DBClient.query(sql, [ offset,limit ]);
+            return eventos.rows;
+        } catch (error) {
+            console.error("Error al obtener eventos:", error);
+        }
 
     }
 
     async getEventoPorId(limit, offset, id){
-        const sql = "select * from events where id = $id OFFSET $off LIMIT $lim" //chequear despues con $1, $2, y $3
-        const evento = await this.DBClient.query(sql, [id, offset, limit])
-        return evento
+        try{
+            const sql = "select * from events where id = $1" //chequear despues con $1, $2, y $3
+            const evento = await this.DBClient.query(sql, [id]);
+            console.log("id: " + id)
+            console.log("nombre evento: " + evento.nombre)
+            return evento
+        }catch(e){
+            console.error("Error al obtener eventos:", e);
+        }
     }
 
     async insertEvento(limit, offset, name, description, category, startDate, tag){

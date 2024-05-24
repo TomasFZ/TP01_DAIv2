@@ -10,18 +10,22 @@ export default class UserRepository {
 
     async findUserByUsername(username)
     {
+        console.log("Estoy empezando a buscar usuarios repetidos")
         try
         {
             const sql = "Select username From users Where username = $1"
+            console.log("Fijandome si hay users repetidos con el user: " + username)
             const usersFound = await this.DBClient.query(sql, [username])
-            //console.log("usuario encontrado: " + usersFound)
+            console.log("Comprobando resultados")
             if(usersFound.rows.length <= 0)
             {   
                 console.log("No existen usuarios con el username: " + username)
-                return false
+                const real = false
+                return real
             }
             console.log("Que!?!? Existen otros usuarios llamados: " + username)
-            return true
+            const real = true
+            return real
         }
         catch(error)
         {

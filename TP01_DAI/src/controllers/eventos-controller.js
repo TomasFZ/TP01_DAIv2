@@ -23,7 +23,8 @@ controller.get("/", async (req, res) => {
         if (req.query.name != null | req.query.category != null | req.query.tag != null | req.query.startDate != null)
         {
             console.log(req.query.name)
-            const eventoBuscado = eventService.getEventBuscado(limit, offset, req.query.name, req.query.category, req.query.startDate, req.query.tag);
+            const eventoBuscado = await eventService.getEventBuscado(limit, offset, req.query.name, req.query.category, req.query.startDate, req.query.tag);
+            console.log("nombre evento: " + eventoBuscado.name)
             return res.status(500).send(eventoBuscado) //aca manda el evento buscado
         }
         else
