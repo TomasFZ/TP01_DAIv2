@@ -44,7 +44,7 @@ controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id
     const offset = req.query.offset;
     if(limit >= 0 && offset >= 0){
     console.log("entro a sans")
-    const evento = eventService.getEventDetails(limit, offset, req.params.id);
+    const evento = await eventService.getEventDetails(limit, offset, req.params.id);
     return res.status(200).send(evento) //agregar un return 404 si no reconoce el id
     }else{
         return res.status(404).send("Offset o limit invalidos")

@@ -3,7 +3,7 @@
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-2. Listado de Eventos: Completo? - Falta hacer las extensiones de este endpoint como sería:
+2.✔️ Listado de Eventos: Completo - Falta hacer las extensiones de este endpoint como sería:
 
 a. 3. Búsqueda de un Evento.
 
@@ -23,7 +23,7 @@ c. 10. Rating de un Evento.
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-4. Detalle de un Evento: A Medias - Falta arreglar error que hace que retorne undefined.
+4.✔️ Detalle de un Evento: Completo - Terminado el 24/5 :).
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -31,11 +31,14 @@ c. 10. Rating de un Evento.
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-6. Autenticación de Usuarios: Completo - Terminado el 24/5 :).
+6.✔️ Autenticación de Usuarios: Completo - Terminado el 24/5 :).
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-7. Creación, Edición, Eliminación y Listado de Provincias: No Hecho - Están los endpoints, falta la lógica.
+7. Creación, Edición, Eliminación y Listado de Provincias: No Hecho - Falta la creación, edición y Eliminación de Provinicas.
+
+✔️ Obtener todos.
+✔️ Obtener por Id. 
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -60,3 +63,7 @@ c. 10. Rating de un Evento.
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
 13. Ubicaciónes de Eventos: No Hecho - El endpoint no está creado
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Paginación: falta terminarla con el limit y offset correcto y la URL para la siguiente página.

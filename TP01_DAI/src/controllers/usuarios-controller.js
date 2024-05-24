@@ -42,6 +42,4 @@ UserController.post("/login",  (req, res) => { //loguea exitosamente al usuario 
     }
 })
 
-
-
 export default UserController
