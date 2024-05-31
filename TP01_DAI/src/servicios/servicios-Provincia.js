@@ -32,16 +32,30 @@ export default class ProvinceService{
         return provincia
     }
 
-    async updateProvincia(id, name, full_name, id_province, latitude, longitude){
+    async updateProvincia(id, name, full_name, latitude, longitude, display_order){
         const provinceRepository = new ProvinceRepository();
-        const ogProvince = provinceRepository.getProvinceById(id)
-        const finalProvince = provinceRepository.updateProvince(ogProvince, name, full_name, id_province, latitude, longitude)
+        console.log("name: " +name)
+        if(name.length < 3)
+        {
+            return "name_too_short"
+        }
+        console.log("latitude es: " + typeof latitude)
+        if(typeof latitude !== 'number')
+        {
+            return "latitude_not_number"
+        }
+        console.log("longitude es: " + typeof longitude)
+        if(typeof longitude !== 'number')
+        {
+            return "longitude_not_number"
+        }
 
+        const result = await provinceRepository.updateProvince(id, name, full_name, latitude, longitude, display_order)
+        return result
     }
     async deleteProvincia(id){
-        //query
-        var mental = "borrado"
-        //¯\_(ツ)_/¯
+        const provinceRepository = new ProvinceRepository();
+        provinceRepository.deleteProvincia(id)
     }
 }
 

@@ -36,7 +36,7 @@ pController.post("/", async (req, res) => {
         return res.status(404).send({ message: 'Provincia ya existente' });
     } else {
         const newProvince = await provinceService.createProvincia(body); 
-        return res.send(newProvince);
+        return res.send("Provincia creada exitosamente");
     }
 
 
@@ -45,23 +45,24 @@ pController.post("/", async (req, res) => {
 pController.put("/", async (req, res) => { //esto es put. entonces se modifica todo. Patch seria que modifica una parte. 
     try 
     {
-        const limit = req.query.limit;
-        const offset = req.query.offset;
         
-        const id = req.query.id
+        const id = Number(req.query.id)
         const name = req.query.name
+        console.log("Controller:" + name)
         const full_name = req.query.full_name
-        const id_province = req-query.id_province
-        const latitude = req.query.latitude
-        const longitude = req.query.longitude
-
-        /* const listaProvincias = provinceService.getAllProvincias(limit, offset);
-        console.log(provinciaAUpdatear.name) */
+        const latitude = Number(req.query.latitude)
+        const longitude = Number(req.query.longitude)
+        const display_order = Number(req.query.display_order)
         
-        const provinciaUpdated = provinceService.updateProvincia(provinciaAUpdatear, id) //para cuando este la bd
-        console.log("nombre nuevo de provincia: " + provinciaUpdated.name)
+        const result = await provinceService.updateProvincia(id, name, full_name, latitude, longitude, display_order)
+        console.log("Result que obtuve fué: " + result)
+        
+        if(result == "name_too_short" | result == "latitude_not_number" | result == "longitude_not_number")
+        {
+            return res.status(400).send(result);
+        }
 
-        return res.send(provinciaUpdated)
+        return res.status(201).send("Provincia Actualizada Correctamente :)")
     } 
     
     catch (error) 
@@ -74,8 +75,9 @@ pController.put("/", async (req, res) => { //esto es put. entonces se modifica t
 pController.delete("/:id", async (req, res) => {    
     try {
         const id = req.params.id;
-        const listaProvincias = provinceService.getAllProvincias().collection;
+        const listaProvincias = await provinceService.getAllProvincias();
         //const provincia = listaProvincias.id.find(provincia => provincia.id === id);
+        console.log(listaProvincias)
         var i = 0
         var provincia
         var encontrado = false
@@ -89,7 +91,7 @@ pController.delete("/:id", async (req, res) => {
         console.log("privocinsas nombrefjrkwns: " + provincia.name)
         if (encontrado) {
             provinceService.deleteProvincia(id);
-            return res.send("Provincia borrada exitosamente.");
+            return res.status(201).send("Provincia borrada exitosamente.");
         } else {
             return res.status(404).send("Provincia no encontrada.");
         }
@@ -105,8 +107,8 @@ async function ValidacionProvincia(body){
     var i = 0
     console.log(body)
     const provincias = await provinceService.getAllProvincias();
-    while(i<provincias.length - 1 && yaExiste != true) {
-        if (body.id == provincias[i].id | body.full_name == provincias[i].full_name) {
+    while(i<provincias.length && yaExiste != true) {
+        if (body.full_name == provincias[i].full_name) {
             yaExiste = true;
             console.log("esa provincia ya existe")
         }

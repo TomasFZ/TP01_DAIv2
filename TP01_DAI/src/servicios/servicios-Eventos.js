@@ -19,7 +19,7 @@ export default class EventService{
       
     
 
-    async getEventBuscado(pageSize, reqPage, nombre, categoria, fecha, tag)
+    async getEventBuscado(nombre, categoria, fecha, tag)
     {//tal vez se puede hacer un vector que contenga estos parametros y vaya buscando uno por uno en un ciclo. (cuando este la db)
         //const query = "" //tiene que ser UN solo evento especifico en base a los filtros. lo vamos a harcdodear asi que por ahora nada de bd
         //const listaEventosBuscados = query.execute(); 
@@ -42,7 +42,7 @@ export default class EventService{
         
 
         const eventRepository = new EventRepository();
-        const eventoBuscado = await eventRepository.getEventoBuscado(pageSize, reqPage) 
+        const eventoBuscado = await eventRepository.getEventoBuscado() 
         //console.log("nombre evento: " + eventoBuscado.nombre)
         
         return {

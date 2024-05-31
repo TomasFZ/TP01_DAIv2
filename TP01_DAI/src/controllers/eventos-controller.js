@@ -1,9 +1,10 @@
 import express from "express";
 import EventService from "../servicios/servicios-Eventos.js"
+import {DecryptToken} from "../Middleware.js" //ver si anda o no con los corchetes estos
 const controller = express.Router(); //hacer gitignore para el module
 
 const eventService = new EventService();
-
+const userService = new UserService();
 //listado de Eventos
 
 
@@ -23,7 +24,7 @@ controller.get("/", async (req, res) => {
         if (req.query.name != null | req.query.category != null | req.query.tag != null | req.query.startDate != null)
         {
             console.log(req.query.name)
-            const eventoBuscado = await eventService.getEventBuscado(limit, offset, req.query.name, req.query.category, req.query.startDate, req.query.tag);
+            const eventoBuscado = await eventService.getEventBuscado(req.query.name, req.query.category, req.query.startDate, req.query.tag);
             console.log("nombre evento: " + eventoBuscado.name)
             return res.status(500).send(eventoBuscado) //aca manda el evento buscado
         }
@@ -67,6 +68,16 @@ controller.delete("/", async (req, res) => {
 
 
 })
+
+
+
+controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
+    const user = req.body.username
+    const password = req.body.password
+    const token = userService.ObtenerToken(req.body.id, username)
+})
+
+
 
 
 export default controller

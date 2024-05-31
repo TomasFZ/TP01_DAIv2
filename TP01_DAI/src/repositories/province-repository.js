@@ -36,30 +36,21 @@ async getProvinceById (id){
     }
 }
 
-async updateProvince(ogProvince, id, name, full_name, id_province, latitude, longitude)
+async updateProvince(id, name, full_name, latitude, longitude, display_order)
 {
-    const cashID = 2
     try
     {
-        const sql = "Update provinces Set name = $1, "
-        if(full_name != null)
-        {
-            sql += "full_name = $" + cashID + ", "
-            num += 1
-        }
-        if(id_province == null)
-        {
-            sql += "id_province = $" + cashID +", longitude = $" + (cashID + 1) + ", Where id = $" + (cashID + 2) 
-            num += 1
-        }
-
-        sql += "latitude = $" + cashID + ", "
-        //const cashes = [name, full_name, id_province. latitude, longitude] intended full result
-        const result = await this.DBClient.query(sql, [id])
+        const sql = "Update provinces Set name = $1, full_name = $2, longitude = $3, latitude = $4, display_order = $5 Where id = $6"
+        const cashes = [name, full_name, longitude, latitude, display_order, id]
+        const result = await this.DBClient.query(sql, cashes)
+        console.log("provincia: " + result)
+        return result
     }
 
     catch(guB)
     {
+        console.log(guB)
+        //malditos bugs
 
     }
 }
@@ -67,11 +58,20 @@ async updateProvince(ogProvince, id, name, full_name, id_province, latitude, lon
 async insertProvincia(body){ //terminar. marca error de sintaxis. 
     try {
         const sql = "Insert into provinces (name, full_name, latitude, longitude, display_order) values ($1, $2, $3, $4, $5)"; 
-        const provincias = await this.DBClient.query(sql, [ body.name, body.full_name, body.latitude, body.longitude, body.display_order ]);
-        return provincias.rows;
+        const provincia = await this.DBClient.query(sql, [ body.name, body.full_name, Number(body.latitude), Number(body.longitude), Number(body.display_order) ]);
+        return provincia.rows;
     } catch (error) {
         console.error("Error al obtener eventos:", error);
     }
+}
+
+
+async deleteProvincia(id){
+    const sql = "delete from provinces where id = $1"
+    const sqlLocations = "delete from locations where id_Province = $1"
+    await this.DBClient.query(sqlLocations, [id]);
+    await this.DBClient.query(sql, [id]);
+   
 }
 
 async getOfficerBoles(){

@@ -26,9 +26,9 @@ constructor(){
 }
 
     // En tu servicio
-    async getEventoBuscado(pageSize, reqPage, nombre, categoria, fecha, tag) {
+    async getEventoBuscado(nombre, categoria, fecha, tag) {
         try {
-            let sql = "SELECT * FROM events WHERE ";
+            let sql = "Select * From events Where ";
             let params = [];
             let conditions = [];
     
@@ -51,7 +51,7 @@ constructor(){
     
             sql += conditions.join(" AND ");
     
-            sql += " LIMIT $5 OFFSET $6"; //error de sintaxis
+            // sql += " LIMIT $5 OFFSET $6"; //error de sintaxis
             params.push(pageSize, reqPage);
             console.log(sql)
     
