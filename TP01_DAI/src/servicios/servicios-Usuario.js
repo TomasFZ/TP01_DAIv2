@@ -199,8 +199,6 @@ export default class UserService
             return "Error al crear usuario.";
         }
     }
-    
-
 
     ObtenerToken(userId, nombreUsuario){
         const payload = {
@@ -213,7 +211,7 @@ export default class UserService
             expiresIn: '1h'
         }
 
-        const token = jwt.sign({ payload }, secretKey); //, {options}
+        const token = jwt.sign({ payload }, secretKey, options); //, {options}
         console.log(token)
         return token
     }
@@ -230,13 +228,10 @@ export default class UserService
             const token = this.ObtenerToken(user.id, user.username);
             return token;
         }
+    }
 
-        //const user = getUser etc etc
-        // const token = jwt.sign{
-        //     payload{
-
-        //     }
-
-        // }
+    async enrollUserToEvent(event, username){
+        const eventRepository = new EventRepository();
+        
     }
 }

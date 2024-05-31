@@ -3,16 +3,17 @@ import jwt from 'jsonwebtoken';
 export function DecryptToken(req, res, next){
     const secretKey = "officerboleswahahahahamcityyeahimmanjonklergottajonkleproaslumepillsgwenbonekillercockimproudofyoudickehtthebin"
     if(!req.headers.authorization){
-        res.status(401).send('forbidden')
+        res.status(401).send('No ingresó el token para confirmar que usted es el usuario')
     }else{
-        const token = req.headers.authorization.split(' ')[1];
-        if (!token) {
+        const tokenRecibido = req.headers.authorization.split(' ')[1];
+        if (!tokenRecibido) {
             return res.status(401).send('Unauthorized: Missing token');
         }
         //req.user = decryptedToken.payload
         try{
-            const payload = jwt.verify(token, secretKey)
+            const payload = jwt.verify(tokenRecibido, secretKey)
             req.query.username = payload.username;
+            console.log("Autenticacion exitosa")
         }catch(error){
             console.log(error)
         }

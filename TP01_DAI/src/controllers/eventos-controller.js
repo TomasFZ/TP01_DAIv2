@@ -1,5 +1,6 @@
 import express from "express";
 import EventService from "../servicios/servicios-Eventos.js"
+import UserService from "../servicios/servicios-Usuario.js"
 import {DecryptToken} from "../Middleware.js" //ver si anda o no con los corchetes estos
 const controller = express.Router(); //hacer gitignore para el module
 
@@ -71,10 +72,9 @@ controller.delete("/", async (req, res) => {
 
 
 
-controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
-    const user = req.body.username
-    const password = req.body.password
-    const token = userService.ObtenerToken(req.body.id, username)
+controller.post("/:id/enrollment", DecryptToken, async (req, res) => { //primero me tengo que loguear para tener un token valido por 1hora de uso. 
+    const eventName = req.body.evento
+    userService.enrollUserToEvent(req.body.evento, req.body.username);
 })
 
 

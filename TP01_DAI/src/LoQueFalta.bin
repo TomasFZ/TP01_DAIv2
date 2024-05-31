@@ -43,7 +43,7 @@ c. 10. Rating de un Evento.
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-9. Inscripción a un Evento: No Hecho - El endpoint no está creado
+9. Inscripción a un Evento: No Hecho - El endpoint está creado pero falta la inscripcion. Autenticación hecha. EL MIDDLEWARE ANDA. Si es que te registrás, luego logueás, y haces este endpoint (antes de que expire el token por una hora), te hace el DecryptToken y el jwt.verify para autenticar al usuario. 
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 

@@ -17,8 +17,8 @@ UserController.post("/register", async(req, res) => {
 
     try{
         const nuevoUsuario = await userService.createUser(first_name, last_name, username, password);
-        console.log("nuevo usuario: " + nuevoUsuario) //funciona. si el username ya existe no lo crea. lo unico que falta seria comunicarlo por pantalla cuando suceda, porque ahora mismo trae un [object: promise]. Pero reitero que funciona
-        return res.send(nuevoUsuario)
+        console.log("nuevo usuario: " + nuevoUsuario.username) //funciona. si el username ya existe no lo crea. lo unico que falta seria comunicarlo por pantalla cuando suceda, porque ahora mismo trae un [object: promise]. Pero reitero que funciona
+        return res.send("Usuario creado. " + nuevoUsuario)
     }
     catch(e){
         console.log(e)
@@ -27,16 +27,16 @@ UserController.post("/register", async(req, res) => {
     }
 });
 
-UserController.post("/login",  (req, res) => { //loguea exitosamente al usuario y le brinda un token para validar futuras ejecuciones. 
+UserController.post("/login",  async (req, res) => { //loguea exitosamente al usuario y le brinda un token para validar futuras ejecuciones. 
     // if(.length <= 0){
 
     // }
     const username = req.query.username //ver si es con .body so .query
     const password = req.query.password
-    const validacion = userService.loginUserAsync(username, password)                //validateBody valida el login por username y password exclusivamente
+    const validacion = await userService.loginUserAsync(username, password)                //validateBody valida el login por username y password exclusivamente
     if(validacion){
         //const token = userService.ObtenerToken(req.query.id, username);
-        return res.send("logueado")
+        return res.send("logueado. Token: " + validacion)
     }else{
         return res.send("Cuenta inexistente.")
     }
