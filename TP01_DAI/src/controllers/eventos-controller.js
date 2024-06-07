@@ -59,15 +59,36 @@ controller.put("/", async (req, res) => {//implementar el token. Ponerle ("/", M
 })
 
 controller.post("/", async (req, res) => { //implementar el token. Ponerle ("/", Middleware, async (req, res) mas tarde. 
-    const body = req.body
-    var queryFiltersUsuarios = Object.keys(req.query).filter((key) => key.includes("name") && key.includes("description") && key.includes("start_date") && key.includes("duration_in_minutes") && key.includes("price") && key.includes("enabled_for_enrollment") && key.includes("max_assistance"))
+    const name = req.query.name
+    const description = req.query.description
+    const id_event_category = Number(req.query.id_event_category)
+    const id_event_location = Number(req.query.id_event_location)
+    const start_date = Date(req.query.start_date)
+    const duration_in_minutes = Number(req.query.duration_in_minutes)
+    const price = Number(req.query.price)
+    const enabled_for_enrollment = Number(req.query.enabled_for_enrollment)
+    const max_assistance = Number(req.query.max_assistance)
+    const id_creator_user = Number(req.query.id_creator_user)
+    
+    const result = eventService.createEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
+    
     const nuevoEvento = eventService.crearEvento(limit, offset, req.query.name, req.query.description, req.query.category, req.query.startDate, req.query.tag)
     return res.send(nuevoEvento)
 })
 
-controller.delete("/", async (req, res) => { 
-
-
+controller.delete("/:id", DecryptToken, async (req, res) => { 
+    const id = req.params.id
+    console.log("Id de evento a borrar: " + id)
+    const validacion=await eventService.deleteEvent(id)
+    if(validacion === 0){
+        return res.status(200).send("Borrado exitosamente")
+    }else if(validacion === 1){
+        return res.status(400).send("No se pudo borrar el evento. Existe uno o más usuarios inscriptos.")
+    }else if(validacion === 2){ //en caso de que no este autenticado, el error se muestra en DecryptToken. No es necesario escribirlo aca. 
+        return res.status(404).send("No se encontró el evento a borrar. ¿Estará bien el ID?")
+    }else{
+        return res.send("No hay usuario ni evento")
+    }
 })
 
 
@@ -75,8 +96,28 @@ controller.delete("/", async (req, res) => {
 controller.post("/:id/enrollment", DecryptToken, async (req, res) => { //primero me tengo que loguear para tener un token valido por 1hora de uso. 
     const eventName = req.body.evento
     userService.enrollUserToEvent(req.body.evento, req.body.username);
+
 })
 
+controller.get("/:id/enrollment", async (req, res) => { //Listado de participantes
+    //filtros
+    const idEvento = req.query.id
+    console.log("idEvento"+idEvento)
+    const nombre = req.query.name
+    const apellido = req.query.last_name
+    const username = req.query.username
+    const asistio = req.query.attended
+    const rating = req.query.rating
+
+    try{
+    const listaUsuarios = await eventService.getUsersFromEvent(idEvento, nombre, apellido, username, asistio, rating)
+        console.log("Saliendo Controller...")
+        return res.send(listaUsuarios.rows)
+    }
+    catch(e){
+        console.log(e)
+    }
+})
 
 
 

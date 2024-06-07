@@ -17,7 +17,7 @@ UserController.post("/register", async(req, res) => {
 
     try{
         const nuevoUsuario = await userService.createUser(first_name, last_name, username, password);
-        console.log("nuevo usuario: " + nuevoUsuario.username) //funciona. si el username ya existe no lo crea. lo unico que falta seria comunicarlo por pantalla cuando suceda, porque ahora mismo trae un [object: promise]. Pero reitero que funciona
+        console.log("nuevo usuario: " + username) //funciona. si el username ya existe no lo crea. lo unico que falta seria comunicarlo por pantalla cuando suceda, porque ahora mismo trae un [object: promise]. Pero reitero que funciona
         return res.send("Usuario creado. " + nuevoUsuario)
     }
     catch(e){

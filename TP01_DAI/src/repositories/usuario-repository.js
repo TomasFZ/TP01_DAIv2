@@ -45,4 +45,54 @@ export default class UserRepository {
             console.error("Error al crear usuario:", error);
         }
     }
+
+    async getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating){
+        var sql = "Select * from users u inner join event_enrollments e on e.id_user = u.id where " //select * from users inner join event_enrollments e on e.id_user = users.id where e.id = 1 
+        
+        var cash = 1
+        let params = []
+        let conditions = []
+    
+
+        if(idEvento){
+            conditions.push("e.id = $" + cash);
+            cash++
+            params.push(idEvento);
+        }
+        if(nombre){
+            conditions.push("u.first_name = $" + cash);
+            cash++
+            params.push(nombre);
+        }
+        if (apellido) {
+            conditions.push("u.last_name = $" + cash);
+            cash++
+            params.push(apellido);
+        }
+        if (username) {
+            conditions.push("u.username = $" + cash);
+            cash++
+            params.push(username);
+        }
+        if (asistio) {
+            conditions.push("e.attended = $" + cash);
+            cash++
+            params.push(asistio);
+        }
+    
+        if (rating) {
+            conditions.push("e.rating > $" + cash);
+            cash++
+            params.push(rating);
+        }
+        sql += conditions.join(" AND ");
+    
+        //params.push(pageSize, reqPage);
+        //console.log(sql)
+    
+        const users = await this.DBClient.query(sql, params);
+        console.log(users)
+        console.log("Saliendo Repository...")
+        return users;
+    }
 }
