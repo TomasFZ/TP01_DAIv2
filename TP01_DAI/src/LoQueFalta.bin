@@ -1,5 +1,5 @@
 
-1. DB: Completo - Nos la dio el profe.
+1.✔️ DB: Completo - Nos la dio el profe.
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -13,7 +13,7 @@ c. 8. Creación, Edición y Eliminación de Eventos.
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-3. Búsqueda de un Evento: A Medias - Falta hacer la Query para buscar y extensiones como sería:
+3.✔️ Búsqueda de un Evento: Completo - Terminado 14/6 :), hacer también:
 
 a. 5. Listado de Participantes.
 
@@ -35,16 +35,15 @@ c. 10. Rating de un Evento.
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-7. ✔️ Creación, Edición, Eliminación y Listado de Provincias: Terminado 31/5
+7. ✔️ Creación, Edición, Eliminación y Listado de Provincias: Terminado 31/5 :).
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-8. Creación, Edición y Eliminación de Eventos: No Hecho - Están los endpoints pero falta hacer todo.
-El delete hacerle ajustes para que se vea mejor y testear creacion
+8. Creación, Edición y Eliminación de Eventos: No Terminado - Falta terminar la edición de eventos.
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-9. Inscripción a un Evento: No Hecho - El endpoint está creado pero falta la inscripcion. Autenticación hecha. EL MIDDLEWARE ANDA. Si es que te registrás, luego logueás, y haces este endpoint (antes de que expire el token por una hora), te hace el DecryptToken y el jwt.verify para autenticar al usuario. 
+9. Inscripción a un Evento: No Hecho - El endpoint está creado pero falta la inscripcion. Autenticación hecha. EL MIDDLEWARE AND registrás, luego logueás, y haces este endpoint (antes de que expire el token por una hora), te hace el DecryptToken y el jwt.verify para autenticar al usuario. A. Si es que te
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -64,4 +63,6 @@ El delete hacerle ajustes para que se vea mejor y testear creacion
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-Paginación: falta terminarla con el limit y offset correcto y la URL para la siguiente página.
+14. Paginación: falta terminarla con el limit y offset correcto y la URL para la siguiente página.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------

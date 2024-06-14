@@ -22,11 +22,11 @@ controller.get("/", async (req, res) => {
     const offset = req.query.offset;//verificar si son num y si existen. 
     if(limit >= 0 & offset >= 0)
     {
-        if (req.query.name != null | req.query.category != null | req.query.tag != null | req.query.startDate != null)
+        if (req.query.event_name != null | req.query.id_event_category != null | req.query.start_date != null  | req.query.tags != null)
         {
-            console.log(req.query.name)
-            const eventoBuscado = await eventService.getEventBuscado(req.query.name, req.query.category, req.query.startDate, req.query.tag);
-            console.log("nombre evento: " + eventoBuscado.name)
+            console.log(req.query.start_date)
+            const eventoBuscado = await eventService.getEventBuscado(req.query.event_name, req.query.event_category, req.query.start_date, req.query.tags, limit, offset); //falta que con la fecha no funciona. 
+            //console.log("nombre evento: " + eventoBuscado.collection.rows[0].name)
             return res.status(500).send(eventoBuscado) //aca manda el evento buscado
         }
         else
@@ -54,26 +54,41 @@ controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id
 })
 
 controller.put("/", async (req, res) => {//implementar el token. Ponerle ("/", Middleware, async (req, res) mas tarde. 
-
-
-})
-
-controller.post("/", async (req, res) => { //implementar el token. Ponerle ("/", Middleware, async (req, res) mas tarde. 
+    const id = req.query.id
     const name = req.query.name
     const description = req.query.description
     const id_event_category = Number(req.query.id_event_category)
     const id_event_location = Number(req.query.id_event_location)
-    const start_date = Date(req.query.start_date)
+    const start_date = req.query.start_date
     const duration_in_minutes = Number(req.query.duration_in_minutes)
     const price = Number(req.query.price)
-    const enabled_for_enrollment = Number(req.query.enabled_for_enrollment)
+    const enabled_for_enrollment = Boolean(req.query.enabled_for_enrollment)
+    const max_assistance = Number(req.query.max_assistance)
+    const id_creator_user = Number(req.query.id_creator_user)
+    const evento = eventService.getEventDetails(id);
+    if(evento){
+        await eventService.updateEvento(id, name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user);
+        return res.send("hola")
+    }
+
+
+})
+
+controller.post("/", async (req, res) => { //implementar el token. Ponerle ("/", DecryptToken, async (req, res) mas tarde. 
+    const name = req.query.name
+    const description = req.query.description
+    const id_event_category = Number(req.query.id_event_category)
+    const id_event_location = Number(req.query.id_event_location)
+    const start_date = req.query.start_date
+    const duration_in_minutes = Number(req.query.duration_in_minutes)
+    const price = Number(req.query.price)
+    const enabled_for_enrollment = Boolean(req.query.enabled_for_enrollment)
     const max_assistance = Number(req.query.max_assistance)
     const id_creator_user = Number(req.query.id_creator_user)
     
-    const result = eventService.createEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
-    
-    const nuevoEvento = eventService.crearEvento(limit, offset, req.query.name, req.query.description, req.query.category, req.query.startDate, req.query.tag)
-    return res.send(nuevoEvento)
+    const result = await eventService.createEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
+
+    return res.send(result)
 })
 
 controller.delete("/:id", DecryptToken, async (req, res) => { 
@@ -91,17 +106,15 @@ controller.delete("/:id", DecryptToken, async (req, res) => {
     }
 })
 
-
-
 controller.post("/:id/enrollment", DecryptToken, async (req, res) => { //primero me tengo que loguear para tener un token valido por 1hora de uso. 
     const eventName = req.body.evento
     userService.enrollUserToEvent(req.body.evento, req.body.username);
-
+    //falta agregar a la base de datos al nuevo usuario registrado. Insert. 
 })
 
-controller.get("/:id/enrollment", async (req, res) => { //Listado de participantes
+controller.delete("/:id/enrollment", async (req, res) => { //Listado de participantes. No esta terminado
     //filtros
-    const idEvento = req.query.id
+    const idEvento = req.body.id
     console.log("idEvento"+idEvento)
     const nombre = req.query.name
     const apellido = req.query.last_name

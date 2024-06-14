@@ -5,6 +5,7 @@
 
 import pkg from "pg"
 import config from "../dbConfig.js"
+import e from "express"
 export default class EventRepository{
 constructor(){
     const {Client} = pkg
@@ -26,44 +27,51 @@ constructor(){
 }
 
     // En tu servicio
-    async getEventoBuscado(nombre, categoria, fecha, tag) {
+    async getEventoBuscado(nombre, categoria, fecha, tag, pageSize, reqPage) {
         try {
-            let sql = "Select * From events Where ";
+            //let sql = "SELECT events.*, event_categories.name as category_name FROM events INNER JOIN event_tags et ON et.id_event = events.id INNER JOIN tags ON tags.id = et.id_tag INNER JOIN event_categories ON event_categories.id = events.id_event_category WHERE ";
+            var sql = (tag) ? "SELECT events.*, event_categories.name as category_name FROM events INNER JOIN event_tags et ON et.id_event = events.id INNER JOIN tags ON tags.id = et.id_tag INNER JOIN event_categories ON event_categories.id = events.id_event_category WHERE " : "SELECT events.*, event_categories.name as category_name FROM events INNER JOIN event_categories ON event_categories.id = events.id_event_category WHERE ";
             let params = [];
             let conditions = [];
-    
-            if (nombre) {
-                conditions.push("nombre = $1");
+            var cash = 1
+            
+            if (nombre) { //NIJ
+                conditions.push("events.name = $" + cash);
+                cash++
                 params.push(nombre);
             }
-            if (categoria) {
-                conditions.push("categoria = $2");
+            if (categoria) { //IJC
+                conditions.push("event_categories.name = $" + cash);
+                cash++
                 params.push(categoria);
             }
-            if (fecha) {
-                conditions.push("fecha = $3");
+            if (fecha) { //NIJ
+                conditions.push("events.start_date = $" + cash);
+                cash++
                 params.push(fecha);
+                console.log("hizo date")
             }
-            if (tag) {
-                conditions.push("tag = $4");
+            if (tag) { //IJT
+                conditions.push("tags.name = $" + cash);
+                cash++
                 params.push(tag);
+                console.log("hizo tag")
             }
-    
+
             sql += conditions.join(" AND ");
     
-            // sql += " LIMIT $5 OFFSET $6"; //error de sintaxis
+            sql += " LIMIT $" + cash +" OFFSET $" + (cash + 1); //error de sintaxis
             params.push(pageSize, reqPage);
-            console.log(sql)
-    
+            console.log("SQL Final:" + sql)
             const eventos = await this.DBClient.query(sql, params);
-            return eventos.rows;
+            return eventos;
         } catch (error) {
             console.error("Error al obtener eventos:", error);
             throw error;
         }
     }
 
-    async getEventoPorId(limit, offset, id){
+    async getEventoPorId(id){
         try{
             const sql = "Select * From events Where id = $1" //chequear despues con $1, $2, y $3
             const evento = await this.DBClient.query(sql, [id]);
@@ -79,6 +87,78 @@ constructor(){
         const sql = "Insert into Eventos e (name, description, category, startDate, tag) values ($1, $2, $3, $4, $5 OFFSET $6 LIMIT $7)"
         const eventoCreado = await this.DBClient.query(sql, [name, description, category, startDate, tag, offset, limit])
         return eventoCreado
+    }
+
+    async updateEvent(id, nombreEvento, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user){
+        var sql = "update events set ";
+
+        let params = [];
+        let conditions = [];
+            var cash = 1
+            if (nombreEvento) {
+                conditions.push("name = $" + cash + ", ");
+                cash++
+                params.push(nombreEvento);
+            }
+
+            if (description) {
+                conditions.push("description = $" + cash) + ", ";
+                cash++
+                params.push(description);
+            }
+
+            if (id_event_category) {
+                conditions.push("id_event_category = $" + cash + ", ");
+                cash++
+                params.push(id_event_category);
+            }
+
+            if (id_event_location) {
+                conditions.push("id_event_location = $" + cash + ", ");
+                cash++
+                params.push(id_event_location);
+            }
+
+            if (start_date) {
+                conditions.push("start_date = $" + cash + ", ");
+                cash++
+                params.push(start_date);
+            }
+
+            if (duration_in_minutes) {
+                conditions.push("duration_in_minutes = $" + cash + ", ");
+                cash++
+                params.push(duration_in_minutes);
+            }
+
+            if (price) {
+                conditions.push("price = $" + cash + ", ");
+                cash++
+                params.push(price);
+            }
+
+            if (enabled_for_enrollment) {
+                conditions.push("enabled_for_enrollment = $" + cash + ", ");
+                cash++
+                params.push(enabled_for_enrollment);
+            }
+
+            if (max_assistance) {
+                conditions.push("max_assistance = $" + cash + ", ");
+                cash++
+                params.push(max_assistance);
+            }
+
+            if (id_creator_user) { //seria el id del usuario que creo el evento. 
+                conditions.push("id_creator_user = $" + cash);
+                cash++
+                params.push(id_creator_user);
+            }
+
+            conditions.push("where id= " + cash);
+            sql += conditions.join("");
+
+            console.log("SQL Final:" + sql)
     }
 
     async deleteEventById(idEvent){
@@ -113,7 +193,7 @@ constructor(){
     {
         try
         {
-            const sql = "Insert Into events (name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_distance, id_creator_user) Values ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10)"
+            const sql = "Insert Into events (name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user) Values ($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10)"
             const params= [name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user]
             const result = await this.DBClient.query(sql, params);
             return result
@@ -129,7 +209,7 @@ constructor(){
         const sql = "Select max_capacity From event_locations Where id = $1"
         const params= [id_event_location]
         const loc = await this.DBClient.query(sql, params);
-        return loc
+        return loc.rows[0].max_capacity
     }
 
 }

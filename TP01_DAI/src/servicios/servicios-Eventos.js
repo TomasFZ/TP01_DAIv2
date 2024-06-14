@@ -20,38 +20,20 @@ export default class EventService{
       
     
 
-    async getEventBuscado(nombre, categoria, fecha, tag)
-    {//tal vez se puede hacer un vector que contenga estos parametros y vaya buscando uno por uno en un ciclo. (cuando este la db)
-        //const query = "" //tiene que ser UN solo evento especifico en base a los filtros. lo vamos a harcdodear asi que por ahora nada de bd
-        //const listaEventosBuscados = query.execute(); 
-        // const eventoBuscado = listaEventosBuscados.filter(evento => {
-        //     if(evento.nombre === nombre, evento.categoria === categoria, evento.fecha === fecha, evento.tag === tag){
-        //         return evento
-        //     }else return null;
-        //     }
-        // )
-        // var arrayFiltrosIniciales = [nombre, categoria, fecha, tag]
-        // var arrayFiltros = []
-        // var arrayCategorias = []
-        // for(var i = 0; i < arrayFiltrosIniciales.length; i++){
-        //     if(arrayFiltrosIniciales[i]){
-        //         arrayFiltros.push(arrayFiltrosIniciales[i])
-        //         arrayCategorias.push()
-        //         console.log(arrayFiltros[i])
-        //     }
-        // }
+    async getEventBuscado(nombre, categoria, fecha, tag, limit, offset)
+    {
         
 
         const eventRepository = new EventRepository();
-        const eventoBuscado = await eventRepository.getEventoBuscado() 
+        const eventoBuscado = await eventRepository.getEventoBuscado(nombre, categoria, fecha, tag, limit, offset) 
         //console.log("nombre evento: " + eventoBuscado.nombre)
         
         return {
             "collection": eventoBuscado,
             "pagination": {
-            "limit": pageSize,
-            "offset": reqPage,
-            "nextPage": reqPage + 1, //poner el http
+            "limit": limit,
+            "offset": offset,
+            "nextPage": offset + 1, //poner el http
             "total": "1" //no se que es esto
             }
         }
@@ -86,22 +68,25 @@ export default class EventService{
         /*El name o description están vacíos o tienen menos de tres (3) letras.
         El max_assistance es mayor que el max_capacity del  id_event_location.
         El price o duration_in_minutes son menores que cero.*/
+        const eventRepository = new EventRepository();
+
         if(name == null | description == null)
         {
-            return ":("
+            return "Error: El nombre o la descripción son nulos"
         }
-        max_capacity = (id_event_location == null) ? eventRepository.getMaxCapacity(id_event_location) : null;
+        const max_capacity = (id_event_location !== null) ? await eventRepository.getMaxCapacity(id_event_location) : null;
+        console.log("cap: " + max_capacity + " ass: " + max_assistance)
         if(max_assistance > max_capacity | max_capacity == null)
         {
-            return ":("
+            return "Error: El ID de localización es nulo o la localización no tiene la capacidad para alojar la capacidad máxima insertada"
         }
         if(price < 0 | duration_in_minutes < 0)
         {
-            return ":("
+            return "Error: El precio es menor a 1 o el evento dura ménos de 1 minuto"
         }
 
-        const result = eventRepository.createEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
-
+        const result = await eventRepository.createEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
+        return result
     }
 
     async deleteEvent(id){
@@ -116,6 +101,11 @@ export default class EventService{
         }else{
             return 3
         }
+    }
+
+    async updateEvento(id, nombreEvento, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user){
+        const eventRepository = new EventRepository(); 
+        await eventRepository.updateEvent(id, nombreEvento, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
     }
 
 
