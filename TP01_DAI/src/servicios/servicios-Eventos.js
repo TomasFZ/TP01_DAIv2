@@ -15,54 +15,46 @@ export default class EventService{
         console.log("akakakkakakkakakakak")
         // Devuelve directamente los eventos (lista) del repositorio
         console.log("TYPEOF LISTAEVENTOS EN SERVICE"+typeof listaEventos);
-        return listaEventos;
-      }
+       
+
+        const nextPage = `${"http://localhost:3000/event"}?limit=${limit}&offset=${offset + 1}`;
+
+        return {
+            "collection": listaEventos, 
+            "pagination": {
+                "limit": limit,
+                "offset": offset,
+                "nextPage": nextPage, //poner el http 
+        }
+      }}
       
     
 
-    async getEventBuscado(nombre, categoria, fecha, tag, limit, offset)
+    async getEventBuscado(nombre, categoria, fecha, tag)
     {
         
 
         const eventRepository = new EventRepository();
-        const eventoBuscado = await eventRepository.getEventoBuscado(nombre, categoria, fecha, tag, limit, offset) 
+        const eventoBuscado = await eventRepository.getEventoBuscado(nombre, categoria, fecha, tag) 
         //console.log("nombre evento: " + eventoBuscado.nombre)
         
-        return {
-            "collection": eventoBuscado,
-            "pagination": {
-            "limit": limit,
-            "offset": offset,
-            "nextPage": offset + 1, //poner el http
-            "total": "1" //no se que es esto
-            }
-        }
+        return eventoBuscado;
         
     }
-    async getEventDetails(pageSize, reqPage, idEvento)
+    async getEventDetails(idEvento) //en este creo que no va limit-offset
     {
        const eventRepository = new EventRepository(); 
        
-        const eventoBuscado = await eventRepository.getEventoPorId(pageSize, reqPage, idEvento)
+        const eventoBuscado = await eventRepository.getEventoPorId(idEvento)
         
-        return {
-            "collection": eventoBuscado, 
-            "pagination": {
-                "limit": pageSize,
-                "offset": reqPage,
-                "nextPage": reqPage + 1, //poner el http
-                "total": "1" //no se que es esto
-        }
+        return eventoBuscado
 
     }
 
-    // getAllParticipants(pageSize, reqPage, nombre, apellido, username, asistencia, rating)
-    // {
-
-    // }
 
 
-}
+
+
     async createEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
     {
         /*El name o description están vacíos o tienen menos de tres (3) letras.
@@ -114,6 +106,11 @@ async getUsersFromEvent(idEvento, nombre, apellido, username, asistio, rating){
     const listaUsers = await userRepository.getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating);
     console.log("Saliendo Services...")
     return listaUsers
+}
+
+async updateRatingEvent(idEvento, rating, observations){
+    const userRepository = new UserRepository(); 
+    await userRepository.updateEventEnrollments(idEvento, rating, observations);
 }
 
 }

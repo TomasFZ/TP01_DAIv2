@@ -17,8 +17,7 @@ pController.get("/", async (req, res) => {
     }
 })
 
-pController.get("/:id", async (req, res) => {  
-    console.log("entro a parfait")
+pController.get("/:id", async (req, res) => { 
     const limit = req.query.limit;
     const offset = req.query.offset;
     const provincia = await provinceService.getProvinciaPorId(limit, offset, req.params.id);

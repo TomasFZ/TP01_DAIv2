@@ -25,8 +25,7 @@ controller.get("/", async (req, res) => {
         if (req.query.event_name != null | req.query.id_event_category != null | req.query.start_date != null  | req.query.tags != null)
         {
             console.log(req.query.start_date)
-            const eventoBuscado = await eventService.getEventBuscado(req.query.event_name, req.query.event_category, req.query.start_date, req.query.tags, limit, offset); //falta que con la fecha no funciona. 
-            //console.log("nombre evento: " + eventoBuscado.collection.rows[0].name)
+            const eventoBuscado = await eventService.getEventBuscado(req.query.event_name, req.query.event_category, req.query.start_date, req.query.tags); //falta que con la fecha no funciona. 
             return res.status(500).send(eventoBuscado) //aca manda el evento buscado
         }
         else
@@ -42,15 +41,13 @@ controller.get("/", async (req, res) => {
 });
 
 controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id o lo que sea por params y no por query escrita por el usuario, se pone en postman http://localhost:3000/event/1 en lugar de poner una key con value. 
-    const limit = req.query.limit;
-    const offset = req.query.offset;
-    if(limit >= 0 && offset >= 0){
-    console.log("entro a sans")
-    const evento = await eventService.getEventDetails(limit, offset, req.params.id);
-    return res.status(200).send(evento) //agregar un return 404 si no reconoce el id
-    }else{
-        return res.status(404).send("Offset o limit invalidos")
+    
+    const evento = await eventService.getEventDetails(req.params.id);
+    if (!evento) {
+        return res.status(404).send("Evento no encontrado");
     }
+    return res.status(200).send(evento) //agregar un return 404 si no reconoce el id
+    
 })
 
 controller.put("/", async (req, res) => {//implementar el token. Ponerle ("/", Middleware, async (req, res) mas tarde. 
@@ -112,7 +109,9 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => { //primero
     //falta agregar a la base de datos al nuevo usuario registrado. Insert. 
 })
 
-controller.delete("/:id/enrollment", async (req, res) => { //Listado de participantes. No esta terminado
+
+//por las dudas el siguiente controller estaba en .delete, pero es Listado de participantes. Ahora esta en .get.
+controller.get("/:id/enrollment", async (req, res) => { //Listado de participantes. 
     //filtros
     const idEvento = req.body.id
     console.log("idEvento"+idEvento)
@@ -132,6 +131,37 @@ controller.delete("/:id/enrollment", async (req, res) => { //Listado de particip
     }
 })
 
+controller.patch("/:id/enrollment/rating", DecryptToken, async (req, res) => {
+    const idEvento = req.params.id;
+    const enrollmentId = req.params.enrollmentId;
+    const { rating, feedback: observations } = req.body;
+    const userId = req.user.id;
+    const limit = req.query.limit;
+    const offset = req.query.offset;
+
+    if (rating < 1 || rating > 10) {
+        return res.status(400).json({ error: 'El rating debe estar entre 1 y 10.' });
+    }
+
+    try {
+        const event = await eventService.getEventDetails(limit, offset, idEvento);
+        if (!event) {
+            return res.status(404).json({ error: 'El evento no existe.' });
+        }
+        const fechaHoy = new Date();
+        if (event.start_date > fechaHoy) {
+            return res.status(400).json({ error: 'El evento no ha finalizado aún.' });
+        }
+
+        // Actualizar el rating y el feedback del evento
+        await eventService.updateRatingEvent(enrollmentId, rating, observations);
+
+        return res.status(200).json({ message: 'El rating y feedback fueron actualizados correctamente.' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Error interno del servidor.' });
+    }
+});
 
 
 export default controller

@@ -13,7 +13,7 @@ export function DecryptToken(req, res, next){
         try{
             const payload = jwt.verify(tokenRecibido, secretKey)
             req.query.username = payload.username;
-            console.log("Autenticacion exitosa")
+            console.log("Autenticación exitosa")
         }catch(error){
             console.log(error)
         }

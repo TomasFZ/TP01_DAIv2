@@ -54,33 +54,33 @@ export default class UserRepository {
         let conditions = []
     
 
-        if(idEvento){
+        if(idEvento && typeof idEvento === 'number'){
             conditions.push("e.id = $" + cash);
             cash++
             params.push(idEvento);
         }
-        if(nombre){
+        if(nombre && typeof nombre === 'string'){
             conditions.push("u.first_name = $" + cash);
             cash++
             params.push(nombre);
         }
-        if (apellido) {
+        if (apellido && typeof apellido === 'string') {
             conditions.push("u.last_name = $" + cash);
             cash++
             params.push(apellido);
         }
-        if (username) {
+        if (username && typeof idUsuario === 'string') {
             conditions.push("u.username = $" + cash);
             cash++
             params.push(username);
         }
-        if (asistio) {
+        if (asistio && typeof asistio === 'bool') {
             conditions.push("e.attended = $" + cash);
             cash++
             params.push(asistio);
         }
     
-        if (rating) {
+        if (rating && typeof rating === 'number') {
             conditions.push("e.rating > $" + cash);
             cash++
             params.push(rating);
