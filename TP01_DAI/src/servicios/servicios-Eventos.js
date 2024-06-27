@@ -100,6 +100,12 @@ export default class EventService{
         await eventRepository.updateEvent(id, nombreEvento, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
     }
 
+    async getMaxCapacity(idEventLocation){
+        const eventRepository = new EventRepository(); 
+        const maxCapacity = await eventRepository.getMaxCapacity(idEventLocation);
+        return maxCapacity;
+    }
+
 
 async getUsersFromEvent(idEvento, nombre, apellido, username, asistio, rating){
     const userRepository = new UserRepository(); 

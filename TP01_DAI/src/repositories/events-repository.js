@@ -210,7 +210,7 @@ constructor(){
                 params.push(max_assistance);
             }
 
-            if (id_creator_user) { //seria el id del usuario que creo el evento. 
+            if (id_creator_user) { 
                 conditions.push("id_creator_user = $" + cash);
                 cash++
                 params.push(id_creator_user);
@@ -288,9 +288,14 @@ constructor(){
         const sql = "delete from event_enrollments where id_event = $1 and id_user = $2"
         await this.DBClient.query(sql, [idEvento, idUser]);
     }
+
+
+async getMaxCapacity(idEventLocation){
+    const sql = "SELECT max_capacity FROM event_locations WHERE id_event_location = $1;"
+    const maxCapacity = await this.DBClient.query(sql, [idEventLocation]);
+    return maxCapacity;
 }
-
-
+}
 
 //connectToDatabase();
 

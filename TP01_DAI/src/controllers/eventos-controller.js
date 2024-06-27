@@ -50,7 +50,7 @@ controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id
     
 })
 
-controller.put("/", async (req, res) => {//implementar el token. Ponerle ("/", Middleware, async (req, res) mas tarde. 
+controller.put("/", DecryptToken, async (req, res) => {//implementar el token. Ponerle ("/", Middleware, async (req, res) mas tarde. 
     const id = req.query.id
     const name = req.query.name
     const description = req.query.description
@@ -62,16 +62,39 @@ controller.put("/", async (req, res) => {//implementar el token. Ponerle ("/", M
     const enabled_for_enrollment = Boolean(req.query.enabled_for_enrollment)
     const max_assistance = Number(req.query.max_assistance)
     const id_creator_user = Number(req.query.id_creator_user)
+
+    if (!name || !description || name.length < 3 || description.length < 3) {
+        return res.status(400).json({ error: 'nombre y descripcion deben tener al menos 3 caracteres' });
+    }
+
+    if (max_assistance) {
+        // Aquí deberías obtener max_capacity del id_event_location (supongamos que se obtiene de algún servicio o base de datos)
+        const max_capacity = await eventService.getMaxCapacity(id_event_location);
+        if (max_assistance > max_capacity) {
+            return res.status(400).json({ error: 'Max assistance mayor a max capacity' });
+        }
+    }
+
+    if (price < 0 || duration_in_minutes < 0) {
+        return res.status(400).json({ error: 'precio y duracion menores a 0' });
+    }
+
     const evento = eventService.getEventDetails(id);
     if(evento){
+        try{
         await eventService.updateEvento(id, name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user);
-        return res.send("hola")
+        return res.send("actualizado")
+        }catch(e){
+            console.log(e)
+        }
+    }else if(!evento){
+        return res.status(404).send("error. El evento no existe.")
     }
 
 
 })
 
-controller.post("/", async (req, res) => { //implementar el token. Ponerle ("/", DecryptToken, async (req, res) mas tarde. 
+controller.post("/", DecryptToken, async (req, res) => { //implementar el token. Ponerle ("/", DecryptToken, async (req, res) mas tarde. 
     const name = req.query.name
     const description = req.query.description
     const id_event_category = Number(req.query.id_event_category)
@@ -83,9 +106,30 @@ controller.post("/", async (req, res) => { //implementar el token. Ponerle ("/",
     const max_assistance = Number(req.query.max_assistance)
     const id_creator_user = Number(req.query.id_creator_user)
     
+
+    if (!name || !description || name.length < 3 || description.length < 3) {
+        return res.status(400).json({ error: 'nombre y descripcion deben tener al menos 3 caracteres' });
+    }
+
+    if (max_assistance) {
+        // Aquí deberías obtener max_capacity del id_event_location (supongamos que se obtiene de algún servicio o base de datos)
+        const max_capacity = await eventService.getMaxCapacity(id_event_location);
+        if (max_assistance > max_capacity) {
+            return res.status(400).json({ error: 'Max assistance mayor a max capacity' });
+        }
+    }
+
+    if (price < 0 || duration_in_minutes < 0) {
+        return res.status(400).json({ error: 'precio y duracion menores a 0' });
+    }
+
+    try{
     const result = await eventService.createEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
 
     return res.send(result)
+    }catch(e){
+        return res.status(500).send("error");
+    }
 })
 
 controller.delete("/:id", DecryptToken, async (req, res) => { 
