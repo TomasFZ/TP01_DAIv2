@@ -278,6 +278,16 @@ constructor(){
         await this.DBClient.query(sql, [idEvento, rating, observations]);
     }
 
+    async enrollUserToEvent(idEvento, idUser, fechaInscripcion){
+        const sql = `
+            INSERT INTO event_enrollments (id_event, id_user, description, registration_date_time) 
+            VALUES ($1, $2, ?, $4)`;
+            await this.DBClient.query(sql, [idEvento, idUser, fechaInscripcion]);
+    }
+    async deleteUserFromEvent(idEvento, idUser){
+        const sql = "delete from event_enrollments where id_event = $1 and id_user = $2"
+        await this.DBClient.query(sql, [idEvento, idUser]);
+    }
 }
 
 

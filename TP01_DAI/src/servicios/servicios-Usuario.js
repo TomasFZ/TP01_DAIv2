@@ -230,8 +230,9 @@ export default class UserService
         }
     }
 
-    async enrollUserToEvent(event, username){
-        const eventRepository = new EventRepository();
-        
+    async findUserByUsername(username){
+        const userRepository = new UserRepository();
+        const user = await userRepository.findUserByUsername(username);
+        return user;find
     }
 }

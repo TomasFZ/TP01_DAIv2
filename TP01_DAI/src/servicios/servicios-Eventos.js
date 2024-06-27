@@ -113,4 +113,15 @@ async updateRatingEvent(idEvento, rating, observations){
     await userRepository.updateEventEnrollments(idEvento, rating, observations);
 }
 
+async enrollUserToEvent(idEvento, idUser, fechaInscripcion){
+    const eventRepository = new EventRepository();
+    await eventRepository.enrollUserToEvent(idEvento, idUser, fechaInscripcion);
 }
+
+
+async deleteUserFromEvent(idEvento, idUser){
+    const eventRepository = new EventRepository();
+    await eventRepository.deleteUserFromEvent(idEvento, idUser);
+}
+}
+

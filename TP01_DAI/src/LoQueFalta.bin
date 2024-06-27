@@ -39,19 +39,19 @@ c. 10. Rating de un Evento.
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-8. Creación, Edición y Eliminación de Eventos: No Terminado - Falta terminar la edición de eventos.
+8. 👾 Creación, Edición y Eliminación de Eventos: No Terminado - Falta terminar la edición de eventos.
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-9. Inscripción a un Evento: No Hecho - El endpoint está creado pero falta la inscripcion. Autenticación hecha. EL MIDDLEWARE AND registrás, luego logueás, y haces este endpoint (antes de que expire el token por una hora), te hace el DecryptToken y el jwt.verify para autenticar al usuario. A. Si es que te
+9. 👾 Inscripción a un Evento: Hecho - Falta verificar si funciona. Autenticación hecha. EL MIDDLEWARE AND registrás, luego logueás, y haces este endpoint (antes de que expire el token por una hora), te hace el DecryptToken y el jwt.verify para autenticar al usuario. A. Si es que te
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-10. Rating de un Evento: No Hecho - Falta verificar si funciona. 
+10. 👾 Rating de un Evento: Hecho - Falta verificar si funciona. 
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
-11. Locations: No Hecho - El endpoint no está creado
+11. 👾 Locations: No Hecho - Hecho - Falta verificar si funciona. 
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 

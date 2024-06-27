@@ -104,11 +104,72 @@ controller.delete("/:id", DecryptToken, async (req, res) => {
 })
 
 controller.post("/:id/enrollment", DecryptToken, async (req, res) => { //primero me tengo que loguear para tener un token valido por 1hora de uso. 
-    const eventName = req.body.evento
-    userService.enrollUserToEvent(req.body.evento, req.body.username);
-    //falta agregar a la base de datos al nuevo usuario registrado. Insert. 
+    
+    const username = req.body.username
+    const fechaInscripcion = req.body.fechaInscripcion;
+    try{
+    const evento = await eventService.getEventDetails(req.params.id);
+    const user = await userService.findUsername(username);
+    if(!user){
+        return res.status(404).send("Usuario no encontrado");
+    }
+    const listaUsers = await eventService.getUsersFromEvent(req.params.id);
+    const validacionUsuarioRegistrado = listaUsers.some(userI => userI.id === user.id);
+
+    if (validacionUsuarioRegistrado) {
+        return res.status(400).send("Usuario ya registrado en el evento");
+    }
+    if (!evento) {
+        return res.status(404).send("Evento no encontrado");
+    }
+    if (!evento.enabled_for_enrollment) {
+        return res.status(400).json({ error: 'Evento no habilitado para enrollment' });
+    }
+    const fechaHoy = new Date();
+    const eventStartDate = new Date(evento.start_date);
+    if (eventStartDate <= fechaHoy) {
+      return res.status(400).json({ error: 'Evento ya iniciado' });
+    }
+    await eventService.enrollUserToEvent(evento.id, user.id, fechaInscripcion);
+    return res.status(201).send("Usuario registrado en el evento.");
+}catch(e){console.log(e)}
+
 })
 
+controller.delete("/:id/enrollment", DecryptToken, async (req, res) => {//sacar usuario de un evento
+    const idEvento = req.params.id;
+    const username = req.body.username;
+    try{
+    const user = await userService.findUsername(username);
+    const evento = await eventService.getEventDetails(req.params.id);
+
+    if(!user){
+        return res.status(404).send("Usuario no encontrado");
+    }
+    if (!evento) {
+        return res.status(404).send("Evento no encontrado");
+    }
+
+    const listaUsers = await eventService.getUsersFromEvent(req.params.id);
+    const validacionUsuarioRegistrado = listaUsers.some(userI => userI.id === user.id);
+
+    if (!validacionUsuarioRegistrado) {
+        return res.status(400).send("Usuario no registrado en el evento");
+    }
+
+    const fechaHoy = new Date();
+    const eventStartDate = new Date(evento.start_date);
+    if (eventStartDate <= fechaHoy) {
+      return res.status(400).json({ error: 'Evento ya iniciado o pasado' });
+    }
+
+    await eventService.deleteUserFromEvent(idEvento, user.id); //
+
+    return res.status(200).send("Usuario removido de su suscripción al evento.");
+}catch(e){
+    console.log(e)
+}
+})
 
 //por las dudas el siguiente controller estaba en .delete, pero es Listado de participantes. Ahora esta en .get.
 controller.get("/:id/enrollment", async (req, res) => { //Listado de participantes. 
