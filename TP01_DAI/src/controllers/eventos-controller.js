@@ -245,28 +245,41 @@ controller.patch("/:id/enrollment/rating", DecryptToken, async (req, res) => {
     const offset = req.query.offset;
 
     if (rating < 1 || rating > 10) {
-        return res.status(400).json({ error: 'El rating debe estar entre 1 y 10.' });
+        return res.status(400).send({ error: 'El rating debe estar entre 1 y 10.' });
     }
 
     try {
         const event = await eventService.getEventDetails(limit, offset, idEvento);
         if (!event) {
-            return res.status(404).json({ error: 'El evento no existe.' });
+            return res.status(404).send({ error: 'El evento no existe.' });
         }
         const fechaHoy = new Date();
         if (event.start_date > fechaHoy) {
-            return res.status(400).json({ error: 'El evento no ha finalizado aún.' });
+            return res.status(400).send({ error: 'El evento no ha finalizado aún.' });
         }
 
         // Actualizar el rating y el feedback del evento
         await eventService.updateRatingEvent(enrollmentId, rating, observations);
 
-        return res.status(200).json({ message: 'El rating y feedback fueron actualizados correctamente.' });
+        return res.status(200).send({ message: 'El rating y feedback fueron actualizados correctamente.' });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'Error interno del servidor.' });
+        return res.status(500).send({ error: 'Error interno del servidor.' });
     }
 });
+//pasar despues a nuevo controller los de category:
+controller.get("/event-category", async (req,res) => {
+
+    return res.status(200).send(await eventService.getAllCategories())
+
+})
+
+controller.get("/event-category/:id", async (req,res) => {
+
+    const catId = req.body.id;
+    
+
+})
 
 
 export default controller

@@ -129,5 +129,10 @@ async deleteUserFromEvent(idEvento, idUser){
     const eventRepository = new EventRepository();
     await eventRepository.deleteUserFromEvent(idEvento, idUser);
 }
+
+async getAllCategories()
+{
+    return await EventRepository.getAllCategories();
+}
 }
 

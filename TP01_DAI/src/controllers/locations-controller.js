@@ -41,7 +41,7 @@ controller.get("/:id/event-location", DecryptToken, async (req, res) =>{
     
         const locationExists = await locationService.getLocation(locationId);
         if (!locationExists) {
-          return res.status(404).json({ error: 'Location no existe' });
+          return res.status(404).send({ error: 'Location no existe' });
         }
     
         const eventLocations = await locationService.getAllLocationsMatchingId(limit, offset, locationId);

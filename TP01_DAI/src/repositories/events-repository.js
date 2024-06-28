@@ -295,6 +295,13 @@ async getMaxCapacity(idEventLocation){
     const maxCapacity = await this.DBClient.query(sql, [idEventLocation]);
     return maxCapacity;
 }
+
+async getAllCategories()
+{
+    const sql = "Select * From event_categories"
+    return await this.DBClient.query(sql);
+}
+
 }
 
 //connectToDatabase();
