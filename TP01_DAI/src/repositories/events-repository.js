@@ -299,7 +299,23 @@ async getMaxCapacity(idEventLocation){
 async getAllCategories()
 {
     const sql = "Select * From event_categories"
-    return await this.DBClient.query(sql);
+    const result = await this.DBClient.query(sql)
+    return result.rows;
+}
+
+async getOneCategory(id)
+{
+    const sql = "Select * From event_categories Where id = $1"
+    const params = [id]
+    console.log(id)
+    return await this.DBClient.query(sql, params)
+}
+
+async createCategory(name)
+{
+    const sql = "Insert Into event_categories (name) Values ($1)"
+    const params = [name]
+    return await this.DBClient.query(sql, params)
 }
 
 }

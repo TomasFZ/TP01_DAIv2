@@ -266,20 +266,6 @@ controller.patch("/:id/enrollment/rating", DecryptToken, async (req, res) => {
         console.error(error);
         return res.status(500).send({ error: 'Error interno del servidor.' });
     }
-});
-//pasar despues a nuevo controller los de category:
-controller.get("/event-category", async (req,res) => {
-
-    return res.status(200).send(await eventService.getAllCategories())
-
 })
-
-controller.get("/event-category/:id", async (req,res) => {
-
-    const catId = req.body.id;
-    
-
-})
-
 
 export default controller

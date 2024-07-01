@@ -5,10 +5,11 @@
 import { query } from "express";
 import EventRepository from "../repositories/events-repository.js"
 import UserRepository from "../repositories/usuario-repository.js"
+const eventRepository = new EventRepository();
+
 export default class EventService{
 
     async getAllEvents(limit, offset) {
-        const eventRepository = new EventRepository();
         console.log("detdetdetdet")
         const listaEventos = await eventRepository.getAllEvents(limit, offset);
         //console.log("SANS SKIBIDI SIGMA: " + listaEventos[0].name)
@@ -34,7 +35,6 @@ export default class EventService{
     {
         
 
-        const eventRepository = new EventRepository();
         const eventoBuscado = await eventRepository.getEventoBuscado(nombre, categoria, fecha, tag) 
         //console.log("nombre evento: " + eventoBuscado.nombre)
         
@@ -43,7 +43,6 @@ export default class EventService{
     }
     async getEventDetails(idEvento) //en este creo que no va limit-offset
     {
-       const eventRepository = new EventRepository(); 
        
         const eventoBuscado = await eventRepository.getEventoPorId(idEvento)
         
@@ -60,7 +59,6 @@ export default class EventService{
         /*El name o description están vacíos o tienen menos de tres (3) letras.
         El max_assistance es mayor que el max_capacity del  id_event_location.
         El price o duration_in_minutes son menores que cero.*/
-        const eventRepository = new EventRepository();
 
         if(name == null | description == null)
         {
@@ -82,7 +80,6 @@ export default class EventService{
     }
 
     async deleteEvent(id){
-        const eventRepository = new EventRepository(); 
         const validacion = await eventRepository.deleteEventById(id)
         if(validacion === 0){
             return 0
@@ -96,43 +93,66 @@ export default class EventService{
     }
 
     async updateEvento(id, nombreEvento, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user){
-        const eventRepository = new EventRepository(); 
         await eventRepository.updateEvent(id, nombreEvento, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
     }
 
     async getMaxCapacity(idEventLocation){
-        const eventRepository = new EventRepository(); 
         const maxCapacity = await eventRepository.getMaxCapacity(idEventLocation);
         return maxCapacity;
     }
 
 
 async getUsersFromEvent(idEvento, nombre, apellido, username, asistio, rating){
-    const userRepository = new UserRepository(); 
     const listaUsers = await userRepository.getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating);
     console.log("Saliendo Services...")
     return listaUsers
 }
 
 async updateRatingEvent(idEvento, rating, observations){
-    const userRepository = new UserRepository(); 
     await userRepository.updateEventEnrollments(idEvento, rating, observations);
 }
 
 async enrollUserToEvent(idEvento, idUser, fechaInscripcion){
-    const eventRepository = new EventRepository();
     await eventRepository.enrollUserToEvent(idEvento, idUser, fechaInscripcion);
 }
 
 
 async deleteUserFromEvent(idEvento, idUser){
-    const eventRepository = new EventRepository();
     await eventRepository.deleteUserFromEvent(idEvento, idUser);
 }
 
 async getAllCategories()
 {
-    return await EventRepository.getAllCategories();
+    return await eventRepository.getAllCategories();
 }
+
+async getOneCategory(id)
+{
+    return await eventRepository.getOneCategory(id)
+}
+
+async createCategory(name)
+{
+    if(name == null)
+    {
+        console.log("soy null")
+        return 1
+    }
+    else if(name.length < 3)
+    {
+        console.log("Soy menor de 3")
+        return 1
+    }
+    else
+    {
+        return await eventRepository.createCategory(name)
+    }
+}
+
+async editCategory(id, name)
+{
+    
+}
+
 }
 
