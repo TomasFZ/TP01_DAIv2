@@ -39,14 +39,40 @@ elController.post("/event-category", async (req,res) => {
     }
 
 })
-/* Descomentar después, lo comenté para que se pueda correr sin crashear
+
 elController.put("/event-category", async (req,res) => {
 
     const idCat = Number(req.query.id)
     const name = req.query.name
     const harvest = eventService.editCategory(idCat, name)
+    if(harvest == 1)
+    {
+        return res.status(400).send("El nombre (name) está vacío o tiene menos de tres (3) letras.")
+    }
+    else if (harvest == 2)
+    {
+        return res.status(404).send("ID no existente.")
+    }
+    else
+    {
+        return res.status(200).send("Editado Exitósamente")
+    }
 
+})
 
-})*/
+elController.delete("/event-category", async (req,res) => {
+
+    const idToKill = Number(req.query.id)
+    const crimeScene = eventService.killCategory(idToKill)
+    if(crimeScene == 1)
+    {
+        return res.status(404).send("ID no existente.")
+    }
+    else
+    {
+        return res.status(200).send("Borrado Exitósamente.")
+    }
+})
+
 
 export default elController

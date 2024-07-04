@@ -151,7 +151,34 @@ async createCategory(name)
 
 async editCategory(id, name)
 {
-    
+    if(name == null)
+    {
+        return 1
+    }
+    else if(name.length < 3)
+    {
+        return 1
+    }
+    else if((await eventRepository.getOneCategory(id)) == null)
+    {
+        return 2
+    }
+    else
+    {
+        return await eventRepository.editCategory(id, name)
+    }
+}
+
+async killCategory(idToKill)
+{
+    if((await eventRepository.getOneCategory(id)) == null)
+    {
+        return 1
+    }
+    else
+    {
+        return await eventRepository.murderCategory(id)
+    }
 }
 
 }

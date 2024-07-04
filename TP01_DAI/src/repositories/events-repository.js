@@ -318,6 +318,20 @@ async createCategory(name)
     return await this.DBClient.query(sql, params)
 }
 
+async editCategory(id, name)
+{
+    const sql = "Update event_categories Set name = $1 Where id = $2"
+    const params = [name, id]
+    return await this.DBClient.query(sql, params)
+}
+
+async murderCategory(id)
+{
+    const sql = "Delete event_categories Where id = $1"
+    const params = [id]
+    return await this.DBClient.query(sql,params)
+}
+
 }
 
 //connectToDatabase();
