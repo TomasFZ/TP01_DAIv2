@@ -6,9 +6,12 @@ const elController = express.Router(); //hacer gitignore para el module
 const eventService = new EventService();
 
 elController.get("/event-category", async (req,res) => {
-
-    return res.status(200).send(await eventService.getAllCategories())
-
+    const limit = Number(req.query.limit);
+    const offset = Number(req.query.offset);
+    if(limit >= 0 & offset >= 0)
+    {
+    return res.status(200).send(await eventService.getAllCategories(limit, offset))
+    }else return res.send("Offset o limit invalidos")
 })
 
 elController.get("/event-category/:id", async (req,res) => {

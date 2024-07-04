@@ -19,7 +19,7 @@ app.use("/event", controller); //ESTO ES MUY IMPORTANTE. Estos son middlewares.
 app.use("/user", UserController);
 app.use("/province", pController);
 app.use("/location", controller);
-
+//category falta
 
 app.listen(port, () => {
     console.log("server anda")

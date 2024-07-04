@@ -6,20 +6,16 @@ import { query } from "express";
 import EventRepository from "../repositories/events-repository.js"
 import UserRepository from "../repositories/usuario-repository.js"
 const eventRepository = new EventRepository();
-
+const userRepository = new UserRepository()
 export default class EventService{
 
     async getAllEvents(limit, offset) {
-        console.log("detdetdetdet")
         const listaEventos = await eventRepository.getAllEvents(limit, offset);
-        //console.log("SANS SKIBIDI SIGMA: " + listaEventos[0].name)
-        console.log("akakakkakakkakakakak")
         // Devuelve directamente los eventos (lista) del repositorio
-        console.log("TYPEOF LISTAEVENTOS EN SERVICE"+typeof listaEventos);
        
 
         const nextPage = `${"http://localhost:3000/event"}?limit=${limit}&offset=${offset + 1}`;
-
+        //return listaEventos
         return {
             "collection": listaEventos, 
             "pagination": {
@@ -28,7 +24,6 @@ export default class EventService{
                 "nextPage": nextPage, //poner el http 
         }
       }}
-      
     
 
     async getEventBuscado(nombre, categoria, fecha, tag)
@@ -105,8 +100,17 @@ export default class EventService{
 async getUsersFromEvent(idEvento, nombre, apellido, username, asistio, rating){
     const listaUsers = await userRepository.getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating);
     console.log("Saliendo Services...")
-    return listaUsers
-}
+
+    const nextPage = `${"http://localhost:3000/event/id/enrollment"}?limit=${limit}&offset=${offset + 1}`;
+    //return listaUsers
+    return {
+        "collection": listaUsers, 
+        "pagination": {
+            "limit": limit,
+            "offset": offset,
+            "nextPage": nextPage //poner el http 
+    }
+}}
 
 async updateRatingEvent(idEvento, rating, observations){
     await userRepository.updateEventEnrollments(idEvento, rating, observations);
@@ -121,9 +125,20 @@ async deleteUserFromEvent(idEvento, idUser){
     await eventRepository.deleteUserFromEvent(idEvento, idUser);
 }
 
-async getAllCategories()
+async getAllCategories(limit, offset)
 {
-    return await eventRepository.getAllCategories();
+    const listaCategories = await eventRepository.getAllCategories(limit, offset);
+    const nextPage = `${"http://localhost:3000/event-category"}?limit=${limit}&offset=${offset + 1}`;
+
+        return {
+            "collection": listaCategories, 
+            "pagination": {
+                "limit": limit,
+                "offset": offset,
+                "nextPage": nextPage //poner el http 
+        }
+      }
+  
 }
 
 async getOneCategory(id)

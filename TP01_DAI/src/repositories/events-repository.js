@@ -14,11 +14,10 @@ constructor(){
     this.DBClient.connect();
 }
  async getAllEvents(limit, offset) {
-    console.log("ESTOY AQUÍ")
     //limit = 10;//despues fijarse si anda sacandole estos. 
     //offset = 0;
     try {
-        const sql = "SELECT * FROM events OFFSET $1 LIMIT $2;"; 
+        const sql = "select * from events e inner join event_locations el on e.id_event_location = el.id inner join locations l on l.id = el.id_location inner join provinces p on p.id = l.id_province inner join users u on u.id = e.id_creator_user inner join event_tags et on et.id_event = e.id inner join tags t on t.id = et.id_tag OFFSET $1 LIMIT $2;"; 
         const eventos = await this.DBClient.query(sql, [ offset,limit ]);
         return eventos.rows;
     } catch (error) {
@@ -334,7 +333,7 @@ async murderCategory(id)
 
 }
 
-//connectToDatabase();
+
 
 
 

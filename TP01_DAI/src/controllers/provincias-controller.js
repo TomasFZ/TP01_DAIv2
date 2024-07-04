@@ -5,12 +5,12 @@ const provinceService = new ProvinceService();
 
 
 pController.get("/", async (req, res) => {
-    const limit = req.query.limit;
-    const offset = req.query.offset;
+    const limit = Number(req.query.limit);
+    const offset = Number(req.query.offset);
     if(limit >= 0 && offset >= 0){
         const listaProvincias = await provinceService.getAllProvincias(limit, offset);
         console.log("listaProvincias: " + listaProvincias)
-        return res.status(501).send(listaProvincias)
+        return res.status(200).send(listaProvincias)
     }
     else{
         return res.send("Offset o limit invalidos")
@@ -18,11 +18,22 @@ pController.get("/", async (req, res) => {
 })
 
 pController.get("/:id", async (req, res) => { 
-    const limit = req.query.limit;
-    const offset = req.query.offset;
-    const provincia = await provinceService.getProvinciaPorId(limit, offset, req.params.id);
-    console.log(provincia)
-    return res.status(501).send(provincia)
+    
+    const provincia = await provinceService.getProvinciaPorId(req.params.id);
+    if(!provincia){
+        return res.status(404).send("Provincia inexistente")
+    }
+    return res.status(200).send(provincia)
+})
+
+pController.get("/:id/locations", async (req, res) => { 
+    const limit = Number(req.query.limit);
+    const offset = Number(req.query.offset);
+    const provincia = await provinceService.getLocationsPorId(req.params.id, limit, offset);
+    if(!provincia){
+        return res.status(404).send("Provincia inexistente")
+    }
+    return res.status(200).send(provincia)
 })
 
 pController.post("/", async (req, res) => {

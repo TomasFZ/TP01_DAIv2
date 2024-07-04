@@ -36,6 +36,24 @@ async getProvinceById (id){
     }
 }
 
+async getLocationsById(id, limit, offset){
+    try{
+        const sql = "SELECT * FROM locations WHERE id_province = $1 OFFSET $2 LIMIT $3;"
+        const result = await this.DBClient.query(sql, [id, offset, limit])
+        if(result.rows.length > 0)
+        {
+            console.log("Retornando: " + result.rows)
+	        return result.rows
+        }else
+        {
+            return  "No existen Provincias con ese ID"
+        }
+    }
+    catch (error){
+        console.log(error)
+    }
+}
+
 async updateProvince(id, name, full_name, latitude, longitude, display_order)
 {
     try

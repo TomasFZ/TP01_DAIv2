@@ -1,6 +1,6 @@
 import { query } from "express";
 import LocationRepository from "../repositories/events-repository.js"
-export default class locationService{
+export default class LocationService{
 
 async getAllLocations(limit, offset){
     const locationRepository = new LocationRepository();

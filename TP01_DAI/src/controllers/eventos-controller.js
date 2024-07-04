@@ -226,8 +226,11 @@ controller.get("/:id/enrollment", async (req, res) => { //Listado de participant
     const asistio = req.query.attended
     const rating = req.query.rating
 
+    const limit = req.query.limit;
+    const offset = req.query.offset; //verificar que existan
+
     try{
-    const listaUsuarios = await eventService.getUsersFromEvent(idEvento, nombre, apellido, username, asistio, rating)
+    const listaUsuarios = await eventService.getUsersFromEvent(idEvento, nombre, apellido, username, asistio, rating, limit, offset)
         console.log("Saliendo Controller...")
         return res.send(listaUsuarios.rows)
     }
