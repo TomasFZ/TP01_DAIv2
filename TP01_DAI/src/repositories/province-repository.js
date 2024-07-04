@@ -19,6 +19,7 @@ async getAllProvincias(limit, offset){
 }
 
 async getProvinceById (id){
+    console.log(id + "id provincia es  ESTA")
     try{
         const sql = "select * from provinces p where p.id = $1"
         const result = await this.DBClient.query(sql, [id])
@@ -92,9 +93,7 @@ async deleteProvincia(id){
    
 }
 
-async getOfficerBoles(){
 
-}
 
 
 

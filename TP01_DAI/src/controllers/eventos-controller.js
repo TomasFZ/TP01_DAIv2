@@ -30,15 +30,18 @@ controller.get("/", async (req, res) => {
         }
         else
         {
+            if(limit >= 0 & offset >= 0)
+                {
             const allEvents = await eventService.getAllEvents(limit, offset); //aca van todos los events
             return res.send(allEvents);
         }
-    }
-    else
-    {
-        return res.send("Offset o limit invalidos")
-    }
-});
+            else{
+                return res.send("Offset o limit invalidos")
+            }
+        }
+    }}
+    
+);
 
 controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id o lo que sea por params y no por query escrita por el usuario, se pone en postman http://localhost:3000/event/1 en lugar de poner una key con value. 
     
@@ -218,7 +221,7 @@ controller.delete("/:id/enrollment", DecryptToken, async (req, res) => {//sacar 
 //por las dudas el siguiente controller estaba en .delete, pero es Listado de participantes. Ahora esta en .get.
 controller.get("/:id/enrollment", async (req, res) => { //Listado de participantes. 
     //filtros
-    const idEvento = req.body.id
+    const idEvento = req.body.id //params
     console.log("idEvento"+idEvento)
     const nombre = req.query.name
     const apellido = req.query.last_name
@@ -243,16 +246,14 @@ controller.patch("/:id/enrollment/rating", DecryptToken, async (req, res) => {
     const idEvento = req.params.id;
     const enrollmentId = req.params.enrollmentId;
     const { rating, feedback: observations } = req.body;
-    const userId = req.user.id;
-    const limit = req.query.limit;
-    const offset = req.query.offset;
+    
 
-    if (rating < 1 || rating > 10) {
+    if (rating < 1 || rating > 10 && typeof(rating) !== Number) {
         return res.status(400).send({ error: 'El rating debe estar entre 1 y 10.' });
     }
 
     try {
-        const event = await eventService.getEventDetails(limit, offset, idEvento);
+        const event = await eventService.getEventDetails(idEvento);
         if (!event) {
             return res.status(404).send({ error: 'El evento no existe.' });
         }

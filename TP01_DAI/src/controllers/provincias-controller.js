@@ -37,7 +37,7 @@ pController.get("/:id/locations", async (req, res) => {
 })
 
 pController.post("/", async (req, res) => {
-    const body = req.query; // Utiliza req.body para obtener los datos del cuerpo de la solicitud. cual es la diferencia que tiene con query? no se, nunca lo vimos. 
+    const body = req.query; // Utiliza req.body para obtener los datos del cuerpo de la solicitud. cual es la diferencia que tiene con query? no se
 
     var val = await ValidacionProvincia(body)
     console.log("validacion: " + val)
@@ -45,8 +45,8 @@ pController.post("/", async (req, res) => {
     if (val) {
         return res.status(404).send({ message: 'Provincia ya existente' });
     } else {
-        const newProvince = await provinceService.createProvincia(body); 
-        return res.send("Provincia creada exitosamente");
+        await provinceService.createProvincia(body); 
+        return res.send("Provincia agregada exitosamente");
     }
 
 
@@ -98,7 +98,7 @@ pController.delete("/:id", async (req, res) => {
             }
             i++;
         }
-        console.log("privocinsas nombrefjrkwns: " + provincia.name)
+        //console.log("privocinsas nombrefjrkwns: " + provincia.name)
         if (encontrado) {
             provinceService.deleteProvincia(id);
             return res.status(201).send("Provincia borrada exitosamente.");

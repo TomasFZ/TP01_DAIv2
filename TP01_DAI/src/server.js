@@ -12,7 +12,7 @@ const app = express();
 
 app.use(express.json()); //este tambien es middleware. 
 
-const port = 3000;
+const port = 3001;
 
 app.use(elController)
 app.use("/event", controller); //ESTO ES MUY IMPORTANTE. Estos son middlewares. 
