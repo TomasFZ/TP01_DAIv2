@@ -289,11 +289,6 @@ constructor(){
     }
 
 
-async getMaxCapacity(idEventLocation){
-    const sql = "SELECT max_capacity FROM event_locations WHERE id_event_location = $1;"
-    const maxCapacity = await this.DBClient.query(sql, [idEventLocation]);
-    return maxCapacity;
-}
 
 async getAllCategories()
 {

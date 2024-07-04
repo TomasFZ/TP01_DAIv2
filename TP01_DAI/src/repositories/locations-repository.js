@@ -1,6 +1,6 @@
 import pkg from "pg"
 import config from "../dbConfig.js"
-import e from "express"
+
 export default class LocationRepository{
 constructor(){
     const {Client} = pkg
@@ -12,7 +12,7 @@ constructor(){
 
 async getAllLocations(limit, offset) {
     try {
-        const sql = "SELECT * FROM event_locations OFFSET $1 LIMIT $2;"; 
+        const sql = "SELECT * FROM locations OFFSET $1 LIMIT $2;"; 
         const locations = await this.DBClient.query(sql, [ offset,limit ]);
         return locations.rows;
     } catch (error) {
@@ -21,7 +21,7 @@ async getAllLocations(limit, offset) {
 }
 
 async getLocationById(id){
-    const sql = "select * from event_locations where id = $1"
+    const sql = "select * from locations where id = $1"
     try{
         const location = await this.DBClient.query(sql, [id]);
         

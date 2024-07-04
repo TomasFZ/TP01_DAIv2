@@ -84,23 +84,19 @@ pController.put("/", async (req, res) => { //esto es put. entonces se modifica t
 
 pController.delete("/:id", async (req, res) => {    
     try {
-        const id = req.params.id;
-        const listaProvincias = await provinceService.getAllProvincias();
-        //const provincia = listaProvincias.id.find(provincia => provincia.id === id);
-        console.log(listaProvincias)
-        var i = 0
-        var provincia
-        var encontrado = false
-        while(i < listaProvincias.length && encontrado == false){
-            if(listaProvincias[i].id == id){
-                encontrado = true
-                provincia = listaProvincias[i]
-            }
-            i++;
-        }
-        //console.log("privocinsas nombrefjrkwns: " + provincia.name)
-        if (encontrado) {
-            provinceService.deleteProvincia(id);
+        const id = Number(req.params.id);
+        console.log("ID recibido para eliminar: " + id);
+
+        const listaProvincias = (await provinceService.getAllProvincias()).collection;
+        console.log("Lista de provincias obtenida:", listaProvincias);
+
+        var provinciaEncontrada = listaProvincias.find(provincia => {
+            console.log(`Comparando ${provincia.id} con ${id}`);
+            return provincia.id === id;
+        });
+
+        if (provinciaEncontrada) {
+            await provinceService.deleteProvincia(id);
             return res.status(201).send("Provincia borrada exitosamente.");
         } else {
             return res.status(404).send("Provincia no encontrada.");
@@ -110,6 +106,7 @@ pController.delete("/:id", async (req, res) => {
         return res.status(500).send("Error al eliminar la provincia.");
     }
 });
+
 
 
 async function ValidacionProvincia(body){

@@ -1,12 +1,12 @@
 import { query } from "express";
-import LocationRepository from "../repositories/events-repository.js"
+import LocationRepository from "../repositories/locations-repository.js"
 export default class LocationService{
 
 async getAllLocations(limit, offset){
     const locationRepository = new LocationRepository();
     const listaLocations = await locationRepository.getAllLocations(limit, offset);
 
-    const nextPage = `${"http://localhost:3000/location"}?limit=${limit}&offset=${offset + 1}`;
+    const nextPage = `${"http://localhost:3000/location"}?limit=${limit}&offset=${(offset + 1)}`;
 
         return {
             "collection": listaLocations, 
@@ -22,7 +22,7 @@ async getAllLocations(limit, offset){
 async getLocation(id){
     const locationRepository = new LocationRepository(); 
        
-        const location = await locationRepository.getLocationById(limit, offset, id)
+        const location = await locationRepository.getLocationById(id)
         return location
 }
 

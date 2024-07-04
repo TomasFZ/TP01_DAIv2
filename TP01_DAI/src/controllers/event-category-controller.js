@@ -1,6 +1,6 @@
 import express from "express";
 import EventService from "../servicios/servicios-Eventos.js"
-import {DecryptToken} from "../Middleware.js" //ver si anda o no con los corchetes estos
+import {DecryptToken} from "../Middleware.js" 
 const elController = express.Router(); //hacer gitignore para el module
 
 const eventService = new EventService();
@@ -33,12 +33,12 @@ elController.post("/event-category", async (req,res) => {
     if (output == "1")
     {
         console.log("Pedilo")
-        return res.status(400).send("El nombre (name) está vacío o tiene menos de tres (3) letras")
+        return res.status(400).send("El nombre está vacío o tiene menos de tres letras")
     }
     else
     {
         console.log("me aburro")
-        return res.status(200).send("Creado Exitósamente")
+        return res.status(200).send("Creado Exitosamente")
     }
 
 })
@@ -50,7 +50,7 @@ elController.put("/event-category", async (req,res) => {
     const harvest = eventService.editCategory(idCat, name)
     if(harvest == 1)
     {
-        return res.status(400).send("El nombre (name) está vacío o tiene menos de tres (3) letras.")
+        return res.status(400).send("El nombre (name) está vacío o tiene menos de tres letras.")
     }
     else if (harvest == 2)
     {
@@ -58,7 +58,7 @@ elController.put("/event-category", async (req,res) => {
     }
     else
     {
-        return res.status(200).send("Editado Exitósamente")
+        return res.status(200).send("Editado Exitosamente")
     }
 
 })
@@ -73,7 +73,7 @@ elController.delete("/event-category", async (req,res) => {
     }
     else
     {
-        return res.status(200).send("Borrado Exitósamente.")
+        return res.status(200).send("Borrado Exitosamente.")
     }
 })
 

@@ -60,17 +60,18 @@ export default class EventService{
             return "Error: El nombre o la descripción son nulos"
         }
         const max_capacity = (id_event_location !== null) ? await eventRepository.getMaxCapacity(id_event_location) : null;
-        console.log("cap: " + max_capacity + " ass: " + max_assistance)
+        console.log("cap: " + max_capacity + " assistance: " + max_assistance)
         if(max_assistance > max_capacity | max_capacity == null)
         {
             return "Error: El ID de localización es nulo o la localización no tiene la capacidad para alojar la capacidad máxima insertada"
         }
         if(price < 0 | duration_in_minutes < 0)
         {
-            return "Error: El precio es menor a 1 o el evento dura ménos de 1 minuto"
+            return "Error: El precio es menor a 1 o el evento dura menos de 1 minuto"
         }
 
         const result = await eventRepository.createEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
+        console.log("Resultado: " + result)
         return result
     }
 

@@ -1,13 +1,12 @@
 import express from "express";
-import EventService from "../servicios/servicios-Eventos.js"
-import UserService from "../servicios/servicios-Usuario.js"
+
 import LocationService from "../servicios/servicios-Locations.js";
 import {DecryptToken} from "../Middleware.js" //ver si anda o no con los corchetes estos
-const controller = express.Router(); //hacer gitignore para el module
+const lController = express.Router(); //hacer gitignore para el module
 
 const locationService = new LocationService();
 
-controller.get("/", async (req, res) => {
+lController.get("/", async (req, res) => {
     const limit = Number(req.query.limit);
     const offset = Number(req.query.offset);//verificar si son num y si existen. 
     if(limit >= 0 & offset >= 0)
@@ -17,7 +16,7 @@ controller.get("/", async (req, res) => {
     }else return res.send("Offset o limit invalidos")
 })
 
-controller.get("/:id", async (req, res) =>{ 
+lController.get("/:id", async (req, res) =>{ 
     const limit = req.query.limit;
     const offset = req.query.offset;
     if(limit >= 0 && offset >= 0){
@@ -34,7 +33,7 @@ controller.get("/:id", async (req, res) =>{
             return res.status(500).send("Error");
 }}})
 
-controller.get("/:id/event-location", DecryptToken, async (req, res) =>{
+lController.get("/:id/event-location", DecryptToken, async (req, res) =>{
     const limit = req.params.limit;
     const offset = req.params.offset;
     try {
@@ -53,3 +52,5 @@ controller.get("/:id/event-location", DecryptToken, async (req, res) =>{
         return res.status(500).send("Error");
       }
     });
+
+    export default lController
