@@ -28,40 +28,72 @@ constructor(){
     // En tu servicio
     async getEventoBuscado(nombre, categoria, fecha, tag) {
         try {
-            //let sql = "SELECT events.*, event_categories.name as category_name FROM events INNER JOIN event_tags et ON et.id_event = events.id INNER JOIN tags ON tags.id = et.id_tag INNER JOIN event_categories ON event_categories.id = events.id_event_category WHERE ";
-            var sql = (tag) ? "SELECT events.*, event_categories.name as category_name FROM events INNER JOIN event_tags et ON et.id_event = events.id INNER JOIN tags ON tags.id = et.id_tag INNER JOIN event_categories ON event_categories.id = events.id_event_category WHERE " : "SELECT events.*, event_categories.name as category_name FROM events INNER JOIN event_categories ON event_categories.id = events.id_event_category WHERE ";
+            let sql = `
+                SELECT
+                    e.id,
+                    e.name,
+                    e.description,
+                    e.id_event_category,
+                    e.id_event_location,
+                    e.start_date,
+                    e.duration_in_minutes,
+                    e.price,
+                    e.enabled_for_enrollment,
+                    e.max_assistance,
+                    e.id_creator_user,
+                    STRING_AGG(t.name, ', ' ORDER BY t.name) AS tag_names
+                FROM
+                    events e
+                    INNER JOIN event_tags et ON et.id_event = e.id
+                    INNER JOIN tags t ON t.id = et.id_tag
+                    INNER JOIN event_categories ec ON ec.id = e.id_event_category`;
+    
             let params = [];
             let conditions = [];
-            var cash = 1
-            
-            if (nombre) { //NIJ
-                conditions.push("events.name = $" + cash);
-                cash++
-                params.push(nombre);
-            }
-            if (categoria) { //IJC
-                conditions.push("event_categories.name = $" + cash);
-                cash++
-                params.push(categoria);
-            }
-            if (fecha) { //NIJ
-                conditions.push("events.start_date = $" + cash);
-                cash++
-                params.push(fecha);
-                console.log("hizo date")
-            }
-            if (tag) { //IJT
-                conditions.push("tags.name = $" + cash);
-                cash++
-                params.push(tag);
-                console.log("hizo tag")
-            }
-
-            sql += conditions.join(" AND ");
+            let cash = 1;
     
-            sql += " LIMIT $" + cash +" OFFSET $" + (cash + 1); //error de sintaxis
-            params.push(pageSize, reqPage);
-            console.log("SQL Final:" + sql)
+            if (nombre) {
+                conditions.push(`e.name = $${cash}`);
+                params.push(nombre);
+                cash++;
+            }
+    
+            if (categoria) {
+                conditions.push(`ec.name = $${cash}`);
+                params.push(categoria);
+                cash++;
+            }
+    
+            if (fecha) {
+                conditions.push(`e.start_date = $${cash}`);
+                params.push(fecha);
+                cash++;
+            }
+    
+            if (tag) {
+                conditions.push(`t.name = $${cash}`);
+                params.push(tag);
+                cash++;
+            }
+    
+            if (conditions.length > 0) {
+                sql += ` WHERE ${conditions.join(" AND ")}`;
+            }
+    
+            sql += `
+                GROUP BY
+                    e.id,
+                    e.name,
+                    e.description,
+                    e.id_event_category,
+                    e.id_event_location,
+                    e.start_date,
+                    e.duration_in_minutes,
+                    e.price,
+                    e.enabled_for_enrollment,
+                    e.max_assistance,
+                    e.id_creator_user`;
+    
             const eventos = await this.DBClient.query(sql, params);
             return eventos;
         } catch (error) {
@@ -69,71 +101,72 @@ constructor(){
             throw error;
         }
     }
+    
 
     async getEventoPorId(id){
         try{
             const sql = `
-    SELECT 
-        e.id AS event_id,
-        e.name AS event_name,
-        e.description AS event_description,
-        e.id_event_category,
-        e.id_event_location,
-        e.start_date,
-        e.duration_in_minutes,
-        e.price,
-        e.enabled_for_enrollment,
-        e.max_assistance,
-        e.id_creator_user,
-        el.id AS event_location_id,
-        el.id_location AS event_location_id_location,
-        el.name AS event_location_name,
-        el.full_address AS event_location_full_address,
-        el.max_capacity AS event_location_max_capacity,
-        el.latitude AS event_location_latitude,
-        el.longitude AS event_location_longitude,
-        el.id_creator_user AS event_location_creator_user_id,
-        l.id AS location_id,
-        l.name AS location_name,
-        l.id_province,
-        l.latitude AS location_latitude,
-        l.longitude AS location_longitude,
-        p.id AS province_id,
-        p.name AS province_name,
-        p.full_name AS province_full_name,
-        p.latitude AS province_latitude,
-        p.longitude AS province_longitude,
-        uc.id AS creator_user_id,
-        uc.first_name AS creator_user_first_name,
-        uc.last_name AS creator_user_last_name,
-        uc.username AS creator_user_username,
-        uc.password AS creator_user_password,
-        ARRAY(
-            SELECT json_build_object(
-                'id', t.id,
-                'name', t.name
-            )
-            FROM event_tags et
-            JOIN tags t ON et.tag_id = t.id
-            WHERE et.event_id = e.id
-        ) AS tags,
-        ec.id AS event_category_id,
-        ec.name AS event_category_name,
-        ec.display_order AS event_category_display_order
-    FROM 
-        events e
-    LEFT JOIN 
-        event_locations el ON e.id_event_location = el.id
-    LEFT JOIN 
-        locations l ON el.id_location = l.id
-    LEFT JOIN 
-        provinces p ON l.id_province = p.id
-    LEFT JOIN 
-        users uc ON e.id_creator_user = uc.id
-    LEFT JOIN 
-        event_categories ec ON e.id_event_category = ec.id
-    WHERE 
-        e.id = $1;`//Select * From events Where id = $1
+            SELECT 
+            e.id AS event_id,
+            e.name AS event_name,
+            e.description AS event_description,
+            e.id_event_category,
+            e.id_event_location,
+            e.start_date,
+            e.duration_in_minutes,
+            e.price,
+            e.enabled_for_enrollment,
+            e.max_assistance,
+            e.id_creator_user,
+            el.id AS event_location_id,
+            el.id_location AS event_location_id_location,
+            el.name AS event_location_name,
+            el.full_address AS event_location_full_address,
+            el.max_capacity AS event_location_max_capacity,
+            el.latitude AS event_location_latitude,
+            el.longitude AS event_location_longitude,
+            el.id_creator_user AS event_location_creator_user_id,
+            l.id AS location_id,
+            l.name AS location_name,
+            l.id_province,
+            l.latitude AS location_latitude,
+            l.longitude AS location_longitude,
+            p.id AS province_id,
+            p.name AS province_name,
+            p.full_name AS province_full_name,
+            p.latitude AS province_latitude,
+            p.longitude AS province_longitude,
+            uc.id AS creator_user_id,
+            uc.first_name AS creator_user_first_name,
+            uc.last_name AS creator_user_last_name,
+            uc.username AS creator_user_username,
+            uc.password AS creator_user_password,
+            ARRAY(
+                SELECT json_build_object(
+                    'id', t.id,
+                    'name', t.name
+                )
+                FROM event_tags et
+                JOIN tags t ON et.id_tag = t.id
+                WHERE et.id_event = e.id
+            ) AS tags,
+            ec.id AS event_category_id,
+            ec.name AS event_category_name,
+            ec.display_order AS event_category_display_order
+        FROM 
+            events e
+        LEFT JOIN 
+            event_locations el ON e.id_event_location = el.id
+        LEFT JOIN 
+            locations l ON el.id_location = l.id
+        LEFT JOIN 
+            provinces p ON l.id_province = p.id
+        LEFT JOIN 
+            users uc ON e.id_creator_user = uc.id
+        LEFT JOIN 
+            event_categories ec ON e.id_event_category = ec.id
+        WHERE 
+            e.id = $1`//Select * From events Where id = $1
             const evento = await this.DBClient.query(sql, [id]);
             console.log("id: " + id)
             console.log("nombre evento 1: " + evento[1] + " Es undefined?:" + evento)
@@ -268,9 +301,11 @@ constructor(){
     
     async getMaxCapacity(id_event_location)
     {
+        console.log("idEventLocatirgi<: "+id_event_location)
         const sql = "Select max_capacity From event_locations Where id = $1"
         const params= [id_event_location]
         const loc = await this.DBClient.query(sql, params);
+       
         return loc.rows[0].max_capacity
     }
 

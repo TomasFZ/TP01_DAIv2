@@ -38,9 +38,7 @@ export default class EventService{
     }
     async getEventDetails(idEvento) //en este creo que no va limit-offset
     {
-       
         const eventoBuscado = await eventRepository.getEventoPorId(idEvento)
-        
         return eventoBuscado
 
     }
@@ -54,7 +52,7 @@ export default class EventService{
         /*El name o description están vacíos o tienen menos de tres (3) letras.
         El max_assistance es mayor que el max_capacity del  id_event_location.
         El price o duration_in_minutes son menores que cero.*/
-
+        console.log("idroigjosdhg: NAN" + id_event_location)
         if(name == null | description == null)
         {
             return "Error: El nombre o la descripción son nulos"

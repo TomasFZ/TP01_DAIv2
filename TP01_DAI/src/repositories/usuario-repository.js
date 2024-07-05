@@ -13,7 +13,7 @@ export default class UserRepository {
         console.log("Estoy empezando a buscar usuarios repetidos")
         try
         {
-            const sql = "Select username From users Where username = $1"
+            const sql = "Select * From users Where username = $1"
             console.log("Fijandome si hay users repetidos con el user: " + username)
             const usersFound = await this.DBClient.query(sql, [username])
             console.log("Comprobando resultados")
@@ -23,12 +23,11 @@ export default class UserRepository {
                 return false
             }
             console.log("Que!?!? Existen otros usuarios llamados: " + username)
-            return true
+            return usersFound
         }
         catch(error)
         {
             console.log("Error en la query JSJSJSJSJJSJSJSJJSS" + error)
-
         }
     }
 
