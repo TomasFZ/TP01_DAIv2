@@ -236,80 +236,81 @@ async getAllEvents(limit, offset) {
         return eventoCreado
     }
 
-    async updateEvent(id, nombreEvento, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user){
-        var sql = "update events set ";
-
+    async updateEvent(id, nombreEvento, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user) {
+        let sql = "UPDATE events SET ";
         let params = [];
         let conditions = [];
-            var cash = 1
-            if (nombreEvento) {
-                conditions.push("name = $" + cash + ", ");
-                cash++
-                params.push(nombreEvento);
-            }
-
-            if (description) {
-                conditions.push("description = $" + cash) + ", ";
-                cash++
-                params.push(description);
-            }
-
-            if (id_event_category) {
-                conditions.push("id_event_category = $" + cash + ", ");
-                cash++
-                params.push(id_event_category);
-            }
-
-            if (id_event_location) {
-                conditions.push("id_event_location = $" + cash + ", ");
-                cash++
-                params.push(id_event_location);
-            }
-
-            if (start_date) {
-                conditions.push("start_date = $" + cash + ", ");
-                cash++
-                params.push(start_date);
-            }
-
-            if (duration_in_minutes) {
-                conditions.push("duration_in_minutes = $" + cash + ", ");
-                cash++
-                params.push(duration_in_minutes);
-            }
-
-            if (price) {
-                conditions.push("price = $" + cash + ", ");
-                cash++
-                params.push(price);
-            }
-
-            if (enabled_for_enrollment) {
-                conditions.push("enabled_for_enrollment = $" + cash + ", ");
-                cash++
-                params.push(enabled_for_enrollment);
-            }
-
-            if (max_assistance) {
-                conditions.push("max_assistance = $" + cash + ", ");
-                cash++
-                params.push(max_assistance);
-            }
-
-            if (id_creator_user) { 
-                conditions.push("id_creator_user = $" + cash);
-                cash++
-                params.push(id_creator_user);
-            }
-
-            conditions.push("where id= " + cash);
-            sql += conditions.join("");
-
-            await this.DBClient.query(sql, params);
-
-            console.log("SQL Final:" + sql)
+        let cash = 1;
+    
+        if (nombreEvento) {
+            conditions.push(`name = $${cash}`);
+            params.push(nombreEvento);
+            cash++;
+        }
+    
+        if (description) {
+            conditions.push(`description = $${cash}`);
+            params.push(description);
+            cash++;
+        }
+    
+        if (id_event_category) {
+            conditions.push(`id_event_category = $${cash}`);
+            params.push(id_event_category);
+            cash++;
+        }
+    
+        if (id_event_location) {
+            conditions.push(`id_event_location = $${cash}`);
+            params.push(id_event_location);
+            cash++;
+        }
+    
+        if (start_date) {
+            conditions.push(`start_date = $${cash}`);
+            params.push(start_date);
+            cash++;
+        }
+    
+        if (duration_in_minutes) {
+            conditions.push(`duration_in_minutes = $${cash}`);
+            params.push(duration_in_minutes);
+            cash++;
+        }
+    
+        if (price) {
+            conditions.push(`price = $${cash}`);
+            params.push(price);
+            cash++;
+        }
+    
+        if (enabled_for_enrollment) {
+            conditions.push(`enabled_for_enrollment = $${cash}`);
+            params.push(enabled_for_enrollment);
+            cash++;
+        }
+    
+        if (max_assistance) {
+            conditions.push(`max_assistance = $${cash}`);
+            params.push(max_assistance);
+            cash++;
+        }
+    
+        if (id_creator_user) { 
+            conditions.push(`id_creator_user = $${cash}`);
+            params.push(id_creator_user);
+            cash++;
+        }
+    
+        sql += conditions.join(", ");
+        sql += ` WHERE id = $${cash}`;
+        params.push(id);
+    
+        await this.DBClient.query(sql, params);
+    
+        console.log("SQL Final:" + sql);
     }
-
+    
     async deleteEventById(idEvent){
         console.log("Entro al repositorio")
         const sql = "select * from users inner join event_enrollments e on e.id_user = users.id where e.id = $1" //verificar si hay usuarios inscriptos al evento para evitar borrarlo o no.
@@ -463,6 +464,11 @@ async murderLoc(id)
     const sql = "Delete event_locations Where id = $1"
     const params = [id]
     return await this.DBClient.query(sql, params)
+}
+
+async getEventById(id){
+    const sql = "select * from events where id = $1"
+    return await this.DBClient.query(sql, [id]);
 }
 
 }

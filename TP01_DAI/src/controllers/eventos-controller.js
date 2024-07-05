@@ -64,8 +64,7 @@ controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id
 //updateEvent
 controller.put("/", DecryptToken, async (req, res) => {//implementar el token. Ponerle ("/", Middleware, async (req, res) mas tarde. 
     
-    
-    const userId = req.user.id
+    validacionToken(req, res);
     const id = req.body.id
     const name = req.body.name
     const description = req.body.description
@@ -77,6 +76,13 @@ controller.put("/", DecryptToken, async (req, res) => {//implementar el token. P
     const enabled_for_enrollment = Boolean(req.body.enabled_for_enrollment)
     const max_assistance = Number(req.body.max_assistance)
     const id_creator_user = Number(req.body.id_creator_user)
+
+    const event1 = await eventService.getEventById(id);
+    if(event1.rows[0] === undefined)
+        {
+            return res.status(404).send("evento no existe")
+        }
+
 
     if (!name || !description || name.length < 3 || description.length < 3) {
         return res.status(400).json({ error: 'nombre y descripcion deben tener al menos 3 caracteres' });
@@ -125,7 +131,7 @@ controller.post("/", DecryptToken, async (req, res) => { //implementar el token.
     const max_assistance = Number(req.body.max_assistance)
     const id_creator_user = Number(req.body.id_creator_user)
     
-
+    
     if (!name || !description || name.length < 3 || description.length < 3) {
         return res.status(400).json({ error: 'nombre y descripcion deben tener al menos 3 caracteres' });
     }

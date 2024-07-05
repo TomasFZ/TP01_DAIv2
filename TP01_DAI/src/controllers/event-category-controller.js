@@ -83,7 +83,6 @@ elController.get("/event-location", DecryptToken, async (req,res) => {
 })
 
 elController.get("/event-location/:id", DecryptToken, async (req,res) => {
-    //TODO: Agregar el checkeo de ID Logueado
     const idLoc = Number(req.params.id)
     const userLog = req.user
     const output = await eventService.getOneLocation(idLoc, userLog.id)
