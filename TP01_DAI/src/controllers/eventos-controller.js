@@ -7,14 +7,7 @@ const controller = express.Router(); //hacer gitignore para el module
 
 const eventService = new EventService();
 const userService = new UserService();
-//listado de Eventos
 
-
-//lista de puntos hechos (sin contar servicios): 
-//listado de eventos (2)
-//Busqueda de un evento (3)
-//Detalle de un evento (4)
-//
 
 console.log("holaaaa")
 
@@ -82,7 +75,6 @@ controller.put("/", DecryptToken, async (req, res) => {//implementar el token. P
         {
             return res.status(404).send("evento no existe")
         }
-
 
     if (!name || !description || name.length < 3 || description.length < 3) {
         return res.status(400).json({ error: 'nombre y descripcion deben tener al menos 3 caracteres' });
@@ -158,7 +150,14 @@ controller.post("/", DecryptToken, async (req, res) => { //implementar el token.
 })
 //deleteEvent
 controller.delete("/:id", DecryptToken, async (req, res) => { 
+    validacionToken(req, res);
     const id = req.params.id
+    const event1 = await eventService.getEventById(id);
+    if(event1.rows[0] === undefined)
+        {
+            return res.status(404).send("evento no existe")
+        }
+
     console.log("Id de evento a borrar: " + id)
     const validacion=await eventService.deleteEvent(id)
     if(validacion === 0){

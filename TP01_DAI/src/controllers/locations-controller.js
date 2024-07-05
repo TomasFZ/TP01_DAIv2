@@ -2,6 +2,8 @@ import express from "express";
 
 import LocationService from "../servicios/servicios-Locations.js";
 import {DecryptToken} from "../Middleware.js" //ver si anda o no con los corchetes estos
+import {validacionToken} from "../token.js" 
+
 const lController = express.Router(); //hacer gitignore para el module
 
 const locationService = new LocationService();

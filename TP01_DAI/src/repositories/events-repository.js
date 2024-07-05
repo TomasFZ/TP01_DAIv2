@@ -13,17 +13,7 @@ constructor(){
     this.DBClient = new Client(config)
     this.DBClient.connect();
 }
-//  async getAllEvents(limit, offset) {
-//     //limit = 10;//despues fijarse si anda sacandole estos. 
-//     //offset = 0;
-//     try {
-//         const sql = "SELECT e.id AS event_id, e.name AS event_name, e.description AS event_description, e.id_event_category AS event_category, e.id_event_location AS event_location, e.start_date AS e_date, e.duration_in_minutes AS event_duration, e.price AS event_price, e.enabled_for_enrollment AS event_enabled_for_enrollment, e.max_assistance AS event_max_assistance, e.id_creator_user AS event_creator_user, el.id AS event_location_id, el.name AS event_location_name, el.full_address AS event_location_full_address, el.max_capacity AS event_location_max_capacity, el.latitude AS event_location_latitude, el.longitude AS event_location_longitude, el.id_creator_user AS event_location_id_creator_user, l.id AS location_id, l.name AS location_name, l.id_province AS location_id_province, l.latitude AS location_latitude, l.longitude AS location_longitude, p.id AS province_id, p.full_name AS province_full_name, p.latitude AS province_latitude, p.longitude AS province_longitude, p.display_order AS province_display_order, u.id AS user_id, u.first_name AS user_first_name, u.last_name AS user_last_name, u.username AS user_username, u.password AS user_password, COALESCE(STRING_AGG(t.name, ', ' ORDER BY t.name), '') AS tag_names FROM events e INNER JOIN event_locations el ON e.id_event_location = el.id INNER JOIN locations l ON l.id = el.id_location INNER JOIN provinces p ON p.id = l.id_province INNER JOIN users u ON u.id = e.id_creator_user LEFT JOIN event_tags et ON et.id_event = e.id LEFT JOIN tags t ON t.id = et.id_tag GROUP BY e.id, e.name, e.description, e.id_event_category, e.id_event_location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance, e.id_creator_user, el.id, el.name, el.full_address, el.max_capacity, el.latitude, el.longitude, el.id_creator_user, l.id, l.name, l.id_province, l.latitude, l.longitude, p.id, p.full_name, p.latitude, p.longitude, p.display_order, u.id, u.first_name, u.last_name, u.username, u.password OFFSET $1 LIMIT $2;"; 
-//         const eventos = await this.DBClient.query(sql, [ offset,limit ]);
-//         return eventos.rows;
-//     } catch (error) {
-//         console.error("Error al obtener eventos:", error);
-//     }
-// }
+
 
 async getAllEvents(limit, offset) {
     try {
@@ -311,33 +301,43 @@ async getAllEvents(limit, offset) {
         console.log("SQL Final:" + sql);
     }
     
-    async deleteEventById(idEvent){
-        console.log("Entro al repositorio")
-        const sql = "select * from users inner join event_enrollments e on e.id_user = users.id where e.id = $1" //verificar si hay usuarios inscriptos al evento para evitar borrarlo o no.
-        const users = await this.DBClient.query(sql, [idEvent])
-        console.log("------------------------------------------------------------------------------------")
-        //console.log("Usuarios: "+ users.rows[0].first_name)
-        console.log(users.rows[0])
-        const sqlEvent = "select * from events where id= $1" //verificar si existe evento. 
-        const event = await this.DBClient.query(sqlEvent, [idEvent]);
-        //console.log("Evento: " + users.rows[0])
-        try{
-        if(users.rows[0] === undefined && typeof(event.rows[0].name === "string")){
-            const deleteQuery = "Delete from events where id = $1"
-            await this.DBClient.query(deleteQuery, [idEvent]);
-            console.log("kfjskhlfjlisjlfjlisjflijslifjlis")
-            return 0
-        }else if(users.rows[0] !== undefined){
-            return 1
-        }else if(event.rows[0].name == undefined){
-            return 2
-        }else{
-            return 3
-        }
-    }catch(e){
-            
+    async deleteEventById(idEvent) {
+        console.log("Entro al repositorio");
+    
+        try {
+          
+            const sqlUsers = "SELECT * FROM users INNER JOIN event_enrollments e ON e.id_user = users.id WHERE e.id = $1";
+            const users = await this.DBClient.query(sqlUsers, [idEvent]);
+            console.log("Usuarios inscriptos:");
+            console.log(users.rows); 
+    
+           
+            const sqlEvent = "SELECT * FROM events WHERE id = $1";
+            const event = await this.DBClient.query(sqlEvent, [idEvent]);
+            console.log("Evento:");
+            console.log(event.rows); 
+    
+            if (users.rows.length === 0 && event.rows.length > 0 && typeof event.rows[0].name === "string") {
+                const deleteQuery = "DELETE FROM events WHERE id = $1";
+                await this.DBClient.query(deleteQuery, [idEvent]);
+                console.log("Evento borrado con éxito");
+                return 0; 
+            } else if (users.rows.length > 0) {
+                console.log("No se puede borrar el evento, hay usuarios inscritos.");
+                return 1; 
+            } else if (event.rows.length === 0 || event.rows[0].name === undefined) {
+                console.log("No se encontró el evento.");
+                return 2; 
+            } else {
+                console.log("Otro caso no contemplado.");
+                return 3; 
+            }
+        } catch (e) {
+            console.error("Error en deleteEventById:", e); 
+            throw e; 
         }
     }
+    
 
     async createEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
     {
