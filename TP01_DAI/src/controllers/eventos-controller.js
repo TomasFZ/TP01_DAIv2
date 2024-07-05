@@ -20,11 +20,11 @@ console.log("holaaaa")
 controller.get("/", async (req, res) => {
     const limit = req.query.limit;
     const offset = req.query.offset;//verificar si son num y si existen. 
-    
+    console.log("ID: " + req.query.id_event_category)
         if (req.query.event_name != null | req.query.id_event_category != null | req.query.start_date != null  | req.query.tags != null)
         {
-            console.log(req.query.start_date)
-            const eventoBuscado = await eventService.getEventBuscado(req.query.event_name, req.query.event_category, req.query.start_date, req.query.tags); //falta que con la fecha no funciona. 
+            console.log("id EVENT CATEGFDILGINGJ: "+req.query.id_event_category)
+            const eventoBuscado = await eventService.getEventBuscado(req.query.event_name, req.query.id_event_category, req.query.start_date, req.query.tags); //falta que con la fecha no funciona. 
             if(eventoBuscado.rows[0] == null)
             {
                 return res.status(404).send("evento no existe")
@@ -34,19 +34,19 @@ controller.get("/", async (req, res) => {
         }
         else
         {
-            if(limit >= 0 & offset >= 0)
-                {
+            // if(limit >= 0 & offset >= 0) //si no ingresa limit y offset se jode y le traemos todo
+            //     {
             const allEvents = await eventService.getAllEvents(limit, offset); //aca van todos los events
             return res.send(allEvents);
         }
-        else
-        {
-            return res.send("Offset o limit invalidos")
-        }
+        // else
+        // {
+        //     return res.send("Offset o limit invalidos")
+        // }
         }
     
     
-    });
+    );
 //getEventDetails
 controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id o lo que sea por params y no por query escrita por el usuario, se pone en postman http://localhost:3000/event/1 en lugar de poner una key con value. 
     console.log("id: " + req.params.id)

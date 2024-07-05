@@ -29,7 +29,7 @@ export default class EventService{
     async getEventBuscado(nombre, categoria, fecha, tag)
     {
         
-
+        console.log("seleccioné cat ID: " + categoria)
         const eventoBuscado = await eventRepository.getEventoBuscado(nombre, categoria, fecha, tag) 
         //console.log("nombre evento: " + eventoBuscado.nombre)
         

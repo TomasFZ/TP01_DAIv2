@@ -17,7 +17,7 @@ constructor(){
     //limit = 10;//despues fijarse si anda sacandole estos. 
     //offset = 0;
     try {
-        const sql = "SELECT e.id AS event_id, e.name AS event_name, e.description AS event_description, e.id_event_category AS event_category, e.id_event_location AS event_location, e.start_date AS e_date, e.duration_in_minutes AS event_duration, e.price AS event_price, e.enabled_for_enrollment AS event_enabled_for_enrollment, e.max_assistance AS event_max_assistance, e.id_creator_user AS event_creator_user, el.id AS event_location_id, el.name AS event_location_name, el.full_address AS event_location_full_address, el.max_capacity AS event_location_max_capacity, el.latitude AS event_location_latitude, el.longitude AS event_location_longitude, el.id_creator_user AS event_location_id_creator_user, l.id AS location_id, l.name AS location_name, l.id_province AS location_id_province, l.latitude AS location_latitude, l.longitude AS location_longitude, p.id AS province_id, p.full_name AS province_full_name, p.latitude AS province_latitude, p.longitude AS province_longitude, p.display_order AS province_display_order, u.id AS user_id, u.first_name AS user_first_name, u.last_name AS user_last_name, u.username AS user_username, u.password AS user_password, et.id AS event_tags_id, et.id_tag AS event_tags_id_tag, t.id AS tag_id, t.name AS tag_name FROM events e INNER JOIN event_locations el ON e.id_event_location = el.id INNER JOIN locations l ON l.id = el.id_location INNER JOIN provinces p ON p.id = l.id_province INNER JOIN users u ON u.id = e.id_creator_user INNER JOIN event_tags et ON et.id_event = e.id INNER JOIN tags t ON t.id = et.id_tag OFFSET $1 LIMIT $2;"; 
+        const sql = "SELECT e.id AS event_id, e.name AS event_name, e.description AS event_description, e.id_event_category AS event_category, e.id_event_location AS event_location, e.start_date AS e_date, e.duration_in_minutes AS event_duration, e.price AS event_price, e.enabled_for_enrollment AS event_enabled_for_enrollment, e.max_assistance AS event_max_assistance, e.id_creator_user AS event_creator_user, el.id AS event_location_id, el.name AS event_location_name, el.full_address AS event_location_full_address, el.max_capacity AS event_location_max_capacity, el.latitude AS event_location_latitude, el.longitude AS event_location_longitude, el.id_creator_user AS event_location_id_creator_user, l.id AS location_id, l.name AS location_name, l.id_province AS location_id_province, l.latitude AS location_latitude, l.longitude AS location_longitude, p.id AS province_id, p.full_name AS province_full_name, p.latitude AS province_latitude, p.longitude AS province_longitude, p.display_order AS province_display_order, u.id AS user_id, u.first_name AS user_first_name, u.last_name AS user_last_name, u.username AS user_username, u.password AS user_password, COALESCE(STRING_AGG(t.name, ', ' ORDER BY t.name), '') AS tag_names FROM events e INNER JOIN event_locations el ON e.id_event_location = el.id INNER JOIN locations l ON l.id = el.id_location INNER JOIN provinces p ON p.id = l.id_province INNER JOIN users u ON u.id = e.id_creator_user LEFT JOIN event_tags et ON et.id_event = e.id LEFT JOIN tags t ON t.id = et.id_tag GROUP BY e.id, e.name, e.description, e.id_event_category, e.id_event_location, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance, e.id_creator_user, el.id, el.name, el.full_address, el.max_capacity, el.latitude, el.longitude, el.id_creator_user, l.id, l.name, l.id_province, l.latitude, l.longitude, p.id, p.full_name, p.latitude, p.longitude, p.display_order, u.id, u.first_name, u.last_name, u.username, u.password OFFSET $1 LIMIT $2;"; 
         const eventos = await this.DBClient.query(sql, [ offset,limit ]);
         return eventos.rows;
     } catch (error) {
@@ -44,9 +44,9 @@ constructor(){
                     STRING_AGG(t.name, ', ' ORDER BY t.name) AS tag_names
                 FROM
                     events e
-                    INNER JOIN event_tags et ON et.id_event = e.id
-                    INNER JOIN tags t ON t.id = et.id_tag
-                    INNER JOIN event_categories ec ON ec.id = e.id_event_category`;
+                    Left JOIN event_tags et ON et.id_event = e.id
+                    Left JOIN tags t ON t.id = et.id_tag
+                    Left JOIN event_categories ec ON ec.id = e.id_event_category`
     
             let params = [];
             let conditions = [];
@@ -59,7 +59,7 @@ constructor(){
             }
     
             if (categoria) {
-                conditions.push(`ec.name = $${cash}`);
+                conditions.push(`ec.id = $${cash}`);
                 params.push(categoria);
                 cash++;
             }
@@ -93,7 +93,7 @@ constructor(){
                     e.enabled_for_enrollment,
                     e.max_assistance,
                     e.id_creator_user`;
-    
+            console.log("Query: " + sql)
             const eventos = await this.DBClient.query(sql, params);
             return eventos;
         } catch (error) {
