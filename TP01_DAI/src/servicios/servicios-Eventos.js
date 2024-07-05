@@ -97,6 +97,9 @@ export default class EventService{
 
 
 async getUsersFromEvent(idEvento, nombre, apellido, username, asistio, rating, limit, offset){
+
+
+    console.log("rating service: " + rating)
     const listaUsers = await userRepository.getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating, limit, offset);
     console.log("Saliendo Services...")
 

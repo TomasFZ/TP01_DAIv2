@@ -49,10 +49,8 @@ export default class UserRepository {
         var cash = 1
         let params = []
         let conditions = []
-        
 
-
-        console.log(asistio + " ASISTIO")
+        console.log(rating + " rating controller ")
         console.log(idEvento + " ID EVENITNRIFDGNLJ" + typeof idEvento)
 
         if(idEvento && typeof idEvento === 'number'){
@@ -70,16 +68,16 @@ export default class UserRepository {
             cash++
             params.push(apellido);
         }
-        if (username && typeof idUsuario === 'string') {
+        if (username && typeof username === 'string') {
             conditions.push("u.username = $" + cash);
             cash++
             params.push(username);
         }
-        if (asistio && typeof asistio === 'bool') {
+        if (asistio) {
             conditions.push("e.attended = $" + cash);
             cash++
             params.push(asistio);
-            console.log("ASISTIO: " + attended)
+            console.log("ASISTIO: " + asistio)
         }
     
         if (rating && typeof rating === 'number') {
