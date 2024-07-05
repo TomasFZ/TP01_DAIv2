@@ -9,7 +9,7 @@ export function DecryptToken(req, res, next){
         if (!tokenRecibido) {
             return res.status(401).send('falta el token');
         }
-        //req.user = decryptedToken.payload
+        req.user = decryptedToken.payload
         try{
             const payload = jwt.verify(tokenRecibido, secretKey)
             //req.query.username = payload.username;

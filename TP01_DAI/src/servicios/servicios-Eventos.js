@@ -203,9 +203,19 @@ async getAllLocations()
     return await eventRepository.getAllLocations()
 }
 
-async getOneLocation(id)
+async getOneLocation(id, id_creator_user)
 {
-    return await eventRepository.getOneLocation(id)
+    
+    const result = await eventRepository.getOneLocation(id)
+    if(result[0] == null)
+    {
+        return 1
+    }
+    else if(result[0].id_creator_user != id_creator_user)
+    {
+        return 1
+    }
+    return result
 }
 
 async createLocation(id_location, name, full_address, max_capacity, latitude, longitude, id_creator_user)

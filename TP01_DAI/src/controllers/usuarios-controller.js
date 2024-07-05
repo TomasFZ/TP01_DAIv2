@@ -9,10 +9,10 @@ const userService = new UserService();
 //https://medium.com/@diego.coder/autenticaci%C3%B3n-en-node-js-con-json-web-tokens-y-express-ed9d90c5b579
 
 UserController.post("/register", async(req, res) => {
-    const first_name = req.query.first_name
-    const last_name = req.query.last_name
-    const username = req.query.username
-    const password = req.query.password
+    const first_name = req.body.first_name //pase de req.query a req.body, comprobar si sigue funcionando. 
+    const last_name = req.body.last_name
+    const username = req.body.username
+    const password = req.body.password
     console.log(first_name, last_name) 
 
     try{

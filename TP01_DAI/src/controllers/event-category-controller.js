@@ -85,10 +85,11 @@ elController.get("/event-location", DecryptToken, async (req,res) => {
 elController.get("/event-location/:id", DecryptToken, async (req,res) => {
     //TODO: Agregar el checkeo de ID Logueado
     const idLoc = Number(req.params.id)
-    const output = await eventService.getOneLocation(idLoc)
-    if(output[0] == null)
+    const userLog = req.user
+    const output = await eventService.getOneLocation(idLoc, userLog.id)
+    if(output == 1)
     {
-        res.status(404).send("No se encontró una categoría con ese ID")
+        res.status(404).send("No se encontró una categoría con ese ID o el local no es suyo")
     }
     return res.status(200).send(output)
 
@@ -102,8 +103,7 @@ elController.post("/event-location", DecryptToken, async (req,res) => {
     const max_capacity = Number(req.query.max_capacity)
     const latitude = Number(req.query.latitude)
     const longitude = Number(req.query.longitude)
-    const creatUsID = "Officer Boles" //Dummy
-    // const creatUsID = ???
+    const creatUsID = req.user.id
 
     const result = eventService.createLocation(id_loc, name, full_address, max_capacity, latitude, longitude, creatUsID)
     switch(result)
@@ -121,14 +121,13 @@ elController.post("/event-location", DecryptToken, async (req,res) => {
         break;
 
         case 4:
-            return res.status(200).send("Local Creado Exitósamente.")
+            return res.status(200).send("Local Creado Exitsamente.")
         break;
     }
 
 })
 
 elController.put("/event-location", DecryptToken, async (req,res) => {
-    //TODO: Asignar el id_creator_user al usuario logueado
     const id = Number(req.query.id)
     const id_loc = Number(req.query.id_location)
     const name = req.query.name
@@ -136,8 +135,7 @@ elController.put("/event-location", DecryptToken, async (req,res) => {
     const max_capacity = Number(req.query.max_capacity)
     const latitude = Number(req.query.latitude)
     const longitude = Number(req.query.longitude)
-    const creatUsID = "Officer Boles" //Dummy
-    // const creatUsID = ???
+    const creatUsID = req.user.id
 
     const result = await eventService.editLocation(id, id_loc, name, full_address, max_capacity, latitude, longitude, creatUsID)
     switch(result)
@@ -155,7 +153,7 @@ elController.put("/event-location", DecryptToken, async (req,res) => {
         break;
 
         case 4:
-            return res.status(200).send("Local Creado Exitósamente.")
+            return res.status(200).send("Local Creado Exitosamente.")
         break;
     }
 })
@@ -170,7 +168,7 @@ elController.delete("/event-location/:id", DecryptToken, async (req,res) => {
     }
     else
     {
-        return res.status(200).send("Borrado Exitósamente")
+        return res.status(200).send("Borrado Exitosamente")
     }
 })
 

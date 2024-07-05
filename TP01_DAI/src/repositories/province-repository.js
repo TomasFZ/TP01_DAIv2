@@ -92,9 +92,4 @@ async deleteProvincia(id){
     await this.DBClient.query(sql, [id]);
    
 }
-
-
-
-
-
 }
