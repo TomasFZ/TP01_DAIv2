@@ -37,7 +37,7 @@ pController.get("/:id/locations", async (req, res) => {
 })
 
 pController.post("/", async (req, res) => {
-    const body = req.query; // Utiliza req.body para obtener los datos del cuerpo de la solicitud. cual es la diferencia que tiene con query? no se
+    const body = req.body; // Utiliza req.body para obtener los datos del cuerpo de la solicitud. cual es la diferencia que tiene con query? no se
 
     var val = await ValidacionProvincia(body)
     console.log("validacion: " + val)
@@ -56,13 +56,13 @@ pController.put("/", async (req, res) => { //esto es put. entonces se modifica t
     try 
     {
         
-        const id = Number(req.query.id)
-        const name = req.query.name
+        const id = Number(req.body.id)
+        const name = req.body.name
         console.log("Controller:" + name)
-        const full_name = req.query.full_name
-        const latitude = Number(req.query.latitude)
-        const longitude = Number(req.query.longitude)
-        const display_order = Number(req.query.display_order)
+        const full_name = req.body.full_name
+        const latitude = Number(req.body.latitude)
+        const longitude = Number(req.body.longitude)
+        const display_order = Number(req.body.display_order)
         
         const result = await provinceService.updateProvincia(id, name, full_name, latitude, longitude, display_order)
         console.log("Result que obtuve fué: " + result)

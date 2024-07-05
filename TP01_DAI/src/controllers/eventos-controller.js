@@ -59,17 +59,17 @@ controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id
 })
 //updateEvent
 controller.put("/", DecryptToken, async (req, res) => {//implementar el token. Ponerle ("/", Middleware, async (req, res) mas tarde. 
-    const id = req.query.id
-    const name = req.query.name
-    const description = req.query.description
-    const id_event_category = Number(req.query.id_event_category)
-    const id_event_location = Number(req.query.id_event_location)
-    const start_date = req.query.start_date
-    const duration_in_minutes = Number(req.query.duration_in_minutes)
-    const price = Number(req.query.price)
-    const enabled_for_enrollment = Boolean(req.query.enabled_for_enrollment)
-    const max_assistance = Number(req.query.max_assistance)
-    const id_creator_user = Number(req.query.id_creator_user)
+    const id = req.body.id
+    const name = req.body.name
+    const description = req.body.description
+    const id_event_category = Number(req.body.id_event_category)
+    const id_event_location = Number(req.body.id_event_location)
+    const start_date = req.body.start_date
+    const duration_in_minutes = Number(req.body.duration_in_minutes)
+    const price = Number(req.body.price)
+    const enabled_for_enrollment = Boolean(req.body.enabled_for_enrollment)
+    const max_assistance = Number(req.body.max_assistance)
+    const id_creator_user = Number(req.body.id_creator_user)
 
     if (!name || !description || name.length < 3 || description.length < 3) {
         return res.status(400).json({ error: 'nombre y descripcion deben tener al menos 3 caracteres' });
@@ -102,16 +102,16 @@ controller.put("/", DecryptToken, async (req, res) => {//implementar el token. P
 })
 //createEvent
 controller.post("/", DecryptToken, async (req, res) => { //implementar el token. Ponerle ("/", DecryptToken, async (req, res) mas tarde. 
-    const name = req.query.name
-    const description = req.query.description
-    const id_event_category = Number(req.query.id_event_category)
-    const id_event_location = Number(req.query.id_event_location)
-    const start_date = req.query.start_date
-    const duration_in_minutes = Number(req.query.duration_in_minutes)
-    const price = Number(req.query.price)
-    const enabled_for_enrollment = Boolean(req.query.enabled_for_enrollment)
-    const max_assistance = Number(req.query.max_assistance)
-    const id_creator_user = Number(req.query.id_creator_user)
+    const name = req.body.name
+    const description = req.body.description
+    const id_event_category = Number(req.body.id_event_category)
+    const id_event_location = Number(req.body.id_event_location)
+    const start_date = req.body.start_date
+    const duration_in_minutes = Number(req.body.duration_in_minutes)
+    const price = Number(req.body.price)
+    const enabled_for_enrollment = Boolean(req.body.enabled_for_enrollment)
+    const max_assistance = Number(req.body.max_assistance)
+    const id_creator_user = Number(req.body.id_creator_user)
     
 
     if (!name || !description || name.length < 3 || description.length < 3) {
@@ -246,10 +246,11 @@ controller.get("/:id/enrollment", async (req, res) => { //Listado de participant
     }
 })
 //user pone rating a evento
-controller.patch("/:id/enrollment/rating", DecryptToken, async (req, res) => {
+controller.patch("/:id/enrollment/rating", DecryptToken, async (req, res) => { //chequear si anda
     const idEvento = req.params.id;
     const enrollmentId = req.params.enrollmentId;
-    const { rating, feedback: observations } = req.body;
+    const rating = req.params.rating
+    const { feedback: observations } = req.body;
     
 
     if (rating < 1 || rating > 10 && typeof(rating) !== Number) {

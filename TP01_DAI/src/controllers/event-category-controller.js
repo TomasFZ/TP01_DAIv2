@@ -28,7 +28,7 @@ elController.get("/event-category/:id", DecryptToken, async (req,res) => {
 
 elController.post("/event-category", DecryptToken, async (req,res) => {
 
-    const name = req.query.name
+    const name = req.body.name
     const output = await eventService.createCategory(name)
     if (output == "1")
     {
@@ -96,13 +96,12 @@ elController.get("/event-location/:id", DecryptToken, async (req,res) => {
 })
 
 elController.post("/event-location", DecryptToken, async (req,res) => {
-    //TODO: Asignar el id_creator_user al usuario logueado
-    const id_loc = Number(req.query.id_location)
-    const name = req.query.name
-    const full_address = req.query.full_address
-    const max_capacity = Number(req.query.max_capacity)
-    const latitude = Number(req.query.latitude)
-    const longitude = Number(req.query.longitude)
+    const id_loc = Number(req.body.id_location)
+    const name = req.body.name
+    const full_address = req.body.full_address
+    const max_capacity = Number(req.body.max_capacity)
+    const latitude = Number(req.body.latitude)
+    const longitude = Number(req.body.longitude)
     const creatUsID = req.user.id
 
     const result = eventService.createLocation(id_loc, name, full_address, max_capacity, latitude, longitude, creatUsID)
@@ -128,13 +127,13 @@ elController.post("/event-location", DecryptToken, async (req,res) => {
 })
 
 elController.put("/event-location", DecryptToken, async (req,res) => {
-    const id = Number(req.query.id)
-    const id_loc = Number(req.query.id_location)
-    const name = req.query.name
-    const full_address = req.query.full_address
-    const max_capacity = Number(req.query.max_capacity)
-    const latitude = Number(req.query.latitude)
-    const longitude = Number(req.query.longitude)
+    const id = Number(req.body.id)
+    const id_loc = Number(req.body.id_location)
+    const name = req.body.name
+    const full_address = req.body.full_address
+    const max_capacity = Number(req.body.max_capacity)
+    const latitude = Number(req.body.latitude)
+    const longitude = Number(req.body.longitude)
     const creatUsID = req.user.id
 
     const result = await eventService.editLocation(id, id_loc, name, full_address, max_capacity, latitude, longitude, creatUsID)
