@@ -96,18 +96,18 @@ export default class EventService{
     }
 
 
-async getUsersFromEvent(idEvento, nombre, apellido, username, asistio, rating){
-    const listaUsers = await userRepository.getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating);
+async getUsersFromEvent(idEvento, nombre, apellido, username, asistio, rating, limit, offset){
+    const listaUsers = await userRepository.getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating, limit, offset);
     console.log("Saliendo Services...")
 
     const nextPage = `${"http://localhost:3000/event/id/enrollment"}?limit=${limit}&offset=${offset + 1}`;
     //return listaUsers
     return {
-        "collection": listaUsers, 
+        "collection": listaUsers.rows, 
         "pagination": {
             "limit": limit,
             "offset": offset,
-            "nextPage": nextPage //poner el http 
+            "nextPage": nextPage
     }
 }}
 

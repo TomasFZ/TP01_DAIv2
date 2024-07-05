@@ -43,20 +43,24 @@ export default class UserRepository {
         }
     }
 
-    async getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating){
-        var sql = "Select * from users u inner join event_enrollments e on e.id_user = u.id where " //select * from users inner join event_enrollments e on e.id_user = users.id where e.id = 1 
-        
+    async getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating, limit, offset){
+        var sql = "Select * from users u inner join event_enrollments e on e.id_user = u.id " //select * from users inner join event_enrollments e on e.id_user = users.id where e.id = 1 
+
         var cash = 1
         let params = []
         let conditions = []
-    
+        
+
+
+        console.log(asistio + " ASISTIO")
+        console.log(idEvento + " ID EVENITNRIFDGNLJ" + typeof idEvento)
 
         if(idEvento && typeof idEvento === 'number'){
-            conditions.push("e.id = $" + cash);
+            conditions.push("where e.id = $" + cash);
             cash++
             params.push(idEvento);
         }
-        if(nombre && typeof nombre === 'string'){
+        if(nombre && typeof nombre === 'string'){     
             conditions.push("u.first_name = $" + cash);
             cash++
             params.push(nombre);
@@ -75,6 +79,7 @@ export default class UserRepository {
             conditions.push("e.attended = $" + cash);
             cash++
             params.push(asistio);
+            console.log("ASISTIO: " + attended)
         }
     
         if (rating && typeof rating === 'number') {
@@ -82,10 +87,12 @@ export default class UserRepository {
             cash++
             params.push(rating);
         }
-        sql += conditions.join(" AND ");
-    
+        params.push(limit,offset)
+        sql += conditions.join(" And ");
+        sql += (" Limit $" + cash + " Offset $" + (cash + 1))
+        
         //params.push(pageSize, reqPage);
-        //console.log(sql)
+        console.log(sql)
     
         const users = await this.DBClient.query(sql, params);
         console.log(users)

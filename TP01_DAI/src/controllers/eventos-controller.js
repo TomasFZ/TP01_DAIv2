@@ -225,12 +225,12 @@ controller.delete("/:id/enrollment", DecryptToken, async (req, res) => {//sacar 
 //por las dudas el siguiente controller estaba en .delete, pero es Listado de participantes. Ahora esta en .get.
 controller.get("/:id/enrollment", async (req, res) => { //Listado de participantes. 
     //filtros
-    const idEvento = req.body.id //params
+    const idEvento = Number(req.params.id) //params
     console.log("idEvento"+idEvento)
     const nombre = req.query.name
     const apellido = req.query.last_name
     const username = req.query.username
-    const asistio = req.query.attended
+    const asistio = Boolean(req.query.attended)
     const rating = req.query.rating
 
     const limit = req.query.limit;
@@ -239,7 +239,7 @@ controller.get("/:id/enrollment", async (req, res) => { //Listado de participant
     try{
     const listaUsuarios = await eventService.getUsersFromEvent(idEvento, nombre, apellido, username, asistio, rating, limit, offset)
         console.log("Saliendo Controller...")
-        return res.send(listaUsuarios.rows)
+        return res.send(listaUsuarios)
     }
     catch(e){
         console.log(e)
