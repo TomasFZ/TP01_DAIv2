@@ -23,20 +23,17 @@ UserController.post("/register", async(req, res) => {
     catch(e){
         console.log(e)
         //res.status(400).send(e.message);
-        return res.status(201).send(e + "Perrr")
+        return res.status(201).send(e + "Error")
     }
 });
 
 UserController.post("/login",  async (req, res) => { //loguea exitosamente al usuario y le brinda un token para validar futuras ejecuciones. 
-    // if(.length <= 0){
-
-    // }
     const username = req.query.username //ver si es con .body so .query
     const password = req.query.password
-    const validacion = await userService.loginUserAsync(username, password)                //validateBody valida el login por username y password exclusivamente
-    if(validacion){
+    const token = await userService.loginUserAsync(username, password)                //validateBody valida el login por username y password exclusivamente
+    if(token){
         //const token = userService.ObtenerToken(req.query.id, username);
-        return res.send("logueado. Token: " + validacion)
+        return res.send("logueado. Token: " + token)
     }else{
         return res.send("Cuenta inexistente.")
     }

@@ -7,12 +7,12 @@ export function DecryptToken(req, res, next){
     }else{
         const tokenRecibido = req.headers.authorization.split(' ')[1];
         if (!tokenRecibido) {
-            return res.status(401).send('Missing token');
+            return res.status(401).send('falta el token');
         }
         //req.user = decryptedToken.payload
         try{
             const payload = jwt.verify(tokenRecibido, secretKey)
-            req.query.username = payload.username;
+            //req.query.username = payload.username;
             console.log("Autenticación exitosa")
         }catch(error){
             console.log(error)

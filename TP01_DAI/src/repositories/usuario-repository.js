@@ -20,12 +20,10 @@ export default class UserRepository {
             if(usersFound.rows.length <= 0)
             {   
                 console.log("No existen usuarios con el username: " + username)
-                const real = false
-                return real
+                return false
             }
             console.log("Que!?!? Existen otros usuarios llamados: " + username)
-            const real = true
-            return real
+            return true
         }
         catch(error)
         {
