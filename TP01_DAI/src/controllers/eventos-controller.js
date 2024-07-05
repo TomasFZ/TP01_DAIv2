@@ -42,7 +42,7 @@ controller.get("/", async (req, res) => {
     }}
     
 );
-
+//getEventDetails
 controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id o lo que sea por params y no por query escrita por el usuario, se pone en postman http://localhost:3000/event/1 en lugar de poner una key con value. 
     
     const evento = await eventService.getEventDetails(req.params.id);
@@ -52,7 +52,7 @@ controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id
     return res.status(200).send(evento) //agregar un return 404 si no reconoce el id
     
 })
-
+//updateEvent
 controller.put("/", DecryptToken, async (req, res) => {//implementar el token. Ponerle ("/", Middleware, async (req, res) mas tarde. 
     const id = req.query.id
     const name = req.query.name
@@ -71,7 +71,6 @@ controller.put("/", DecryptToken, async (req, res) => {//implementar el token. P
     }
 
     if (max_assistance) {
-        // Aquí deberías obtener max_capacity del id_event_location (supongamos que se obtiene de algún servicio o base de datos)
         const max_capacity = await eventService.getMaxCapacity(id_event_location);
         if (max_assistance > max_capacity) {
             return res.status(400).json({ error: 'Max assistance mayor a max capacity' });
@@ -79,7 +78,7 @@ controller.put("/", DecryptToken, async (req, res) => {//implementar el token. P
     }
 
     if (price < 0 || duration_in_minutes < 0) {
-        return res.status(400).json({ error: 'precio y duracion menores a 0' });
+        return res.status(400).json({ error: 'precio y/o duracion menores a 0' });
     }
 
     const evento = eventService.getEventDetails(id);
@@ -96,7 +95,7 @@ controller.put("/", DecryptToken, async (req, res) => {//implementar el token. P
 
 
 })
-
+//createEvent
 controller.post("/", DecryptToken, async (req, res) => { //implementar el token. Ponerle ("/", DecryptToken, async (req, res) mas tarde. 
     const name = req.query.name
     const description = req.query.description
@@ -134,7 +133,7 @@ controller.post("/", DecryptToken, async (req, res) => { //implementar el token.
         return res.status(500).send("error");
     }
 })
-
+//deleteEvent
 controller.delete("/:id", DecryptToken, async (req, res) => { 
     const id = req.params.id
     console.log("Id de evento a borrar: " + id)
@@ -149,7 +148,7 @@ controller.delete("/:id", DecryptToken, async (req, res) => {
         return res.send("No hay usuario ni evento")
     }
 })
-
+//registerUserToEvent
 controller.post("/:id/enrollment", DecryptToken, async (req, res) => { //primero me tengo que loguear para tener un token valido por 1hora de uso. 
     
     const username = req.body.username
@@ -182,7 +181,7 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => { //primero
 }catch(e){console.log(e)}
 
 })
-
+//deleteUserFromEvent
 controller.delete("/:id/enrollment", DecryptToken, async (req, res) => {//sacar usuario de un evento
     const idEvento = req.params.id;
     const username = req.body.username;
@@ -217,7 +216,7 @@ controller.delete("/:id/enrollment", DecryptToken, async (req, res) => {//sacar 
     console.log(e)
 }
 })
-
+//ListadoParticipantes de un event
 //por las dudas el siguiente controller estaba en .delete, pero es Listado de participantes. Ahora esta en .get.
 controller.get("/:id/enrollment", async (req, res) => { //Listado de participantes. 
     //filtros
@@ -241,7 +240,7 @@ controller.get("/:id/enrollment", async (req, res) => { //Listado de participant
         console.log(e)
     }
 })
-
+//user pone rating a evento
 controller.patch("/:id/enrollment/rating", DecryptToken, async (req, res) => {
     const idEvento = req.params.id;
     const enrollmentId = req.params.enrollmentId;

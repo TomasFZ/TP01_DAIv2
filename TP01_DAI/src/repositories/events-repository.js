@@ -218,6 +218,8 @@ constructor(){
             conditions.push("where id= " + cash);
             sql += conditions.join("");
 
+            await this.DBClient.query(sql, params);
+
             console.log("SQL Final:" + sql)
     }
 
