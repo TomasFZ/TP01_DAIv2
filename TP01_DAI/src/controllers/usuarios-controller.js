@@ -28,8 +28,11 @@ UserController.post("/register", async(req, res) => {
 });
 
 UserController.post("/login",  async (req, res) => { //loguea exitosamente al usuario y le brinda un token para validar futuras ejecuciones. 
-    const username = req.query.username //ver si es con .body so .query
-    const password = req.query.password
+    const username = req.body.username //ver si es con .body so .query
+    const password = req.body.password
+
+    console.log("USENAME CONTROLLER: " +username)
+
     const token = await userService.loginUserAsync(username, password)                //validateBody valida el login por username y password exclusivamente
     if(token){
         //const token = userService.ObtenerToken(req.query.id, username);
@@ -38,7 +41,5 @@ UserController.post("/login",  async (req, res) => { //loguea exitosamente al us
         return res.send("Cuenta inexistente.")
     }
 })
-
-
 
 export default UserController
