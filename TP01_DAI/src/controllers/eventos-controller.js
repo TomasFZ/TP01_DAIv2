@@ -2,6 +2,7 @@ import express from "express";
 import EventService from "../servicios/servicios-Eventos.js"
 import UserService from "../servicios/servicios-Usuario.js"
 import {DecryptToken} from "../Middleware.js" //ver si anda o no con los corchetes estos
+import {validacionToken} from "../token.js" 
 const controller = express.Router(); //hacer gitignore para el module
 
 const eventService = new EventService();
@@ -62,6 +63,9 @@ controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id
 })
 //updateEvent
 controller.put("/", DecryptToken, async (req, res) => {//implementar el token. Ponerle ("/", Middleware, async (req, res) mas tarde. 
+    
+    
+    const userId = req.user.id
     const id = req.body.id
     const name = req.body.name
     const description = req.body.description
@@ -105,6 +109,11 @@ controller.put("/", DecryptToken, async (req, res) => {//implementar el token. P
 })
 //createEvent
 controller.post("/", DecryptToken, async (req, res) => { //implementar el token. Ponerle ("/", DecryptToken, async (req, res) mas tarde. 
+    
+    // if(req.user === undefined){
+    //     return res.status(400).send("Error. Token incorrecto.")
+    // }
+    validacionToken(req, res);
     const name = req.body.name
     const description = req.body.description
     const id_event_category = Number(req.body.id_event_category)

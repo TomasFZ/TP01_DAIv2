@@ -1,11 +1,5 @@
-import jwt from 'jsonwebtoken';
-
-const payload = {
-    id: userId, //le pasamos los datos
-    username: nombreUsuario
+export function validacionToken(req, res){
+    if(req.user === undefined){
+        return res.status(400).send("Error. Token incorrecto.")
+    }
 }
-
-const secretKey = "djfjsflj"
-
-const token = jwt.sign(payload, secretKey)
-console.log(token)

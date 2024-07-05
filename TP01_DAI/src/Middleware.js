@@ -6,13 +6,10 @@ export function DecryptToken(req, res, next){
         res.status(401).send('No ingresó el token para confirmar que usted es el usuario')
     }else{
         const tokenRecibido = req.headers.authorization.split(' ')[1];
-        if (!tokenRecibido) {
-            return res.status(401).send('falta el token');
-        }
-        //req.user = decryptedToken.payload
+        
         try{
             const payload = jwt.verify(tokenRecibido, secretKey)
-            //req.query.username = payload.username;
+            req.user = payload
             console.log("Autenticación exitosa")
         }catch(error){
             console.log(error)
