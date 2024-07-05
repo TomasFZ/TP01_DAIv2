@@ -301,8 +301,8 @@ async getOneCategory(id)
 {
     const sql = "Select * From event_categories Where id = $1"
     const params = [id]
-    console.log(id)
-    return await this.DBClient.query(sql, params)
+    const result = await this.DBClient.query(sql, params)
+    return result.rows
 }
 
 async createCategory(name)
@@ -324,6 +324,54 @@ async murderCategory(id)
     const sql = "Delete event_categories Where id = $1"
     const params = [id]
     return await this.DBClient.query(sql,params)
+}
+
+async getAllLocations()
+{
+    const sql = "Select * From event_locations "
+    const result = await this.DBClient.query(sql)
+    return result.rows
+}
+
+async getOneLocation(id)
+{
+    const sql = "Select * From event_locations Where id = $1"
+    const params = [id]
+    const result = await this.DBClient.query(sql, params)
+    return result.rows
+}
+
+async locationCheck(id_location)
+{
+    const sql = "Select * From locations Where id = $1"
+    const params = [id_location]
+    const result = await this.DBClient.query(sql, params)
+    return result.rows
+}
+
+async createLocation(id_location, name, full_address, max_capacity, latitude, longitude)
+{
+    const sql = "Insert Into event_locations (id_location, name, full_address, max_capacity, latitude, longitude, id_creator_user) Values ($1, $2, $3, $4, $5, $6, $7)"
+    const params = [id_location, name, full_address, max_capacity, latitude, longitude, id_creator_user]
+    const result = await this.DBClient.query(sql, params)
+    console.log(result)
+    return 4
+}
+
+async editLocation(id, id_location, name, full_address, max_capacity, latitude, longitude)
+{
+    const sql = "Update event_locations Set id_location = $1, name = $2, full_address = $3, max_capacity = $4, latitude = $5, longitude = $6 Where id = $7"
+    const params = [id_location, name, full_address, max_capacity, latitude, longitude, id]
+    const result = await this.DBClient.query(sql, params)
+    console.log(result)
+    return 4
+}
+
+async murderLoc(id)
+{
+    const sql = "Delete event_locations Where id = $1"
+    const params = [id]
+    return await this.DBClient.query(sql, params)
 }
 
 }

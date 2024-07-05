@@ -5,7 +5,7 @@ const elController = express.Router(); //hacer gitignore para el module
 
 const eventService = new EventService();
 
-elController.get("/event-category", async (req,res) => {
+elController.get("/event-category", DecryptToken, async (req,res) => {
     const limit = Number(req.query.limit);
     const offset = Number(req.query.offset);
     if(limit >= 0 & offset >= 0)
@@ -14,36 +14,34 @@ elController.get("/event-category", async (req,res) => {
     }else return res.send("Offset o limit invalidos")
 })
 
-elController.get("/event-category/:id", async (req,res) => {
+elController.get("/event-category/:id", DecryptToken, async (req,res) => {
 
     const catId = req.params.id;
     const result = await eventService.getOneCategory(catId)
-    if(result.rows[0] == null)
+    if(result[0] == null)
     {
         res.status(404).send("No se encontró una categoría con ese ID")
     }
-    return res.status(200).send(result.rows)
+    return res.status(200).send(result)
 
 })
 
-elController.post("/event-category", async (req,res) => {
+elController.post("/event-category", DecryptToken, async (req,res) => {
 
     const name = req.query.name
     const output = await eventService.createCategory(name)
     if (output == "1")
     {
-        console.log("Pedilo")
         return res.status(400).send("El nombre está vacío o tiene menos de tres letras")
     }
     else
     {
-        console.log("me aburro")
         return res.status(200).send("Creado Exitosamente")
     }
 
 })
 
-elController.put("/event-category", async (req,res) => {
+elController.put("/event-category", DecryptToken, async (req,res) => {
 
     const idCat = Number(req.query.id)
     const name = req.query.name
@@ -63,7 +61,7 @@ elController.put("/event-category", async (req,res) => {
 
 })
 
-elController.delete("/event-category", async (req,res) => {
+elController.delete("/event-category", DecryptToken, async (req,res) => {
 
     const idToKill = Number(req.query.id)
     const crimeScene = eventService.killCategory(idToKill)
@@ -77,5 +75,103 @@ elController.delete("/event-category", async (req,res) => {
     }
 })
 
+elController.get("/event-location", DecryptToken, async (req,res) => {
+
+    const locs = eventService.getAllLocations()
+    return res.status(200).send(locs)
+
+})
+
+elController.get("/event-location/:id", DecryptToken, async (req,res) => {
+    //TODO: Agregar el checkeo de ID Logueado
+    const idLoc = Number(req.params.id)
+    const output = await eventService.getOneLocation(idLoc)
+    if(output[0] == null)
+    {
+        res.status(404).send("No se encontró una categoría con ese ID")
+    }
+    return res.status(200).send(output)
+
+})
+
+elController.post("/event-location", DecryptToken, async (req,res) => {
+    //TODO: Asignar el id_creator_user al usuario logueado
+    const id_loc = Number(req.query.id_location)
+    const name = req.query.name
+    const full_address = req.query.full_address
+    const max_capacity = Number(req.query.max_capacity)
+    const latitude = Number(req.query.latitude)
+    const longitude = Number(req.query.longitude)
+    const creatUsID = "Officer Boles" //Dummy
+    // const creatUsID = ???
+
+    const result = eventService.createLocation(id_loc, name, full_address, max_capacity, latitude, longitude, creatUsID)
+    switch(result)
+    {
+        case 1:
+            return res.status(400).send("El nombre  (name) o la dirección (full_address) están vacíos o tienen menos de tres (3) letras.")
+        break;
+
+        case 2:
+            return res.status(400).send("El id_location es inexistente.")
+        break;
+
+        case 3:
+            return res.status(400).send("El max_capacity es el número cero (0) o negativo.")
+        break;
+
+        case 4:
+            return res.status(200).send("Local Creado Exitósamente.")
+        break;
+    }
+
+})
+
+elController.put("/event-location", DecryptToken, async (req,res) => {
+    //TODO: Asignar el id_creator_user al usuario logueado
+    const id = Number(req.query.id)
+    const id_loc = Number(req.query.id_location)
+    const name = req.query.name
+    const full_address = req.query.full_address
+    const max_capacity = Number(req.query.max_capacity)
+    const latitude = Number(req.query.latitude)
+    const longitude = Number(req.query.longitude)
+    const creatUsID = "Officer Boles" //Dummy
+    // const creatUsID = ???
+
+    const result = await eventService.editLocation(id, id_loc, name, full_address, max_capacity, latitude, longitude, creatUsID)
+    switch(result)
+    {
+        case 1:
+            return res.status(400).send("El nombre  (name) o la dirección (full_address) están vacíos o tienen menos de tres (3) letras.")
+        break;
+
+        case 2:
+            return res.status(400).send("El id_location es inexistente.")
+        break;
+
+        case 3:
+            return res.status(400).send("El max_capacity es el número cero (0) o negativo.")
+        break;
+
+        case 4:
+            return res.status(200).send("Local Creado Exitósamente.")
+        break;
+    }
+})
+
+elController.delete("/event-location/:id", DecryptToken, async (req,res) => {
+
+    const locId = req.params.id
+    const result = await eventService.killLoc(locId)
+    if(result == 1)
+    {
+        return res.status(404).send("No se encontró un lugar con ese ID")
+    }
+    else
+    {
+        return res.status(200).send("Borrado Exitósamente")
+    }
+})
 
 export default elController

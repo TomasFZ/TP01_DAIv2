@@ -2,7 +2,7 @@
 //mjs
 
 //ATENCIÓN: PARA LA PRIMERA ENTREGA SE TIENE QUE ENVIAR LOS CONTROLLERS CON TODO LO DEMÁS HARDCODEADO. ES DECIR, LOS OBJETOS EVENTO DE ACA SON ESCRITOS EN VEZ DE LLAMAR A LA DB ETC ETC. 
-import { query } from "express";
+import e, { query } from "express";
 import EventRepository from "../repositories/events-repository.js"
 import UserRepository from "../repositories/usuario-repository.js"
 const eventRepository = new EventRepository();
@@ -194,6 +194,75 @@ async killCategory(idToKill)
     else
     {
         return await eventRepository.murderCategory(id)
+    }
+}
+
+async getAllLocations()
+{
+    return await eventRepository.getAllLocations()
+}
+
+async getOneLocation(id)
+{
+    return await eventRepository.getOneLocation(id)
+}
+
+async createLocation(id_location, name, full_address, max_capacity, latitude, longitude, id_creator_user)
+{
+    if(name == null | full_address == null)
+    {
+        return 1
+    }
+    if(name.length < 3 | full_address.length < 3)
+    {
+        return 1
+    }
+    const isIdLocReal = await eventRepository.locationCheck(id_location)
+    if(isIdLocReal[0] == null)
+    {
+        return 2
+    }
+    if(max_capacity < 1)
+    {
+        return 3
+    }
+
+    return await eventRepository.createLocation(id_location, name, full_address, max_capacity, latitude, longitude, id_creator_user)
+}
+
+async editLocation(id, id_location, name, full_address, max_capacity, latitude, longitude, creatUsID)
+{
+    if(name == null | full_address == null)
+    {
+        return 1
+    }
+    if(name.length < 3 | full_address.length < 3)
+    {
+        return 1
+    }
+    const isIdLocReal = await eventRepository.locationCheck(id_location)
+    if(isIdLocReal[0] == null)
+    {
+        return 2
+    }
+    if(max_capacity < 1)
+    {
+        return 3
+    }
+    //TODO: Cheackear si le pertenece al usuario
+    return await eventRepository.editLocation(id, id_location, name, full_address, max_capacity, latitude, longitude)
+}
+
+async killLoc(id)
+{
+    const isReal = await eventRepository.getOneLocation(id)
+    if(isReal == null)
+    {
+        return 1
+    }
+    else
+    {
+        return await eventRepository.murderLoc(id)
     }
 }
 
