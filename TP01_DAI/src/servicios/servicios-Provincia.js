@@ -3,10 +3,10 @@ export default class ProvinceService{
  
     
     async getAllProvincias(limit, offset){
-        
+        console.log("limit en service " + limit)
         const provinceRepository = new ProvinceRepository();
         const listaProvincias = await provinceRepository.getAllProvincias(limit, offset); //error: Maximum Call Stack Exceeded. 
-
+        console.log(listaProvincias)
         //return listaProvincias
         const nextPage = `${"http://localhost:3000/province"}?limit=${limit}&offset=${offset + 1}`;
 
@@ -21,7 +21,7 @@ export default class ProvinceService{
     async getProvinciaPorId(idP){
         const provinceRepository = new ProvinceRepository();
         const provincia = await provinceRepository.getProvinceById(idP)
-        console.log("provincia nombrne: "+provincia)
+        console.log("provincia nombrne: "+provincia.name)
         return provincia
     }
 
@@ -50,23 +50,10 @@ export default class ProvinceService{
     async updateProvincia(id, name, full_name, latitude, longitude, display_order){
         const provinceRepository = new ProvinceRepository();
         console.log("name: " +name)
-        if(name.length < 3)
-        {
-            return "name_too_short"
-        }
-        console.log("latitude es: " + typeof latitude)
-        if(typeof latitude !== 'number')
-        {
-            return "latitude_not_number"
-        }
-        console.log("longitude es: " + typeof longitude)
-        if(typeof longitude !== 'number')
-        {
-            return "longitude_not_number"
-        }
+        
 
-        const result = await provinceRepository.updateProvince(id, name, full_name, latitude, longitude, display_order)
-        return result
+        await provinceRepository.updateProvince(id, name, full_name, latitude, longitude, display_order)
+        
     }
     async deleteProvincia(id){
         const provinceRepository = new ProvinceRepository();

@@ -113,7 +113,7 @@ async getAllEvents(limit, offset) {
             }
     
             if (categoria) {
-                conditions.push(`ec.id = $${cash}`);
+                conditions.push(`ec.name = $${cash}`);
                 params.push(categoria);
                 cash++;
             }

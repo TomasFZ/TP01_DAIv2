@@ -10,8 +10,11 @@ export default class ProvinceRepository {
 
 async getAllProvincias(limit, offset){
     try {
-        const sql = "SELECT * FROM provinces OFFSET $1 LIMIT $2;"; 
+        const sql = "SELECT * FROM provinces ORDER BY id ASC OFFSET $1 LIMIT $2;"; 
         const provincias = await this.DBClient.query(sql, [ offset,limit ]);
+        console.log("provincias repository: " + provincias)
+        console.log("provincias.rows repository: " + provincias.rows)
+
         return provincias.rows;
     } catch (error) {
         console.error("Error al obtener eventos:", error);
@@ -23,6 +26,7 @@ async getProvinceById (id){
     try{
         const sql = "select * from provinces p where p.id = $1"
         const result = await this.DBClient.query(sql, [id])
+        console.log("provincia nombre repository: " + result.rows.name)
         if(result.rows.length > 0)
         {
             console.log("Retornando: " + result.rows)
@@ -61,10 +65,9 @@ async updateProvince(id, name, full_name, latitude, longitude, display_order)
     {
         const sql = "Update provinces Set name = $1, full_name = $2, longitude = $3, latitude = $4, display_order = $5 Where id = $6"
         const cashes = [name, full_name, longitude, latitude, display_order, id]
-        const result = await this.DBClient.query(sql, cashes)
-        console.log("provincia: " + result)
-        return result
-    }
+        await this.DBClient.query(sql, cashes)
+        
+        }
 
     catch(guB)
     {

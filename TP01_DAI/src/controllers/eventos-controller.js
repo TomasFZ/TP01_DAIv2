@@ -18,13 +18,16 @@ const userService = new UserService();
 console.log("holaaaa")
 
 controller.get("/", async (req, res) => {
-    const limit = req.query.limit;
-    const offset = req.query.offset;//verificar si son num y si existen. 
-    console.log("ID: " + req.query.id_event_category)
-        if (req.query.event_name != null | req.query.id_event_category != null | req.query.start_date != null  | req.query.tags != null)
+    var limit = Number(req.query.limit);
+    var offset = Number(req.query.offset);//verificar si son num y si existen. 
+    if (isNaN(limit) || isNaN(offset)) {
+        limit = 100;
+        offset = 1;
+    }
+        if (req.query.event_name != null | req.query.category != null | req.query.start_date != null  | req.query.tags != null)
         {
-            console.log("id EVENT CATEGFDILGINGJ: "+req.query.id_event_category)
-            const eventoBuscado = await eventService.getEventBuscado(req.query.event_name, req.query.id_event_category, req.query.start_date, req.query.tags); //falta que con la fecha no funciona. 
+            console.log("categoria: "+req.query.category)
+            const eventoBuscado = await eventService.getEventBuscado(req.query.event_name, req.query.category, req.query.start_date, req.query.tags); //falta que con la fecha no funciona. 
             if(eventoBuscado.rows[0] == null)
             {
                 return res.status(404).send("evento no existe")
