@@ -70,7 +70,7 @@ controller.put("/", DecryptToken, async (req, res) => {//implementar el token. P
     const max_assistance = Number(req.body.max_assistance)
     const id_creator_user = Number(req.body.id_creator_user)
 
-    const event1 = await eventService.getEventById(id);
+    const event1 = await eventService.getEventDetails(id);
     if(event1.rows[0] === undefined)
         {
             return res.status(404).send("evento no existe")
@@ -173,11 +173,13 @@ controller.delete("/:id", DecryptToken, async (req, res) => {
 //registerUserToEvent
 controller.post("/:id/enrollment", DecryptToken, async (req, res) => { //primero me tengo que loguear para tener un token valido por 1hora de uso. 
     
-    const username = req.body.username
+    validacionToken(req, res)
+    const userId = req.user.Id
     const fechaInscripcion = req.body.fechaInscripcion;
     try{
     const evento = await eventService.getEventDetails(req.params.id);
-    const user = await userService.findUsername(username);
+    const user = await userService.getUserById(userId);
+    console.log("USER: " + userId)
     if(!user){
         return res.status(404).send("Usuario no encontrado");
     }

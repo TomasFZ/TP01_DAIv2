@@ -277,11 +277,6 @@ async killLoc(id)
     }
 }
 
-async getEventById(id){
-
-    const event = await eventRepository.getEventById(id);
-    return event
-}
 
 }
 

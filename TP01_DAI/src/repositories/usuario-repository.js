@@ -31,6 +31,12 @@ export default class UserRepository {
         }
     }
 
+    async getUserById(id){
+        const sql = "select * from users where id = $1";
+        const user = await this.DBClient.query(sql, [id])
+        return user;
+    }
+
     async insertUser(first_name, last_name, username, password){
         try {
             //console.log("FN: " + first_name + " LN: " + last_name + " UN: " + username + " PW: " + password)

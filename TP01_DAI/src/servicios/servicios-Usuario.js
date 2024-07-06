@@ -65,4 +65,10 @@ export default class UserService
         const user = await userRepository.findUserByUsername(username);
         return user;
     }
+
+    async getUserById(id){
+        const userRepository = new UserRepository();
+        const user = await userRepository.getUserById(id);
+        return user;
+    }
 }
