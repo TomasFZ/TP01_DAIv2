@@ -39,6 +39,7 @@ export default class EventService{
     async getEventDetails(idEvento) //en este creo que no va limit-offset
     {
         const eventoBuscado = await eventRepository.getEventoPorId(idEvento)
+        console.log("evento buscado en service: " + eventoBuscado.event_name)
         return eventoBuscado
 
     }

@@ -213,8 +213,8 @@ async getAllEvents(limit, offset) {
             e.id = $1`//Select * From events Where id = $1
             const evento = await this.DBClient.query(sql, [id]);
             console.log("id: " + id)
-            console.log("nombre evento 1: " + evento[1] + " Es undefined?:" + evento)
-            return evento.rows
+            console.log("nombre evento 1: " + evento.rows[0].event_name + " Es undefined?:" + evento.enabled_for_enrollment)
+            return evento.rows[0]
         }catch(e){
             console.error("Error al obtener eventos:", e);
         }
@@ -370,9 +370,10 @@ async getAllEvents(limit, offset) {
     }
 
     async enrollUserToEvent(idEvento, idUser, fechaInscripcion){
+        console.log("idEvento en repository: " + idEvento) 
         const sql = `
-            INSERT INTO event_enrollments (id_event, id_user, description, registration_date_time) 
-            VALUES ($1, $2, ?, $4)`;
+            INSERT INTO event_enrollments (id_event, id_user, registration_date_time) 
+            VALUES ($1, $2, $3)`;
             await this.DBClient.query(sql, [idEvento, idUser, fechaInscripcion]);
     }
     async deleteUserFromEvent(idEvento, idUser){

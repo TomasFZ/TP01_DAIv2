@@ -48,6 +48,8 @@ controller.get("/", async (req, res) => {
 controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id o lo que sea por params y no por query escrita por el usuario, se pone en postman http://localhost:3000/event/1 en lugar de poner una key con value. 
     console.log("id: " + req.params.id)
     const evento = await eventService.getEventDetails(req.params.id);
+    console.log("evento en controller evento en controller: " + evento.event_name)
+
     if (!evento) {
         return res.status(404).send("Evento no encontrado");
     }
@@ -172,7 +174,7 @@ controller.delete("/:id", DecryptToken, async (req, res) => {
 })
 //registerUserToEvent
 controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
-    const userId = req.user?.id;
+    const userId = req.user?.id; //
     console.log("User ID from token: ", userId);
     
     if (!userId) {
@@ -181,6 +183,8 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
 
     try {
         const evento = await eventService.getEventDetails(req.params.id);
+        //console.log("evento.name: " + evento.rows[0].name)
+        console.log("enabled para enrollment: " + evento.enabled_for_enrollment)
         const user = await userService.getUserById(userId);
         console.log("USER: " + userId);
         
@@ -189,9 +193,18 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
         }
         
         const listaUsers = await eventService.getUsersFromEvent(req.params.id);
-        const validacionUsuarioRegistrado = listaUsers.some(userI => userI.id === user.id);
+        
+        let usuarioRegistrado = false;
 
-        if (validacionUsuarioRegistrado) {
+        // Bucle básico para buscar el usuario en listaUsers
+        for (let i = 0; i < listaUsers.length; i++) {
+            if (listaUsers[i].id === user.id) {
+                usuarioRegistrado = true;
+                break;
+            }
+        }
+
+        if (usuarioRegistrado) {
             return res.status(400).send("Usuario ya registrado en el evento");
         }
 
@@ -200,7 +213,7 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
         }
 
         if (!evento.enabled_for_enrollment) {
-            return res.status(400).json({ error: 'Evento no habilitado para enrollment' });
+            return res.status(400).send({ error: 'Evento no habilitado para enrollment' });
         }
 
         const fechaHoy = new Date();
@@ -209,7 +222,7 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
             return res.status(400).json({ error: 'Evento ya iniciado' });
         }
 
-        await eventService.enrollUserToEvent(evento.id, user.id, fechaHoy);
+        await eventService.enrollUserToEvent(evento.event_id, userId, fechaHoy);
         return res.status(201).send("Usuario registrado en el evento.");
     } catch (e) {
         console.error(e);
