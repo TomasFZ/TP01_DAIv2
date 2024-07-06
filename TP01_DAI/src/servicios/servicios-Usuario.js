@@ -32,13 +32,13 @@ export default class UserService
             id: userId, 
             username: nombreUsuario
         }
-        const secretKey = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+        const secretKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
 
         const options = {
             expiresIn: '1h'
         }
 
-        const token = jwt.sign({ payload }, secretKey, options); //, {options}
+        const token = jwt.sign(payload, secretKey, options); //, {options}
         console.log(token)
         return token
     }
