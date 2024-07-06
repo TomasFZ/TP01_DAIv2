@@ -127,19 +127,19 @@ controller.post("/", DecryptToken, async (req, res) => { //implementar el token.
     
     
     if (!name || !description || name.length < 3 || description.length < 3) {
-        return res.status(400).json({ error: 'nombre y descripcion deben tener al menos 3 caracteres' });
+        return res.status(400).send({ error: 'nombre y descripcion deben tener al menos 3 caracteres' });
     }
 
     if (max_assistance) {
         // Aquí deberías obtener max_capacity del id_event_location (supongamos que se obtiene de algún servicio o base de datos)
         const max_capacity = await eventService.getMaxCapacity(id_event_location);
         if (max_assistance > max_capacity) {
-            return res.status(400).json({ error: 'Max assistance mayor a max capacity' });
+            return res.status(400).send({ error: 'Max assistance mayor a max capacity' });
         }
     }
 
     if (price < 0 || duration_in_minutes < 0) {
-        return res.status(400).json({ error: 'precio y duracion menores a 0' });
+        return res.status(400).send({ error: 'precio y duracion menores a 0' });
     }
 
     try{
@@ -175,7 +175,7 @@ controller.delete("/:id", DecryptToken, async (req, res) => {
 //registerUserToEvent
 controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
     const userId = req.user?.id; //
-    console.log("User ID from token: ", userId);
+    console.log("User ID de token: ", userId);
     
     if (!userId) {
         return res.status(400).send("Usuario no encontrado");
@@ -194,9 +194,7 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
         
         const listaUsers = await eventService.getUsersFromEvent(req.params.id);
         
-        let usuarioRegistrado = false;
-
-        // Bucle básico para buscar el usuario en listaUsers
+        let usuarioRegistrado = false; //mala practica de programacion, pero no hay tiempo. 
         for (let i = 0; i < listaUsers.length; i++) {
             if (listaUsers[i].id === user.id) {
                 usuarioRegistrado = true;
@@ -204,6 +202,7 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
             }
         }
 
+       
         if (usuarioRegistrado) {
             return res.status(400).send("Usuario ya registrado en el evento");
         }
@@ -234,10 +233,16 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
 //deleteUserFromEvent
 controller.delete("/:id/enrollment", DecryptToken, async (req, res) => {//sacar usuario de un evento
     const idEvento = req.params.id;
-    const username = req.body.username;
+    const userId = req.user?.id; //
+    console.log("User ID de token: ", userId);
+    
+    if (!userId) {
+        return res.status(400).send("Usuario no encontrado");
+    }
+  
     try{
-    const user = await userService.findUsername(username);
-    const evento = await eventService.getEventDetails(req.params.id);
+    const user = await userService.getUserById(userId);
+    const evento = await eventService.getEventDetails(idEvento);
 
     if(!user){
         return res.status(404).send("Usuario no encontrado");
@@ -247,9 +252,19 @@ controller.delete("/:id/enrollment", DecryptToken, async (req, res) => {//sacar 
     }
 
     const listaUsers = await eventService.getUsersFromEvent(req.params.id);
-    const validacionUsuarioRegistrado = listaUsers.some(userI => userI.id === user.id);
+        
+        let usuarioRegistrado = false;
 
-    if (!validacionUsuarioRegistrado) {
+        
+        for (let i = 0; i < listaUsers.length; i++) {//mala practica de programacion, pero no hay tiempo. 
+            if (listaUsers[i].id === user.id) {
+                usuarioRegistrado = true;
+                console.log("es true")
+                break;
+            }
+        }
+
+    if (!usuarioRegistrado) {
         return res.status(400).send("Usuario no registrado en el evento");
     }
 
@@ -259,7 +274,7 @@ controller.delete("/:id/enrollment", DecryptToken, async (req, res) => {//sacar 
       return res.status(400).json({ error: 'Evento ya iniciado o pasado' });
     }
 
-    await eventService.deleteUserFromEvent(idEvento, user.id); //
+    await eventService.deleteUserFromEvent(idEvento, userId); //
 
     return res.status(200).send("Usuario removido de su suscripción al evento.");
 }catch(e){
@@ -291,28 +306,39 @@ controller.get("/:id/enrollment", async (req, res) => { //Listado de participant
     }
 })
 //user pone rating a evento
-controller.patch("/:id/enrollment/rating", DecryptToken, async (req, res) => { //chequear si anda
-    const idEvento = req.params.id;
-    const enrollmentId = req.params.enrollmentId;
-    const rating = req.params.rating
+controller.patch("/:id/enrollment/:rating", DecryptToken, async (req, res) => {
+    const enrollmentId = req.params.id;
+    const rating = Number(req.params.rating);
     const { feedback: observations } = req.body;
-    
 
-    if (rating < 1 || rating > 10 && typeof(rating) !== Number) {
-        return res.status(400).send({ error: 'El rating debe estar entre 1 y 10.' });
+    // Validación del rating
+    if (isNaN(rating) || rating < 1 || rating > 10) {
+        return res.status(400).send({ error: 'El rating debe ser un número entre 1 y 10.' });
     }
 
     try {
-        const event = await eventService.getEventDetails(idEvento);
-        if (!event) {
-            return res.status(404).send({ error: 'El evento no existe.' });
-        }
-        const fechaHoy = new Date();
-        if (event.start_date > fechaHoy) {
-            return res.status(400).send({ error: 'El evento no ha finalizado aún.' });
+        const events = await eventService.getAllEvents();
+        const event_enrollment = await eventService.getEventEnrollmentsById(enrollmentId);
+
+        // const foundEvent = events.rows.find(event => event.id === event_enrollment.id_event);//mala practica de programacion, pero no hay tiempo. 
+        let foundEvent = null;
+
+for (let i = 0; i < events.collection.rows.length; i++) {
+    if (events.collection.rows[i].id === event_enrollment.id_event) {
+        foundEvent = events.rows[i];
+        break;
+    }
+}
+
+        if (!foundEvent) {
+            return res.status(404).send({ error: 'El evento asociado a esta inscripción no existe.' });
         }
 
-        // Actualizar el rating y el feedback del evento
+        const fechaHoy = new Date();
+        if (event_enrollment.start_date > fechaHoy) {
+            return res.status(400).send({ error: 'El evento asociado a esta inscripción no ha finalizado aún.' });
+        }
+
         await eventService.updateRatingEvent(enrollmentId, rating, observations);
 
         return res.status(200).send({ message: 'El rating y feedback fueron actualizados correctamente.' });
@@ -320,6 +346,7 @@ controller.patch("/:id/enrollment/rating", DecryptToken, async (req, res) => { /
         console.error(error);
         return res.status(500).send({ error: 'Error interno del servidor.' });
     }
-})
+});
+
 
 export default controller

@@ -101,6 +101,6 @@ export default class UserRepository {
         const users = await this.DBClient.query(sql, params);
         console.log(users)
         console.log("Saliendo Repository...")
-        return users;
+        return users.rows;
     }
 }

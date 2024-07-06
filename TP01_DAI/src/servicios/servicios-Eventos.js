@@ -14,7 +14,7 @@ export default class EventService{
         // Devuelve directamente los eventos (lista) del repositorio
        
 
-        const nextPage = `${"http://localhost:3000/event"}?limit=${limit}&offset=${offset + 1}`;
+        const nextPage = `${"http://localhost:3000/api/event"}?limit=${limit}&offset=${offset + 1}`;
         //return listaEventos
         return {
             "collection": listaEventos, 
@@ -103,8 +103,8 @@ async getUsersFromEvent(idEvento, nombre, apellido, username, asistio, rating, l
     console.log("rating service: " + rating)
     const listaUsers = await userRepository.getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating, limit, offset);
     console.log("Saliendo Services...")
-
-    const nextPage = `${"http://localhost:3000/event/id/enrollment"}?limit=${limit}&offset=${offset + 1}`;
+    console.log("listaUsers[0].first_name" + listaUsers[0].rows.first_name)
+    const nextPage = `${"http://localhost:3000/api/event/id/enrollment"}?limit=${limit}&offset=${offset + 1}`;
     //return listaUsers
     return {
         "collection": listaUsers.rows, 
@@ -131,7 +131,7 @@ async deleteUserFromEvent(idEvento, idUser){
 async getAllCategories(limit, offset)
 {
     const listaCategories = await eventRepository.getAllCategories(limit, offset);
-    const nextPage = `${"http://localhost:3000/event-category"}?limit=${limit}&offset=${offset + 1}`;
+    const nextPage = `${"http://localhost:3000/api/event-category"}?limit=${limit}&offset=${offset + 1}`;
 
         return {
             "collection": listaCategories, 
@@ -278,6 +278,9 @@ async killLoc(id)
     }
 }
 
-
+async getEventEnrollmentsById(id){
+    const eventEnrollment = eventRepository.getEventEnrollmentsById(id);
+    return eventEnrollment;
+}
 }
 

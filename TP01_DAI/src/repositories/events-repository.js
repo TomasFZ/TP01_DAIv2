@@ -381,7 +381,11 @@ async getAllEvents(limit, offset) {
         await this.DBClient.query(sql, [idEvento, idUser]);
     }
 
-
+    async getEventEnrollmentsById(id){
+        const sql = "select * from event_enrollments where id = $1";
+        const eventEnrollment = await this.DBClient.query(sql, [id]);
+        return eventEnrollment;
+    }
 
 async getAllCategories()
 {

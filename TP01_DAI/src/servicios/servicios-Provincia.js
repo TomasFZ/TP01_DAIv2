@@ -8,7 +8,7 @@ export default class ProvinceService{
         const listaProvincias = await provinceRepository.getAllProvincias(limit, offset); //error: Maximum Call Stack Exceeded. 
         console.log(listaProvincias)
         //return listaProvincias
-        const nextPage = `${"http://localhost:3000/province"}?limit=${limit}&offset=${offset + 1}`;
+        const nextPage = `${"http://localhost:3000/api/province"}?limit=${limit}&offset=${offset + 1}`;
 
         return {
             "collection": listaProvincias, 
@@ -30,7 +30,7 @@ export default class ProvinceService{
         const locations = await provinceRepository.getLocationsById(id, limit, offset)
         //return locations//paginacion
 
-        const nextPage = `${"http://localhost:3000/province/id/locations"}?limit=${limit}&offset=${offset + 1}`;
+        const nextPage = `${"http://localhost:3000/api/province/id/locations"}?limit=${limit}&offset=${offset + 1}`;
 
         return {
             "collection": locations, 

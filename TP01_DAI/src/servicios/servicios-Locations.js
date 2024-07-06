@@ -6,7 +6,7 @@ async getAllLocations(limit, offset){
     const locationRepository = new LocationRepository();
     const listaLocations = await locationRepository.getAllLocations(limit, offset);
 
-    const nextPage = `${"http://localhost:3000/location"}?limit=${limit}&offset=${(offset + 1)}`;
+    const nextPage = `${"http://localhost:3000/api/location"}?limit=${limit}&offset=${(offset + 1)}`;
 
         return {
             "collection": listaLocations, 
@@ -30,7 +30,7 @@ async getAllLocationsMatchingId(limit, offset, id){
     const locationRepository = new LocationRepository(); 
     const listaLocations = await locationRepository.getAllLocationsMatchingId(id);
 
-    const nextPage = `${"http://localhost:3000/location/:id/event-location"}?limit=${limit}&offset=${offset + 1}`;
+    const nextPage = `${"http://localhost:3000/api/location/:id/event-location"}?limit=${limit}&offset=${offset + 1}`;
     return {
         "collection": listaLocations, 
         "pagination": {
