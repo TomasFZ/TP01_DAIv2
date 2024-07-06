@@ -24,7 +24,10 @@ elController.get("/event-category/:id", DecryptToken, async (req,res) => {
     {
         res.status(404).send("No se encontró una categoría con ese ID")
     }
-    return res.status(200).send(result)
+    else
+    {
+        return res.status(200).send(result)
+    }
 
 })
 
@@ -79,7 +82,7 @@ elController.delete("/event-category", DecryptToken, async (req,res) => {
 
 elController.get("/event-location", DecryptToken, async (req,res) => {
 
-    const locs = eventService.getAllLocations()
+    const locs = await eventService.getAllLocations()
     return res.status(200).send(locs)
 
 })

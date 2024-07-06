@@ -412,15 +412,15 @@ async editCategory(id, name)
 }
 
 async murderCategory(id)
-{
-    const sql = "Delete event_categories Where id = $1"
+{//Viola Clave Foránea ._.
+    const sql = "Delete From event_categories Where id = $1"
     const params = [id]
     return await this.DBClient.query(sql,params)
 }
 
 async getAllLocations()
 {
-    const sql = "Select * From event_locations "
+    const sql = "Select * From event_locations"
     const result = await this.DBClient.query(sql)
     return result.rows
 }
@@ -460,8 +460,8 @@ async editLocation(id, id_location, name, full_address, max_capacity, latitude, 
 }
 
 async murderLoc(id)
-{
-    const sql = "Delete event_locations Where id = $1"
+{//Igual que en murderCategory, viola clave foránea.
+    const sql = "Delete From event_locations Where id = $1"
     const params = [id]
     return await this.DBClient.query(sql, params)
 }

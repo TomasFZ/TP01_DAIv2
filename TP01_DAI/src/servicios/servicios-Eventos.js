@@ -188,13 +188,13 @@ async editCategory(id, name)
 
 async killCategory(idToKill)
 {
-    if((await eventRepository.getOneCategory(id)) == null)
+    if((await eventRepository.getOneCategory(idToKill)) == null)
     {
         return 1
     }
     else
     {
-        return await eventRepository.murderCategory(id)
+        return await eventRepository.murderCategory(idToKill)
     }
 }
 
