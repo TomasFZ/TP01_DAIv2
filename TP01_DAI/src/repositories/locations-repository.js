@@ -50,7 +50,7 @@ async getAllLocationsMatchingId(id){
       JOIN 
         event_locations el ON e.id_event_location = el.id
       WHERE 
-        el.id_location = ?
+        el.id_location = $1
     `;
     try{
         const locations = await this.DBClient.query(sql, [id]);

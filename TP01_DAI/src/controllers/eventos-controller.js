@@ -320,12 +320,14 @@ controller.patch("/:id/enrollment/:rating", DecryptToken, async (req, res) => {
         const events = await eventService.getAllEvents();
         const event_enrollment = await eventService.getEventEnrollmentsById(enrollmentId);
 
-        // const foundEvent = events.rows.find(event => event.id === event_enrollment.id_event);//mala practica de programacion, pero no hay tiempo. 
-        let foundEvent = null;
+        // const foundEvent = events.rows.find(event => event.id === event_enrollment.id_event);
+        var foundEvent = null;
 
-for (let i = 0; i < events.collection.rows.length; i++) {
-    if (events.collection.rows[i].id === event_enrollment.id_event) {
-        foundEvent = events.rows[i];
+for (let i = 0; i < events.collection.length; i++) {//mala practica de programacion, pero no hay tiempo. 
+    console.log("EVENT COLLECTION ID "+events.collection[i].id + " + EVENT_ENROLLMENTS ID "+event_enrollment.id_event)
+    if (events.collection[i].id === event_enrollment.id_event) {
+        console.log("dentroDelBucleuuuu " +events.collection[i].id)
+        foundEvent = events.collection[i];
         break;
     }
 }
@@ -335,7 +337,7 @@ for (let i = 0; i < events.collection.rows.length; i++) {
         }
 
         const fechaHoy = new Date();
-        if (event_enrollment.start_date > fechaHoy) {
+        if (foundEvent.start_date > fechaHoy) {
             return res.status(400).send({ error: 'El evento asociado a esta inscripción no ha finalizado aún.' });
         }
 

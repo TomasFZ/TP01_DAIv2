@@ -12,7 +12,7 @@ export default class EventService{
     async getAllEvents(limit, offset) {
         const listaEventos = await eventRepository.getAllEvents(limit, offset);
         // Devuelve directamente los eventos (lista) del repositorio
-       
+       console.log("listaEventosAllEvents: " + listaEventos[0].name)
 
         const nextPage = `${"http://localhost:3000/api/event"}?limit=${limit}&offset=${offset + 1}`;
         //return listaEventos
@@ -279,7 +279,7 @@ async killLoc(id)
 }
 
 async getEventEnrollmentsById(id){
-    const eventEnrollment = eventRepository.getEventEnrollmentsById(id);
+    const eventEnrollment = await eventRepository.getEventEnrollmentsById(id);
     return eventEnrollment;
 }
 }

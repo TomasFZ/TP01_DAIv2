@@ -36,6 +36,13 @@ lController.get("/:id", async (req, res) =>{
 }}})
 
 lController.get("/:id/event-location", DecryptToken, async (req, res) =>{
+  const userId = req.user?.id; //
+    console.log("User ID de token: ", userId);
+    
+    if (!userId) {
+        return res.status(400).send("Usuario no encontrado");
+    }
+  
   validacionToken(req, res)  
   const limit = req.params.limit;
     const offset = req.params.offset;
