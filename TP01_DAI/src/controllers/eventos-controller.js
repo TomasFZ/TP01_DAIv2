@@ -171,42 +171,53 @@ controller.delete("/:id", DecryptToken, async (req, res) => {
     }
 })
 //registerUserToEvent
-controller.post("/:id/enrollment", DecryptToken, async (req, res) => { //primero me tengo que loguear para tener un token valido por 1hora de uso. 
+controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
+    const userId = req.user?.id;
+    console.log("User ID from token: ", userId);
     
-    validacionToken(req, res)
-    const userId = req.user.id
-    if(!userId){
-        return res.status(400).send("usuario no encontrado")
+    if (!userId) {
+        return res.status(400).send("Usuario no encontrado");
     }
-    try{
-    const evento = await eventService.getEventDetails(req.params.id);
-    const user = await userService.getUserById(userId);
-    console.log("USER: " + userId)
-    if(!user){
-        return res.status(404).send("Usuario no encontrado");
-    }
-    const listaUsers = await eventService.getUsersFromEvent(req.params.id);
-    const validacionUsuarioRegistrado = listaUsers.some(userI => userI.id === user.id);
 
-    if (validacionUsuarioRegistrado) {
-        return res.status(400).send("Usuario ya registrado en el evento");
-    }
-    if (!evento) {
-        return res.status(404).send("Evento no encontrado");
-    }
-    if (!evento.enabled_for_enrollment) {
-        return res.status(400).json({ error: 'Evento no habilitado para enrollment' });
-    }
-    const fechaHoy = new Date();
-    const eventStartDate = new Date(evento.start_date);
-    if (eventStartDate <= fechaHoy) {
-      return res.status(400).json({ error: 'Evento ya iniciado' });
-    }
-    await eventService.enrollUserToEvent(evento.id, user.id, fechaInscripcion);
-    return res.status(201).send("Usuario registrado en el evento.");
-}catch(e){console.log(e)}
+    try {
+        const evento = await eventService.getEventDetails(req.params.id);
+        const user = await userService.getUserById(userId);
+        console.log("USER: " + userId);
+        
+        if (!user) {
+            return res.status(404).send("Usuario no encontrado");
+        }
+        
+        const listaUsers = await eventService.getUsersFromEvent(req.params.id);
+        const validacionUsuarioRegistrado = listaUsers.some(userI => userI.id === user.id);
 
-})
+        if (validacionUsuarioRegistrado) {
+            return res.status(400).send("Usuario ya registrado en el evento");
+        }
+
+        if (!evento) {
+            return res.status(404).send("Evento no encontrado");
+        }
+
+        if (!evento.enabled_for_enrollment) {
+            return res.status(400).json({ error: 'Evento no habilitado para enrollment' });
+        }
+
+        const fechaHoy = new Date();
+        const eventStartDate = new Date(evento.start_date);
+        if (eventStartDate <= fechaHoy) {
+            return res.status(400).json({ error: 'Evento ya iniciado' });
+        }
+
+        await eventService.enrollUserToEvent(evento.id, user.id, fechaHoy);
+        return res.status(201).send("Usuario registrado en el evento.");
+    } catch (e) {
+        console.error(e);
+        return res.status(500).send("Error interno del servidor");
+    }
+});
+
+
 //deleteUserFromEvent
 controller.delete("/:id/enrollment", DecryptToken, async (req, res) => {//sacar usuario de un evento
     const idEvento = req.params.id;

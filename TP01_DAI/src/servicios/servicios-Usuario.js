@@ -27,21 +27,25 @@ export default class UserService
         }
     }
 
-    ObtenerToken(userId, nombreUsuario){
-        const payload = {
-            id: userId, 
-            username: nombreUsuario
-        }
-        const secretKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+   ObtenerToken(userId, nombreUsuario) {
+    const payload = {
+        id: userId, 
+        username: nombreUsuario
+    };
+    const secretKey = "batmanbtamnfisnf";
 
-        const options = {
-            expiresIn: '1h'
-        }
+    const options = {
+        expiresIn: '1h',
+        issuer: 'localhost'
+    };
 
-        const token = jwt.sign(payload, secretKey, options); //, {options}
-        console.log(token)
-        return token
-    }
+    const token = jwt.sign(payload, secretKey, options);
+    console.log("payload.id: " + payload.id)
+    console.log(  "TOKENTOKENTOKENTOKEN "+  token, token.id);
+    
+    return token;
+}
+
 
     async loginUserAsync(username, password){
         //si existe el user, firmo un token
@@ -51,11 +55,12 @@ export default class UserService
         console.log("USER: "+user.rows[0].username)
         console.log("Password escrita por persona: " + password)
         console.log("Password de la bd: " + user.rows[0].password)
+        console.log("user.id: " + user.rows[0].id)
         if (!user) { // || user.password !== password
             throw new Error("Username invalido.");
         }else if (user && user.rows[0].password === password){
             console.log("success")
-            const token = this.ObtenerToken(user.id, user.username);
+            const token = this.ObtenerToken(user.rows[0].id, user.rows[0].username);
             return token;
         }
     }

@@ -1,21 +1,25 @@
 import express from "express";
 import jwt from 'jsonwebtoken';
-export function DecryptToken(req, res, next){
-    const secretKey = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"//"officerboleswahahahahamcityyeahimmanjonklergottajonkleproaslumepillsgwenbonekillercockimproudofyoudickehtthebin"
-    if(!req.headers.authorization){
-        res.status(401).send('No ingresó el token para confirmar que usted es el usuario')
-    }else{
-        const tokenRecibido = req.headers.authorization.split(' ')[1];
-        
-        try{
-            const payload = jwt.verify(tokenRecibido, secretKey)
-            req.user = payload
-            console.log("Autenticación exitosa")
-        }catch(error){
-            console.log(error)
-        }
+
+export function DecryptToken(req, res, next) {
+    const secretKey = "batmanbtamnfisnf";
+    
+    if (!req.headers.authorization) {
+        return res.status(401).send('No ingresó el token para confirmar que usted es el usuario');
     }
-    next();
+    
+    const tokenRecibido = req.headers.authorization.split(' ')[1];
+    console.log("TOKEN RECIBIDO: " + tokenRecibido)
+    try {
+        const payload = jwt.verify(tokenRecibido, secretKey);
+        req.user = payload; 
+        console.log("payload: ", payload);
+        console.log("PAYLOAD ID " + payload.id)
+        console.log("requser ID " + req.user.id)
 
-
+        next();
+    } catch (error) {
+        console.error(error);
+        return res.status(401).send('Token inválido');
+    }
 }
