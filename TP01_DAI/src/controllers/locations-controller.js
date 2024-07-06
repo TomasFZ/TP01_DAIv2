@@ -36,7 +36,8 @@ lController.get("/:id", async (req, res) =>{
 }}})
 
 lController.get("/:id/event-location", DecryptToken, async (req, res) =>{
-    const limit = req.params.limit;
+  validacionToken(req, res)  
+  const limit = req.params.limit;
     const offset = req.params.offset;
     try {
         const locationId = req.params.id;

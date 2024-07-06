@@ -174,8 +174,10 @@ controller.delete("/:id", DecryptToken, async (req, res) => {
 controller.post("/:id/enrollment", DecryptToken, async (req, res) => { //primero me tengo que loguear para tener un token valido por 1hora de uso. 
     
     validacionToken(req, res)
-    const userId = req.user.Id
-    const fechaInscripcion = req.body.fechaInscripcion;
+    const userId = req.user.id
+    if(!userId){
+        return res.status(400).send("usuario no encontrado")
+    }
     try{
     const evento = await eventService.getEventDetails(req.params.id);
     const user = await userService.getUserById(userId);
