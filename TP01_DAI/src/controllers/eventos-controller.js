@@ -174,7 +174,7 @@ controller.delete("/:id", DecryptToken, async (req, res) => {
 })
 //registerUserToEvent
 controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
-    const userId = req.user?.id; //
+    const userId = req.user?.id; 
     console.log("User ID de token: ", userId);
     
     if (!userId) {
@@ -183,7 +183,6 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
 
     try {
         const evento = await eventService.getEventDetails(req.params.id);
-        //console.log("evento.name: " + evento.rows[0].name)
         console.log("enabled para enrollment: " + evento.enabled_for_enrollment)
         const user = await userService.getUserById(userId);
         console.log("USER: " + userId);
@@ -192,17 +191,10 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
             return res.status(404).send("Usuario no encontrado");
         }
         
-        const listaUsers = await eventService.getUsersFromEvent(req.params.id);
+        const { collection: listaUsers } = await eventService.getUsersFromEvent(req.params.id);
         
-        let usuarioRegistrado = false; //mala practica de programacion, pero no hay tiempo. 
-        for (let i = 0; i < listaUsers.length; i++) {
-            if (listaUsers[i].id === user.id) {
-                usuarioRegistrado = true;
-                break;
-            }
-        }
+        const usuarioRegistrado = listaUsers.some(u => u.id === user.id);
 
-       
         if (usuarioRegistrado) {
             return res.status(400).send("Usuario ya registrado en el evento");
         }
@@ -251,18 +243,18 @@ controller.delete("/:id/enrollment", DecryptToken, async (req, res) => {//sacar 
         return res.status(404).send("Evento no encontrado");
     }
 
-    const listaUsers = await eventService.getUsersFromEvent(req.params.id);
-        
-        let usuarioRegistrado = false;
+    // const listaUsers = await eventService.getUsersFromEvent(req.params.id);
+    //     let usuarioRegistrado = false;
+    //     for (let i = 0; i < listaUsers.length; i++) {//mala practica de programacion, pero no hay tiempo. 
+    //         if (listaUsers[i].id === user.id) {
+    //             usuarioRegistrado = true;
+    //             console.log("es true")
+    //             break;
+    //         }
+    //     }
+    const { collection: listaUsers } = await eventService.getUsersFromEvent(req.params.id); 
+    const usuarioRegistrado = listaUsers.find(u => u.id === userId); 
 
-        
-        for (let i = 0; i < listaUsers.length; i++) {//mala practica de programacion, pero no hay tiempo. 
-            if (listaUsers[i].id === user.id) {
-                usuarioRegistrado = true;
-                console.log("es true")
-                break;
-            }
-        }
 
     if (!usuarioRegistrado) {
         return res.status(400).send("Usuario no registrado en el evento");
@@ -320,17 +312,17 @@ controller.patch("/:id/enrollment/:rating", DecryptToken, async (req, res) => {
         const events = await eventService.getAllEvents();
         const event_enrollment = await eventService.getEventEnrollmentsById(enrollmentId);
 
-        // const foundEvent = events.rows.find(event => event.id === event_enrollment.id_event);
-        var foundEvent = null;
+        //var foundEvent = null;
+// for (let i = 0; i < events.collection.length; i++) {//mala practica de programacion, pero no hay tiempo. 
+//     console.log("EVENT COLLECTION ID "+events.collection[i].id + " + EVENT_ENROLLMENTS ID "+event_enrollment.id_event)
+//     if (events.collection[i].id === event_enrollment.id_event) {
+//         console.log("dentroDelBucleuuuu " +events.collection[i].id)
+//         foundEvent = events.collection[i];
+//         break;
+//     }
+// }
+const foundEvent = events.collection.find(event => event.id === event_enrollment.id_event); 
 
-for (let i = 0; i < events.collection.length; i++) {//mala practica de programacion, pero no hay tiempo. 
-    console.log("EVENT COLLECTION ID "+events.collection[i].id + " + EVENT_ENROLLMENTS ID "+event_enrollment.id_event)
-    if (events.collection[i].id === event_enrollment.id_event) {
-        console.log("dentroDelBucleuuuu " +events.collection[i].id)
-        foundEvent = events.collection[i];
-        break;
-    }
-}
 
         if (!foundEvent) {
             return res.status(404).send({ error: 'El evento asociado a esta inscripción no existe.' });

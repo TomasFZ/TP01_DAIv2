@@ -43,7 +43,7 @@ async getAllEvents(limit, offset) {
                 LEFT JOIN tags t ON t.id = et.id_tag
             GROUP BY
                 e.id, ec.id, ec.name, el.id, el.name, el.full_address, el.max_capacity, el.latitude, el.longitude, l.id, l.name, l.latitude, l.longitude, p.id, p.full_name, p.latitude, p.longitude, p.display_order, u.id, u.username, u.first_name, u.last_name, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance
-            OFFSET $1 LIMIT $2;`;
+            order by e.id asc OFFSET $1 LIMIT $2;`;
         
         const eventos = await this.DBClient.query(sql, [ offset, limit ]);
         

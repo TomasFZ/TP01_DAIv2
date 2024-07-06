@@ -52,10 +52,10 @@ export default class UserService
         const userRepository = new UserRepository();
 
         const user = await userRepository.findUserByUsername(username);
-        console.log("USER: "+user.rows[0].username)
+        //console.log("USER: "+user.rows[0].username)
         console.log("Password escrita por persona: " + password)
-        console.log("Password de la bd: " + user.rows[0].password)
-        console.log("user.id: " + user.rows[0].id)
+        //console.log("Password de la bd: " + user.rows[0].password)
+        //console.log("user.id: " + user.rows[0].id)
         if (!user) { // || user.password !== password
             throw new Error("Username invalido.");
         }else if (user && user.rows[0].password === password){

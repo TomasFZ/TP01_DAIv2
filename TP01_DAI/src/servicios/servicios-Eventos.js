@@ -45,9 +45,6 @@ export default class EventService{
     }
 
 
-
-
-
     async createEvent(name, description, id_event_category, id_event_location, start_date, duration_in_minutes, price, enabled_for_enrollment, max_assistance, id_creator_user)
     {
         /*El name o description están vacíos o tienen menos de tres (3) letras.
@@ -97,23 +94,20 @@ export default class EventService{
     }
 
 
-async getUsersFromEvent(idEvento, nombre, apellido, username, asistio, rating, limit, offset){
-
-
-    console.log("rating service: " + rating)
-    const listaUsers = await userRepository.getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating, limit, offset);
-    console.log("Saliendo Services...")
-    console.log("listaUsers[0].first_name" + listaUsers[0].rows.first_name)
-    const nextPage = `${"http://localhost:3000/api/event/id/enrollment"}?limit=${limit}&offset=${offset + 1}`;
-    //return listaUsers
-    return {
-        "collection": listaUsers.rows, 
-        "pagination": {
-            "limit": limit,
-            "offset": offset,
-            "nextPage": nextPage
+    async getUsersFromEvent(idEvento, nombre, apellido, username, asistio, rating, limit, offset) {
+        const listaUsers = await userRepository.getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating, limit, offset);
+        const nextPage = `http://localhost:3000/api/event/id/enrollment?limit=${limit}&offset=${offset + 1}`;
+        
+        return {
+            "collection": listaUsers,
+            "pagination": {
+                "limit": limit,
+                "offset": offset,
+                "nextPage": nextPage
+            }
+        };
     }
-}}
+    
 
 async updateRatingEvent(idEvento, rating, observations){
     await userRepository.updateEventEnrollments(idEvento, rating, observations);

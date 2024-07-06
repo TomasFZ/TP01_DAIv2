@@ -49,58 +49,48 @@ export default class UserRepository {
         }
     }
 
-    async getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating, limit, offset){
-        var sql = "Select * from users u inner join event_enrollments e on e.id_user = u.id " //select * from users inner join event_enrollments e on e.id_user = users.id where e.id = 1 
-
-        var cash = 1
-        let params = []
-        let conditions = []
-
-        console.log(rating + " rating controller ")
-        console.log(idEvento + " ID EVENITNRIFDGNLJ" + typeof idEvento)
-
-        if(idEvento && typeof idEvento === 'number'){
-            conditions.push("where e.id = $" + cash);
-            cash++
+    async getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating, limit, offset) {
+        let sql = "SELECT * FROM users u INNER JOIN event_enrollments e ON e.id_user = u.id ";
+        let cash = 1;
+        let params = [];
+        let conditions = [];
+    
+        if (idEvento && typeof idEvento === 'number') {
+            conditions.push("e.id = $" + cash);
             params.push(idEvento);
+            cash++;
         }
-        if(nombre && typeof nombre === 'string'){     
+        if (nombre && typeof nombre === 'string') {
             conditions.push("u.first_name = $" + cash);
-            cash++
             params.push(nombre);
+            cash++;
         }
         if (apellido && typeof apellido === 'string') {
             conditions.push("u.last_name = $" + cash);
-            cash++
             params.push(apellido);
+            cash++;
         }
         if (username && typeof username === 'string') {
             conditions.push("u.username = $" + cash);
-            cash++
             params.push(username);
+            cash++;
         }
         if (asistio) {
             conditions.push("e.attended = $" + cash);
-            cash++
             params.push(asistio);
-            console.log("ASISTIO: " + asistio)
+            cash++;
         }
-    
         if (rating && typeof rating === 'number') {
             conditions.push("e.rating > $" + cash);
-            cash++
             params.push(rating);
+            cash++;
         }
-        params.push(limit,offset)
-        sql += conditions.join(" And ");
-        sql += (" Limit $" + cash + " Offset $" + (cash + 1))
-        
-        //params.push(pageSize, reqPage);
-        console.log(sql)
+        params.push(limit, offset);
+        sql += conditions.join(" AND ");
+        sql += " LIMIT $" + cash + " OFFSET $" + (cash + 1);
     
-        const users = await this.DBClient.query(sql, params);
-        console.log(users)
-        console.log("Saliendo Repository...")
-        return users.rows;
+        const result = await this.DBClient.query(sql, params);
+        return result.rows;
     }
+    
 }
