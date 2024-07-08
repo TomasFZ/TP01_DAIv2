@@ -59,7 +59,7 @@ async getAllEvents(limit, offset) {
             enabled_for_enrollment: event.enabled_for_enrollment,
             max_assistance: event.max_assistance,
             creator_user: event.creator_user,
-            tags: event.tags
+            tags: event.tags.some(tag => tag.id !== null) ? event.tags : []
         }));
         
         return eventosMapeados;

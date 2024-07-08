@@ -26,17 +26,20 @@ export default class EventService{
       }}
     
 
-    async getEventBuscado(nombre, categoria, fecha, tag)
+    async getEventBuscado(nombre, categoria, fecha, tag, limit, offset)
     {
-        
         console.log("seleccioné cat ID: " + categoria)
-        const eventoBuscado = await eventRepository.getEventoBuscado(nombre, categoria, fecha, tag) 
-        //console.log("nombre evento: " + eventoBuscado.nombre)
+        const eventoBuscado = await eventRepository.getEventoBuscado(nombre, categoria, fecha, tag, limit, offset) 
         
-        return eventoBuscado;
-        
+        const offsetEmpieza = (offset - 1) * limit;
+        const eventosFiltrados = eventoBuscado.rows.slice(offsetEmpieza, offsetEmpieza + limit);
+    
+    eventosFiltrados.forEach((evento, i) => {
+        console.log(`eventosFiltrados[${i}]:`, evento);
+    });
+    return { rows: eventosFiltrados };
     }
-    async getEventDetails(idEvento) //en este creo que no va limit-offset
+    async getEventDetails(idEvento)
     {
         const eventoBuscado = await eventRepository.getEventoPorId(idEvento)
         console.log("evento buscado en service: " + eventoBuscado.event_name)

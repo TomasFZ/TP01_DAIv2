@@ -1,7 +1,7 @@
 import express from "express";
 import EventService from "../servicios/servicios-Eventos.js"
 import {DecryptToken} from "../Middleware.js" 
-import {validacionToken} from "../token.js" 
+import {validacionToken} from "../funciones.js" 
 
 const elController = express.Router(); //hacer gitignore para el module
 

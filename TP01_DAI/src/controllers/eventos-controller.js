@@ -2,7 +2,7 @@ import express from "express";
 import EventService from "../servicios/servicios-Eventos.js"
 import UserService from "../servicios/servicios-Usuario.js"
 import {DecryptToken} from "../Middleware.js" //ver si anda o no con los corchetes estos
-import {validacionToken} from "../token.js" 
+import {validacionToken} from "../funciones.js" 
 const controller = express.Router(); //hacer gitignore para el module
 
 const eventService = new EventService();
@@ -14,15 +14,16 @@ console.log("holaaaa")
 controller.get("/", async (req, res) => {
     var limit = Number(req.query.limit);
     var offset = Number(req.query.offset);//verificar si son num y si existen. 
-    if (isNaN(limit) || isNaN(offset)) {
+    if (isNaN(limit)) {
         limit = 100;
-        offset = 1;
+    }if(isNaN(offset)){
+        offset=1
     }
         if (req.query.event_name != null | req.query.category != null | req.query.start_date != null  | req.query.tags != null)
         {
             console.log("categoria: "+req.query.category)
-            const eventoBuscado = await eventService.getEventBuscado(req.query.event_name, req.query.category, req.query.start_date, req.query.tags); //falta que con la fecha no funciona. 
-            if(eventoBuscado.rows[0] == null)
+            const eventoBuscado = await eventService.getEventBuscado(req.query.event_name, req.query.category, req.query.start_date, req.query.tags, limit, offset); //falta que con la fecha no funciona. 
+            if(!eventoBuscado.rows || eventoBuscado.rows.length === 0)
             {
                 return res.status(404).send("evento no existe")
             }else{
@@ -31,7 +32,6 @@ controller.get("/", async (req, res) => {
         }
         else
         {
-            // if(limit >= 0 & offset >= 0) //si no ingresa limit y offset se jode y le traemos todo
             //     {
             const allEvents = await eventService.getAllEvents(limit, offset); //aca van todos los events
             return res.send(allEvents);
