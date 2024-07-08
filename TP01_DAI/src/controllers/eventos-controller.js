@@ -47,14 +47,13 @@ controller.get("/", async (req, res) => {
 //getEventDetails
 controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id o lo que sea por params y no por query escrita por el usuario, se pone en postman http://localhost:3000/event/1 en lugar de poner una key con value. 
     console.log("id: " + req.params.id)
-    const evento = await eventService.getEventDetails(req.params.id);
-    console.log("evento en controller evento en controller: " + evento.event_name)
-
+    const id = Number(req.params.id)
+    const evento = await eventService.getEventDetails(id);
+    //console.log("evento en controller evento en controller: " + evento.event_name)
     if (!evento) {
         return res.status(404).send("Evento no encontrado");
     }
     return res.status(200).send(evento) //agregar un return 404 si no reconoce el id
-    
 })
 //updateEvent
 controller.put("/", DecryptToken, async (req, res) => {//implementar el token. Ponerle ("/", Middleware, async (req, res) mas tarde. 
