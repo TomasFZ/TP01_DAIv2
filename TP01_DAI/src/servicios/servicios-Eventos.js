@@ -241,27 +241,28 @@ async createLocation(id_location, name, full_address, max_capacity, latitude, lo
     return await eventRepository.createLocation(id_location, name, full_address, max_capacity, latitude, longitude, id_creator_user)
 }
 
-async editLocation(id, id_location, name, full_address, max_capacity, latitude, longitude, creatUsID)
-{
-    if(name == null | full_address == null)
-    {
-        return 1
+async editLocation(id, id_location, name, full_address, max_capacity, latitude, longitude, creatUsID) {
+    if (name == null || full_address == null || name.length < 3 || full_address.length < 3) {
+        return 1;
     }
-    if(name.length < 3 | full_address.length < 3)
-    {
-        return 1
+
+    const isIdLocReal = await eventRepository.locationCheck(id_location);
+    if (isIdLocReal.length === 0) {
+        return 2;
     }
-    const isIdLocReal = await eventRepository.locationCheck(id_location)
-    if(isIdLocReal[0] == null)
-    {
-        return 2
+
+    if (max_capacity < 1) {
+        return 3;
     }
-    if(max_capacity < 1)
-    {
-        return 3
+
+    //TODO: Checkear si le pertenece al usuario
+
+    try {
+        return await eventRepository.editLocation(id, id_location, name, full_address, max_capacity, latitude, longitude, creatUsID);
+    } catch (error) {
+        console.error("Error en editLocation del servicio:", error);
+        throw error;
     }
-    //TODO: Cheackear si le pertenece al usuario
-    return await eventRepository.editLocation(id, id_location, name, full_address, max_capacity, latitude, longitude)
 }
 
 async killLoc(id)

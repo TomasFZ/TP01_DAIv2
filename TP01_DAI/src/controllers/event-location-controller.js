@@ -63,40 +63,74 @@ locController.post("/", DecryptToken, async (req,res) => {
     }
 
 })
+locController.put("/", DecryptToken, async (req, res) => {
+    try {
+        validacionToken(req, res);
 
-locController.put("/", DecryptToken, async (req,res) => {
-    validacionToken(req, res)  
-    const id = Number(req.body.id)
-    const id_loc = Number(req.body.id_location)
-    const name = req.body.name
-    const full_address = req.body.full_address
-    const max_capacity = Number(req.body.max_capacity)
-    const latitude = Number(req.body.latitude)
-    const longitude = Number(req.body.longitude)
-    const creatUsID = req.user.id
+        const id = Number(req.body.id);
+        const id_loc = Number(req.body.id_location);
+        const name = req.body.name;
+        const full_address = req.body.full_address;
+        const max_capacity = Number(req.body.max_capacity);
+        const latitude = Number(req.body.latitude);
+        const longitude = Number(req.body.longitude);
+        const creatUsID = req.user?.id;
 
-    const result = await eventService.editLocation(id, id_loc, name, full_address, max_capacity, latitude, longitude, creatUsID)
-    switch(result)
-    {
-        case 1:
-            return res.status(400).send("El nombre  (name) o la dirección (full_address) están vacíos o tienen menos de tres (3) letras.")
+        // Validación de datos
+        // if (isNaN(id) || isNaN(id_loc) || isNaN(max_capacity) || isNaN(latitude) || isNaN(longitude) || isNaN(creatUsID)) {
+        //     return res.status(400).send("Valores numéricos inválidos");
+        // }
+        if (isNaN(id)) {
+            console.log("ID inválido:", req.body.id);
+            return res.status(400).send("ID inválido");
+        }
         
-
-        case 2:
-            return res.status(400).send("El id_location es inexistente.")
+        if (isNaN(id_loc)) {
+            console.log("ID de localización inválido:", req.body.id_location);
+            return res.status(400).send("ID de localización inválido");
+        }
         
-
-        case 3:
-            return res.status(400).send("El max_capacity es el número cero (0) o negativo.")
-       
-
-        case 4:
-            return res.status(200).send("Local Creado Exitosamente.")
+        if (isNaN(max_capacity)) {
+            console.log("Capacidad máxima inválida:", req.body.max_capacity);
+            return res.status(400).send("Capacidad máxima inválida");
+        }
         
+        if (isNaN(latitude)) {
+            console.log("Latitud inválida:", req.body.latitude);
+            return res.status(400).send("Latitud inválida");
+        }
+        
+        if (isNaN(longitude)) {
+            console.log("Longitud inválida:", req.body.longitude);
+            return res.status(400).send("Longitud inválida");
+        }
+        
+        if (isNaN(creatUsID)) {
+            console.log("ID de usuario creador inválido:", creatUsID);
+            return res.status(400).send("ID de usuario creador inválido");
+        }
+
+        const result = await eventService.editLocation(id, id_loc, name, full_address, max_capacity, latitude, longitude, creatUsID);
+        
+        switch(result) {
+            case 1:
+                return res.status(400).send("El nombre (name) o la dirección (full_address) están vacíos o tienen menos de tres (3) letras.");
+            case 2:
+                return res.status(400).send("El id_location es inexistente.");
+            case 3:
+                return res.status(400).send("El max_capacity es el número cero (0) o negativo.");
+            case 4:
+                return res.status(200).send("Local editado exitosamente.");
+            default:
+                return res.status(500).send("Error desconocido");
+        }
+    } catch (error) {
+        console.error("Error en editLocation:", error);
+        return res.status(500).send("Error interno del servidor");
     }
-})
+});
 
-locController.delete("/event-location/:id", DecryptToken, async (req,res) => {
+locController.delete("/:id", DecryptToken, async (req,res) => {
     validacionToken(req, res)  
     const locId = req.params.id
     const result = await eventService.killLoc(locId)

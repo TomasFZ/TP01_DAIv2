@@ -458,10 +458,10 @@ async createLocation(id_location, name, full_address, max_capacity, latitude, lo
     return 4
 }
 
-async editLocation(id, id_location, name, full_address, max_capacity, latitude, longitude)
+async editLocation(id, id_location, name, full_address, max_capacity, latitude, longitude, id_creator_user)
 {
-    const sql = "Update event_locations Set id_location = $1, name = $2, full_address = $3, max_capacity = $4, latitude = $5, longitude = $6 Where id = $7"
-    const params = [id_location, name, full_address, max_capacity, latitude, longitude, id]
+    const sql = "Update event_locations Set id_location = $1, name = $2, full_address = $3, max_capacity = $4, latitude = $5, longitude = $6, id_creator_user =$7 Where id = $8"
+    const params = [id_location, name, full_address, max_capacity, latitude, longitude, id_creator_user, id]
     const result = await this.DBClient.query(sql, params)
     console.log(result)
     return 4
