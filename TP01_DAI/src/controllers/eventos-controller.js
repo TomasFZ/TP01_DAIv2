@@ -151,8 +151,8 @@ controller.post("/", DecryptToken, async (req, res) => { //implementar el token.
 controller.delete("/:id", DecryptToken, async (req, res) => { 
     validacionToken(req, res);
     const id = req.params.id
-    const event1 = await eventService.getEventById(id);
-    if(event1.rows[0] === undefined)
+    const event1 = await eventService.getEventDetails(id);
+    if(!event1)
         {
             return res.status(404).send("evento no existe")
         }
@@ -188,8 +188,8 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
             return res.status(404).send("Usuario no encontrado");
         }
         
-        const { collection: listaUsers } = await eventService.getUsersFromEvent(req.params.id);
-        
+        const { collection: listaUsers } = await eventService.getUsersFromEvent(req.params.id); //const listaUsers = (await eventService.getUsersFromEvent(req.params.id)).collection;
+
         const usuarioRegistrado = listaUsers.some(u => u.id === user.id);
 
         if (usuarioRegistrado) {

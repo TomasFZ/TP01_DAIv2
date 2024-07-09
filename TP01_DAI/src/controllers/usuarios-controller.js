@@ -6,10 +6,9 @@ import { DecryptToken } from "../Middleware.js";
 const UserController = express.Router(); 
 const userService = new UserService();
 // const jwt = require("jsonwebtoken")
-//https://medium.com/@diego.coder/autenticaci%C3%B3n-en-node-js-con-json-web-tokens-y-express-ed9d90c5b579
 
 UserController.post("/register", async(req, res) => {
-    const first_name = req.body.first_name //pase de req.query a req.body, comprobar si sigue funcionando. 
+    const first_name = req.body.first_name 
     const last_name = req.body.last_name
     const username = req.body.username
     const password = req.body.password
@@ -33,7 +32,7 @@ UserController.post("/register", async(req, res) => {
 });
 
 UserController.post("/login",  async (req, res) => { //loguea exitosamente al usuario y le brinda un token para validar futuras ejecuciones. 
-    const username = req.body.username //ver si es con .body so .query
+    const username = req.body.username 
     const password = req.body.password
 
     console.log("USENAME CONTROLLER: " +username)

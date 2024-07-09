@@ -22,12 +22,12 @@ export default class UserRepository {
                 console.log("No existen usuarios con el username: " + username)
                 return false
             }
-            console.log("Que!?!? Existen otros usuarios llamados: " + username)
+            console.log("Existen otros usuarios llamados: " + username)
             return usersFound
         }
         catch(error)
         {
-            console.log("Error en la query JSJSJSJSJJSJSJSJJSS" + error)
+            console.log("Error en la query " + error)
         }
     }
 

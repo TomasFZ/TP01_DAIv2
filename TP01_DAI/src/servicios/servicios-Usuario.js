@@ -9,7 +9,7 @@ export default class UserService
         console.log("FN: " + first_name + " LN: " + last_name + " US: " + username + " PA: " +password)
         
         try {
-            const real = await userRepository.findUserByUsername(username);
+            const real = await userRepository.findUserByUsername(username); //en lugar de una nueva funcion en repo se podria hacer un getAll y despues un .some
             console.log("validacion: "+ real);
             
             if(real) {
@@ -60,7 +60,7 @@ export default class UserService
             throw new Error("Username invalido.");
         }else if (user && user.rows[0].password === password){
             console.log("success")
-            const token = this.ObtenerToken(user.rows[0].id, user.rows[0].username);
+            const token = this.ObtenerToken(user.rows[0].id, user.rows.username);
             return token;
         }
     }
