@@ -41,9 +41,9 @@ export default class ProvinceService{
         }}
     }
 
-    async createProvincia(body){
+    async createProvincia(name, full_name, latitude, longitude, display_order){
         const provinceRepository = new ProvinceRepository();
-        const provincia = await provinceRepository.insertProvincia(body)
+        const provincia = await provinceRepository.insertProvincia(name, full_name, latitude, longitude, display_order)
         return provincia
     }
 

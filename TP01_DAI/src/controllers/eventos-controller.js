@@ -3,6 +3,8 @@ import EventService from "../servicios/servicios-Eventos.js"
 import UserService from "../servicios/servicios-Usuario.js"
 import {DecryptToken} from "../Middleware.js" //ver si anda o no con los corchetes estos
 import {validacionToken} from "../funciones.js" 
+import {validacionLimit, validacionOffset} from "../funciones.js" 
+
 const controller = express.Router(); //hacer gitignore para el module
 
 const eventService = new EventService();
@@ -13,8 +15,8 @@ console.log("holaaaa")
 
 controller.get("/", async (req, res) => {
     var limit = Number(req.query.limit);
-    var offset = Number(req.query.offset);//verificar si son num y si existen. 
-    if (isNaN(limit)) {
+    var offset = Number(req.query.offset);
+    if (isNaN(limit)) { //cambiar por funciones
         limit = 100;
     }if(isNaN(offset)){
         offset=1
@@ -112,6 +114,7 @@ controller.post("/", DecryptToken, async (req, res) => { //implementar el token.
     // if(req.user === undefined){
     //     return res.status(400).send("Error. Token incorrecto.")
     // }
+    
     validacionToken(req, res);
     const name = req.body.name
     const description = req.body.description
@@ -122,8 +125,8 @@ controller.post("/", DecryptToken, async (req, res) => { //implementar el token.
     const price = Number(req.body.price)
     const enabled_for_enrollment = Boolean(req.body.enabled_for_enrollment)
     const max_assistance = Number(req.body.max_assistance)
-    const id_creator_user = Number(req.body.id_creator_user)
-    
+    const id_creator_user = Number(req.user?.id)
+    console.log("id del usuario creador del evento: "  + id_creator_user)
     
     if (!name || !description || name.length < 3 || description.length < 3) {
         return res.status(400).send({ error: 'nombre y descripcion deben tener al menos 3 caracteres' });

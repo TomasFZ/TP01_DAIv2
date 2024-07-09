@@ -77,13 +77,13 @@ async updateProvince(id, name, full_name, latitude, longitude, display_order)
     }
 }
 
-async insertProvincia(body){ //terminar. marca error de sintaxis. 
+async insertProvincia(name, full_name, latitude, longitude, display_order){ //terminar. marca error de sintaxis. 
     try {
         const sql = "Insert into provinces (name, full_name, latitude, longitude, display_order) values ($1, $2, $3, $4, $5)"; 
-        const provincia = await this.DBClient.query(sql, [ body.name, body.full_name, Number(body.latitude), Number(body.longitude), Number(body.display_order) ]);
+        const provincia = await this.DBClient.query(sql, [ name, full_name, Number(latitude), Number(longitude), Number(display_order) ]);
         return provincia.rows;
     } catch (error) {
-        console.error("Error al obtener eventos:", error);
+        console.error("Error :", error);
     }
 }
 

@@ -4,11 +4,17 @@ export function validacionToken(req, res){
     }
 }
 
-export function validacionLimitOffset(limit, offset){
-    if (isNaN(limit)) {
+export function validacionLimit(limit){
+    if (isNaN(limit) || limit <0) {
         limit = 100;
-    }if(isNaN(offset)){
+    }
+    return limit;
+}
+
+export function validacionOffset(offset){
+    
+    if(isNaN(offset) || offset<0){
         offset=1
     }
-    return { limit: limit, offset: offset };
+    return offset;
 }

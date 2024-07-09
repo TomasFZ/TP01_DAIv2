@@ -5,6 +5,8 @@ import UserController from "./controllers/usuarios-controller.js";
 import pController from "./controllers/provincias-controller.js";
 import elController from "./controllers/event-category-controller.js";
 import lController from "./controllers/locations-controller.js";
+import locController from "./controllers/event-location-controller.js";
+
 // import { connectToDatabase } from './repositories/db.js'; //mjs
 //mjs
 
@@ -20,6 +22,8 @@ app.use("/api/user", UserController);
 app.use("/api/province", pController);
 app.use("/api/location", lController);
 app.use("/api/event-category", elController);
+app.use("/api/event-location", locController);
+
 
 
 app.listen(port, () => {

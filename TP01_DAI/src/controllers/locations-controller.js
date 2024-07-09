@@ -2,15 +2,17 @@ import express from "express";
 
 import LocationService from "../servicios/servicios-Locations.js";
 import {DecryptToken} from "../Middleware.js" //ver si anda o no con los corchetes estos
-import {validacionToken} from "../funciones.js" 
+import {validacionLimit, validacionOffset, validacionToken} from "../funciones.js" 
 
 const lController = express.Router(); //hacer gitignore para el module
 
 const locationService = new LocationService();
 
 lController.get("/", async (req, res) => {
-    const limit = Number(req.query.limit);
-    const offset = Number(req.query.offset);//verificar si son num y si existen. 
+    var limit = Number(req.query.limit);
+    var offset = Number(req.query.offset);//verificar si son num y si existen. 
+    limit = validacionLimit(limit)
+    offset = validacionOffset(offset);
     if(limit >= 0 & offset >= 0)
     {
     const locations = await locationService.getAllLocations(limit, offset);
