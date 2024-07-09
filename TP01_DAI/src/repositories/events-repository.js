@@ -364,9 +364,9 @@ async getAllEvents(limit, offset) {
         return loc.rows[0].max_capacity
     }
 
-    async updateEventEnrollments(idEvento, rating, observations){
-        const sql = "update event_enrollments set id_event = $1, rating = $2, observations = $3 where idEvent = $1" //iduser q
-        await this.DBClient.query(sql, [idEvento, rating, observations]);
+    async updateEventEnrollments(id, rating, observations, idUser){
+        const sql = "update event_enrollments set rating = $1, observations = $2 where id = $3 and id_user = $4" //iduser q
+        await this.DBClient.query(sql, [rating, observations, id,idUser]);
     }
 
     async enrollUserToEvent(idEvento, idUser, fechaInscripcion){
@@ -386,7 +386,8 @@ async getAllEvents(limit, offset) {
         const eventEnrollment = await this.DBClient.query(sql, [id]);
         console.log(eventEnrollment.id)
         console.log(eventEnrollment.rows.id)
-        return eventEnrollment.rows;
+        //console.log("eventEnrollment.id_event en repository:" + eventEnrollment.rows[0].id_event)
+        return eventEnrollment.rows[0];
     }
 
 async getAllCategories()

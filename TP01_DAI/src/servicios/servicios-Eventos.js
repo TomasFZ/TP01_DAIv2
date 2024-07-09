@@ -112,8 +112,8 @@ export default class EventService{
     }
     
 
-async updateRatingEvent(idEvento, rating, observations){
-    await userRepository.updateEventEnrollments(idEvento, rating, observations);
+async updateRatingEvent(id, rating, observations, idUser){
+    await eventRepository.updateEventEnrollments(id, rating, observations, idUser);
 }
 
 async enrollUserToEvent(idEvento, idUser, fechaInscripcion){
@@ -280,6 +280,7 @@ async killLoc(id)
 
 async getEventEnrollmentsById(id){
     const eventEnrollment = await eventRepository.getEventEnrollmentsById(id);
+    //console.log("eventEnrollment.id_event en service:" + eventEnrollment.id_event)
     return eventEnrollment;
 }
 }

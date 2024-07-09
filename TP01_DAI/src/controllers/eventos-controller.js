@@ -74,7 +74,7 @@ controller.put("/", DecryptToken, async (req, res) => {//implementar el token. P
     const id_creator_user = Number(req.body.id_creator_user)
 
     const event1 = await eventService.getEventDetails(id);
-    if(event1.rows[0] === undefined)
+    if(event1 === undefined)
         {
             return res.status(404).send("evento no existe")
         }
@@ -303,39 +303,44 @@ controller.get("/:id/enrollment", async (req, res) => { //Listado de participant
 controller.patch("/:id/enrollment/:rating", DecryptToken, async (req, res) => {
     const enrollmentId = req.params.id;
     const rating = Number(req.params.rating);
-    const { feedback: observations } = req.body;
+    const feedback = req.body.observations;
+    const userId = req.user?.id;
+    validacionToken(req, res);
 
     // Validación del rating
     if (isNaN(rating) || rating < 1 || rating > 10) {
         return res.status(400).send({ error: 'El rating debe ser un número entre 1 y 10.' });
     }
+    if(isNaN(enrollmentId)){
+        return res.status(400).send({error: "El id del enrollment debe ser un número"})
+    }
 
     try {
         const events = await eventService.getAllEvents();
+        console.log("evento id: " + events.collection[0].id)
         const event_enrollment = await eventService.getEventEnrollmentsById(enrollmentId);
+        if(!event_enrollment){
+            return res.status(400).send({error: "No existe la inscripción a ese evento."})
+        }
+        if(userId !== event_enrollment.id_user){
+            return res.status(400).send({error: "Usted no es el usuario con esta inscripción."})
+        }
 
-        //var foundEvent = null;
-// for (let i = 0; i < events.collection.length; i++) {//mala practica de programacion, pero no hay tiempo. 
-//     console.log("EVENT COLLECTION ID "+events.collection[i].id + " + EVENT_ENROLLMENTS ID "+event_enrollment.id_event)
-//     if (events.collection[i].id === event_enrollment.id_event) {
-//         console.log("dentroDelBucleuuuu " +events.collection[i].id)
-//         foundEvent = events.collection[i];
-//         break;
-//     }
-// }
-const foundEvent = events.collection.find(event => event.id === event_enrollment.id_event); 
-
-
+        const foundEvent = events.collection.find(event => event.id === event_enrollment.id_event); 
+        console.log("foundEvent: " + foundEvent)
         if (!foundEvent) {
             return res.status(404).send({ error: 'El evento asociado a esta inscripción no existe.' });
         }
 
-        const fechaHoy = new Date();
-        if (foundEvent.start_date > fechaHoy) {
-            return res.status(400).send({ error: 'El evento asociado a esta inscripción no ha finalizado aún.' });
-        }
+        // const fechaHoy = new Date();
+        // const fechaInicio = new Date(foundEvent.start_date);
+        // const fechaFinEvento = new Date(fechaInicio.getTime() + foundEvent.duration_in_minutes * 60 * 1000);
 
-        await eventService.updateRatingEvent(enrollmentId, rating, observations);
+        // if (fechaFinEvento > fechaHoy) {
+        //     return res.status(400).send({ error: 'El evento asociado a esta inscripción no ha finalizado aún.' });
+        // }
+
+        await eventService.updateRatingEvent(enrollmentId, rating, feedback, userId);
 
         return res.status(200).send({ message: 'El rating y feedback fueron actualizados correctamente.' });
     } catch (error) {
