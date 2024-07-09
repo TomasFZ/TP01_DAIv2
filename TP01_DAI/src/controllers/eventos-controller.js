@@ -11,16 +11,11 @@ const eventService = new EventService();
 const userService = new UserService();
 
 
-console.log("holaaaa")
-
 controller.get("/", async (req, res) => {
     var limit = Number(req.query.limit);
     var offset = Number(req.query.offset);
-    if (isNaN(limit)) { //cambiar por funciones
-        limit = 100;
-    }if(isNaN(offset)){
-        offset=1
-    }
+    limit = validacionLimit(limit)
+    offset = validacionOffset(offset)
         if (req.query.event_name != null | req.query.category != null | req.query.start_date != null  | req.query.tags != null)
         {
             console.log("categoria: "+req.query.category)
