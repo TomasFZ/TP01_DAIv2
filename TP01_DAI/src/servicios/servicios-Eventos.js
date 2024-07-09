@@ -28,10 +28,8 @@ export default class EventService{
 
     async getEventBuscado(nombre, categoria, fecha, tag, limit, offset)
     {
-        console.log("seleccioné cat ID: " + categoria)
         const eventoBuscado = await eventRepository.getEventoBuscado(nombre, categoria, fecha, tag, limit, offset) 
-        
-        const offsetEmpieza = (offset - 1) * limit;
+        const offsetEmpieza = (offset - 1) * limit; //esto porque por alguna razon la query sale mal si se le pone limit y offset, por lo que se hace en servicio como alternativa. 
         const eventosFiltrados = eventoBuscado.rows.slice(offsetEmpieza, offsetEmpieza + limit);
     
     eventosFiltrados.forEach((evento, i) => {

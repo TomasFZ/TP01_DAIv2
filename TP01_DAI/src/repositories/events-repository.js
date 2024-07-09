@@ -69,7 +69,6 @@ async getAllEvents(limit, offset) {
     }
 }
 
-    // En tu servicio
     async getEventoBuscado(nombre, categoria, fecha, tag) {
         try {
             let sql = `
