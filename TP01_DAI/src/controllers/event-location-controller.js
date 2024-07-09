@@ -10,19 +10,25 @@ const locController = express.Router(); //hacer gitignore para el module
 const eventService = new EventService();
 
 
-locController.get("/event-location", DecryptToken, async (req,res) => {
+locController.get("/", DecryptToken, async (req,res) => {
+    const userId = req.user?.id; //
+    var limit = Number(req.query.limit);
+    var offset = Number(req.query.offset);
+    limit = validacionLimit(limit);
+    offset = validacionOffset(offset)
     validacionToken(req, res)  
-    const locs = await eventService.getAllLocations()
+    const locs = await eventService.getAllLocations(userId)
     return res.status(200).send(locs)
 
 })
 
-locController.get("/event-location/:id", DecryptToken, async (req,res) => {
+locController.get("/:id", DecryptToken, async (req,res) => {
+    const userId = req.user?.id; //
     validacionToken(req, res)  
     const idLoc = Number(req.params.id)
-    const userLog = req.user
-    const output = await eventService.getOneLocation(idLoc, userLog.id)
-    if(output == 1)
+ 
+    const output = await eventService.getOneLocation(idLoc, userId)
+    if(output.length === 0)
     {
         res.status(404).send("No se encontró una categoría con ese ID o el local no es suyo")
     }
@@ -30,7 +36,7 @@ locController.get("/event-location/:id", DecryptToken, async (req,res) => {
 
 })
 
-locController.post("/event-location", DecryptToken, async (req,res) => {
+locController.post("/", DecryptToken, async (req,res) => {
     validacionToken(req, res)  
     const id_loc = Number(req.body.id_location)
     const name = req.body.name
@@ -38,9 +44,9 @@ locController.post("/event-location", DecryptToken, async (req,res) => {
     const max_capacity = Number(req.body.max_capacity)
     const latitude = Number(req.body.latitude)
     const longitude = Number(req.body.longitude)
-    const creatUsID = req.user.id
+    const creatUsID = req.user?.id; //
 
-    const result = eventService.createLocation(id_loc, name, full_address, max_capacity, latitude, longitude, creatUsID)
+    const result = await eventService.createLocation(id_loc, name, full_address, max_capacity, latitude, longitude, creatUsID)
     switch(result)
     {
         case 1:
@@ -58,7 +64,7 @@ locController.post("/event-location", DecryptToken, async (req,res) => {
 
 })
 
-locController.put("/event-location", DecryptToken, async (req,res) => {
+locController.put("/", DecryptToken, async (req,res) => {
     validacionToken(req, res)  
     const id = Number(req.body.id)
     const id_loc = Number(req.body.id_location)

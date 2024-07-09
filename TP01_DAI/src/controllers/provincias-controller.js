@@ -139,12 +139,6 @@ function ValidacionBody(name, full_name, latitude, longitude, display_order) {
     //     return true;
     // }
 
-    console.log("Validando:");
-    console.log("Name:", name, "Type:", typeof name);
-    console.log("Latitude:", latitude, "Type:", typeof latitude);
-    console.log("Longitude:", longitude, "Type:", typeof longitude);
-    console.log("Full Name:", full_name, "Type:", typeof full_name);
-    console.log("Display Order:", display_order, "Type:", typeof display_order);
     if (name === "") {
         console.log("El nombre está vacío.");
         return false;
@@ -176,7 +170,6 @@ function ValidacionBody(name, full_name, latitude, longitude, display_order) {
         return false;
     }
     
-    // Si todas las condiciones se pasan, la función continúa.
     return true;
     
 }

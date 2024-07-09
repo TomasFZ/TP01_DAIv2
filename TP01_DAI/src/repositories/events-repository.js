@@ -425,18 +425,19 @@ async murderCategory(id)
     return await this.DBClient.query(sql,params)
 }
 
-async getAllLocations()
+async getAllLocations(userId)
 {
-    const sql = "Select * From event_locations"
-    const result = await this.DBClient.query(sql)
+    const sql = "Select * From event_locations where id_creator_user = $1"
+    const result = await this.DBClient.query(sql, [userId])
     return result.rows
 }
 
-async getOneLocation(id)
+async getOneLocation(id, id_creator_user)
 {
-    const sql = "Select * From event_locations Where id = $1"
-    const params = [id]
+    const sql = "Select * From event_locations Where id = $1 and id_creator_user = $2"
+    const params = [id, id_creator_user]
     const result = await this.DBClient.query(sql, params)
+    console.log("nombre de la location: "+result.name)
     return result.rows
 }
 
@@ -448,7 +449,7 @@ async locationCheck(id_location)
     return result.rows
 }
 
-async createLocation(id_location, name, full_address, max_capacity, latitude, longitude)
+async createLocation(id_location, name, full_address, max_capacity, latitude, longitude, id_creator_user)
 {
     const sql = "Insert Into event_locations (id_location, name, full_address, max_capacity, latitude, longitude, id_creator_user) Values ($1, $2, $3, $4, $5, $6, $7)"
     const params = [id_location, name, full_address, max_capacity, latitude, longitude, id_creator_user]

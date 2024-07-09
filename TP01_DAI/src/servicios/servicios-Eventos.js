@@ -196,38 +196,40 @@ async killCategory(idToKill)
     }
 }
 
-async getAllLocations()
+async getAllLocations(userId)
 {
-    return await eventRepository.getAllLocations()
+    return await eventRepository.getAllLocations(userId)
 }
 
 async getOneLocation(id, id_creator_user)
 {
     
-    const result = await eventRepository.getOneLocation(id)
-    if(result[0] == null)
-    {
-        return 1
-    }
-    else if(result[0].id_creator_user != id_creator_user)
-    {
-        return 1
-    }
+    const result = await eventRepository.getOneLocation(id, id_creator_user)
+    // if(result[0] == undefined)
+    // {
+    //     return 1
+    // }
+    // else if(result[0].id_creator_user != id_creator_user)
+    // {
+    //     return 1
+    // }
     return result
 }
 
 async createLocation(id_location, name, full_address, max_capacity, latitude, longitude, id_creator_user)
 {
-    if(name == null | full_address == null)
+    if(name === undefined || full_address === undefined)
     {
         return 1
     }
-    if(name.length < 3 | full_address.length < 3)
+    if(name.length < 3 || full_address.length < 3)
     {
         return 1
     }
     const isIdLocReal = await eventRepository.locationCheck(id_location)
-    if(isIdLocReal[0] == null)
+    const locationId = isIdLocReal[0]?.id
+    console.log("id location: " + locationId)
+    if(isIdLocReal.length === 0)
     {
         return 2
     }
