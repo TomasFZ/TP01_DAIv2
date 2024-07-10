@@ -180,7 +180,7 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
 
     try {
         const evento = await eventService.getEventDetails(req.params.id);
-        console.log("enabled para enrollment: " + evento.enabled_for_enrollment)
+        //console.log("enabled para enrollment: " + evento.enabled_for_enrollment)
         const user = await userService.getUserById(userId);
         console.log("USER: " + userId);
         
@@ -240,17 +240,8 @@ controller.delete("/:id/enrollment", DecryptToken, async (req, res) => {//sacar 
         return res.status(404).send("Evento no encontrado");
     }
 
-    // const listaUsers = await eventService.getUsersFromEvent(req.params.id);
-    //     let usuarioRegistrado = false;
-    //     for (let i = 0; i < listaUsers.length; i++) {//mala practica de programacion, pero no hay tiempo. 
-    //         if (listaUsers[i].id === user.id) {
-    //             usuarioRegistrado = true;
-    //             console.log("es true")
-    //             break;
-    //         }
-    //     }
     const { collection: listaUsers } = await eventService.getUsersFromEvent(req.params.id); 
-    const usuarioRegistrado = listaUsers.find(u => u.id === userId); 
+    const usuarioRegistrado = listaUsers.find(u => u.id === Number(userId)); 
 
 
     if (!usuarioRegistrado) {

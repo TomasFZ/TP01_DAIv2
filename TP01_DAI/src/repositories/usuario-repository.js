@@ -50,47 +50,60 @@ export default class UserRepository {
     }
 
     async getUsuariosDeUnEvento(idEvento, nombre, apellido, username, asistio, rating, limit, offset) {
-        let sql = "SELECT * FROM users u INNER JOIN event_enrollments e ON e.id_user = u.id ";
-        let cash = 1;
+        let sql = "SELECT u.* FROM users u INNER JOIN event_enrollments e ON e.id_user = u.id";
         let params = [];
         let conditions = [];
     
-        if (idEvento && typeof idEvento === 'number') {
-            conditions.push("e.id = $" + cash);
-            params.push(idEvento);
-            cash++;
+        if (idEvento && !isNaN(idEvento)) {
+            conditions.push("e.id_event = $" + (params.length + 1));
+            params.push(Number(idEvento));
         }
-        if (nombre && typeof nombre === 'string') {
-            conditions.push("u.first_name = $" + cash);
+        if (nombre) {
+            conditions.push("u.first_name = $" + (params.length + 1));
             params.push(nombre);
-            cash++;
         }
-        if (apellido && typeof apellido === 'string') {
-            conditions.push("u.last_name = $" + cash);
+        if (apellido) {
+            conditions.push("u.last_name = $" + (params.length + 1));
             params.push(apellido);
-            cash++;
         }
-        if (username && typeof username === 'string') {
-            conditions.push("u.username = $" + cash);
+        if (username) {
+            conditions.push("u.username = $" + (params.length + 1));
             params.push(username);
-            cash++;
         }
-        if (asistio) {
-            conditions.push("e.attended = $" + cash);
+        if (asistio !== undefined) {
+            conditions.push("e.attended = $" + (params.length + 1));
             params.push(asistio);
-            cash++;
         }
-        if (rating && typeof rating === 'number') {
-            conditions.push("e.rating > $" + cash);
-            params.push(rating);
-            cash++;
+        if (rating !== undefined && !isNaN(rating)) {
+            conditions.push("e.rating > $" + (params.length + 1));
+            params.push(Number(rating));
         }
-        params.push(limit, offset);
-        sql += conditions.join(" AND ");
-        sql += " LIMIT $" + cash + " OFFSET $" + (cash + 1);
     
-        const result = await this.DBClient.query(sql, params);
-        return result.rows;
-    }
+        if (conditions.length > 0) {
+            sql += " WHERE " + conditions.join(" AND ");
+        }
     
-}
+        sql += " ORDER BY u.id";
+    
+        if (limit !== undefined && !isNaN(limit)) {
+            sql += " LIMIT $" + (params.length + 1);
+            params.push(Number(limit));
+        }
+    
+        if (offset !== undefined && !isNaN(offset)) {
+            sql += " OFFSET $" + (params.length + 1);
+            params.push(Number(offset));
+        }
+    
+        console.log("SQL Query:", sql);
+        console.log("SQL Params:", params);
+    
+        try {
+            const result = await this.DBClient.query(sql, params);
+            console.log("Número de usuarios encontrados:", result.rows.length);
+            return result.rows;
+        } catch (error) {
+            console.error("Error en la consulta SQL:", error);
+            throw error;
+        }
+    }}
