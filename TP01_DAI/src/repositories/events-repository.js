@@ -69,7 +69,7 @@ async getAllEvents(limit, offset) {
     }
 }
 
-    async getEventoBuscado(nombre, categoria, fecha, tag) {
+    async getEventoBuscado(nombre, categoria, fecha, tag, limit, offset) {
         try {
             let sql = `
                 SELECT
@@ -135,7 +135,10 @@ async getAllEvents(limit, offset) {
                     e.price,
                     e.enabled_for_enrollment,
                     e.max_assistance,
-                    e.id_creator_user`;
+                    e.id_creator_user
+                    LIMIT $${cash}
+                    OFFSET $${cash + 1}`;
+            params.push(limit, offset);
             console.log("Query: " + sql)
             const eventos = await this.DBClient.query(sql, params);
             return eventos;
