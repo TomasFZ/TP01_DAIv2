@@ -10,24 +10,23 @@ const locationService = new LocationService();
 
 lController.get("/", async (req, res) => {
     var limit = Number(req.query.limit);
-    var offset = Number(req.query.offset);//verificar si son num y si existen. 
+    var offset = Number(req.query.offset);
     limit = validacionLimit(limit)
     offset = validacionOffset(offset);
-    if(limit >= 0 & offset >= 0)
-    {
+    
     const locations = await locationService.getAllLocations(limit, offset);
     return res.status(200).send(locations);
-    }else return res.send("Offset o limit invalidos")
 })
 
 lController.get("/:id", async (req, res) =>{ 
-    const limit = req.query.limit;
-    const offset = req.query.offset;
-    if(limit >= 0 && offset >= 0){
+    var limit = Number(req.query.limit);
+    var offset = Number(req.query.offset);
+    limit = validacionLimit(limit);
+    offset = validacionOffset(offset);
         try {
             const location = await locationService.getLocation(req.params.id);
 
-            if (!location) {
+            if (!location || location.length === 0) {
                 return res.status(404).send("ID no encontrado");
             }
     
@@ -35,7 +34,7 @@ lController.get("/:id", async (req, res) =>{
         } catch (error) {
             console.error(error);
             return res.status(500).send("Error");
-}}})
+}})
 
 lController.get("/:id/event-location", DecryptToken, async (req, res) =>{
   const userId = req.user?.id; //

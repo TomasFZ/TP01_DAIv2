@@ -475,7 +475,10 @@ async editLocation(id, id_location, name, full_address, max_capacity, latitude, 
 }
 
 async murderLoc(id)
-{//Igual que en murderCategory, viola clave foránea.
+{
+    const updateEventsSql = "UPDATE events SET id_event_location = NULL WHERE id_event_location = $1";
+    await this.DBClient.query(updateEventsSql, [id]);
+    
     const sql = "Delete From event_locations Where id = $1"
     const params = [id]
     return await this.DBClient.query(sql, params)

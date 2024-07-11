@@ -262,10 +262,11 @@ async editLocation(id, id_location, name, full_address, max_capacity, latitude, 
     }
 }
 
-async killLoc(id)
+async killLoc(id, id_creator_user)
 {
-    const isReal = await eventRepository.getOneLocation(id)
-    if(isReal == null)
+    const isReal = await eventRepository.getOneLocation(id, id_creator_user)
+    console.log("is real: " + isReal)
+    if(isReal.length === 0)
     {
         return 1
     }

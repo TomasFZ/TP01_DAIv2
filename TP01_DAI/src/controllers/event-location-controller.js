@@ -139,10 +139,11 @@ locController.put("/", DecryptToken, async (req, res) => {
 locController.delete("/:id", DecryptToken, async (req,res) => {
     validacionToken(req, res)  
     const locId = req.params.id
-    const result = await eventService.killLoc(locId)
-    if(result == 1)
+    const creatUsID = req.user?.id;
+    const result = await eventService.killLoc(locId, creatUsID)
+    if(result === 1)
     {
-        return res.status(404).send("No se encontró un lugar con ese ID")
+        return res.status(404).send("No se encontró un lugar con ese ID o el event_location no es suyo.")
     }
     else
     {
