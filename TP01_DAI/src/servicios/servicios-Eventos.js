@@ -193,9 +193,9 @@ async killCategory(idToKill)
     }
 }
 
-async getAllLocations(userId)
+async getAllLocations(userId, limit, offset)
 {
-    return await eventRepository.getAllLocations(userId)
+    return await eventRepository.getAllLocations(userId, limit, offset)
 }
 
 async getOneLocation(id, id_creator_user)

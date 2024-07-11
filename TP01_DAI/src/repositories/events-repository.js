@@ -429,10 +429,13 @@ async murderCategory(id)
     return await this.DBClient.query(sql,params)
 }
 
-async getAllLocations(userId)
+async getAllLocations(userId, limit, offset)
 {
-    const sql = "Select * From event_locations where id_creator_user = $1"
-    const result = await this.DBClient.query(sql, [userId])
+    const sql = "Select * From event_locations where id_creator_user = $1 LIMIT $2 OFFSET $3"
+    console.log(sql)
+    console.log("limit: " + limit)
+    console.log("offset: " + offset)
+    const result = await this.DBClient.query(sql, [userId, limit, offset])
     return result.rows
 }
 

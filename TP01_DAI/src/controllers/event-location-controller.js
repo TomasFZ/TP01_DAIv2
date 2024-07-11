@@ -17,9 +17,13 @@ locController.get("/", DecryptToken, async (req,res) => {
     limit = validacionLimit(limit);
     offset = validacionOffset(offset)
     validacionToken(req, res)  
-    const locs = await eventService.getAllLocations(userId)
+    const locs = await eventService.getAllLocations(userId, limit, offset)
+    console.log("locs: " + locs)
+    if(!locs || locs.length === 0){
+        return res.status(400).send({error: "no hay ninguna location para tu usuario."})
+    }else{
     return res.status(200).send(locs)
-
+    }
 })
 
 locController.get("/:id", DecryptToken, async (req,res) => {
@@ -27,12 +31,12 @@ locController.get("/:id", DecryptToken, async (req,res) => {
     validacionToken(req, res)  
     const idLoc = Number(req.params.id)
  
-    const output = await eventService.getOneLocation(idLoc, userId)
-    if(output.length === 0)
+    const loc = await eventService.getOneLocation(idLoc, userId)
+    if(!loc || loc.length === 0)
     {
         res.status(404).send("No se encontró una categoría con ese ID o el local no es suyo")
     }
-    return res.status(200).send(output)
+    return res.status(200).send(loc)
 
 })
 
@@ -76,10 +80,6 @@ locController.put("/", DecryptToken, async (req, res) => {
         const longitude = Number(req.body.longitude);
         const creatUsID = req.user?.id;
 
-        // Validación de datos
-        // if (isNaN(id) || isNaN(id_loc) || isNaN(max_capacity) || isNaN(latitude) || isNaN(longitude) || isNaN(creatUsID)) {
-        //     return res.status(400).send("Valores numéricos inválidos");
-        // }
         if (isNaN(id)) {
             console.log("ID inválido:", req.body.id);
             return res.status(400).send("ID inválido");
@@ -108,6 +108,12 @@ locController.put("/", DecryptToken, async (req, res) => {
         if (isNaN(creatUsID)) {
             console.log("ID de usuario creador inválido:", creatUsID);
             return res.status(400).send("ID de usuario creador inválido");
+        }
+
+        const loc = await eventService.getOneLocation(id, creatUsID)
+        console.log("LOC: "+loc.name)
+        if(!loc || loc.length === 0){
+            return res.status(400).send({error: "Su usuario no es propietario de este event_location."})
         }
 
         const result = await eventService.editLocation(id, id_loc, name, full_address, max_capacity, latitude, longitude, creatUsID);
