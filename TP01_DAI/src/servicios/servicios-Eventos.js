@@ -265,13 +265,14 @@ async killLoc(id, id_creator_user)
 {
     const isReal = await eventRepository.getOneLocation(id, id_creator_user)
     console.log("is real: " + isReal)
-    if(isReal.length === 0)
+    if(isReal.length === 0 || !isReal)
     {
         return 1
     }
     else
     {
-        return await eventRepository.murderLoc(id)
+        await eventRepository.murderLoc(id)
+         return 0
     }
 }
 
