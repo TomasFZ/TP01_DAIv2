@@ -392,10 +392,10 @@ async getAllEvents(limit, offset) {
         return eventEnrollment.rows[0];
     }
 
-async getAllCategories()
+async getAllCategories(limit, offset)
 {
-    const sql = "Select * From event_categories"
-    const result = await this.DBClient.query(sql)
+    const sql = "Select * From event_categories LIMIT $1 OFFSET $2"
+    const result = await this.DBClient.query(sql, [limit, offset])
     return result.rows;
 }
 
@@ -407,22 +407,23 @@ async getOneCategory(id)
     return result.rows
 }
 
-async createCategory(name)
+async createCategory(name, display_order)
 {
-    const sql = "Insert Into event_categories (name) Values ($1)"
-    const params = [name]
+    const sql = "Insert Into event_categories (name, display_order) Values ($1, $2)"
+    const params = [name, display_order]
     return await this.DBClient.query(sql, params)
 }
 
-async editCategory(id, name)
+async editCategory(id, name, display_order)
 {
-    const sql = "Update event_categories Set name = $1 Where id = $2"
-    const params = [name, id]
+    const sql = "Update event_categories Set name = $1, display_order = $2 Where id = $3"
+    const params = [name, display_order, id]
     return await this.DBClient.query(sql, params)
 }
 
 async murderCategory(id)
 {//Viola Clave Foránea ._.
+    console.log("id en delete: " + typeof id + " y es " + id)
     const sql = "Delete From event_categories Where id = $1"
     const params = [id]
     return await this.DBClient.query(sql,params)

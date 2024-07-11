@@ -118,6 +118,8 @@ async deleteUserFromEvent(idEvento, idUser){
 
 async getAllCategories(limit, offset)
 {
+    console.log("limit service: " + limit)
+
     const listaCategories = await eventRepository.getAllCategories(limit, offset);
     const nextPage = `${"http://localhost:3000/api/event-category"}?limit=${limit}&offset=${offset + 1}`;
 
@@ -137,7 +139,7 @@ async getOneCategory(id)
     return await eventRepository.getOneCategory(id)
 }
 
-async createCategory(name)
+async createCategory(name, display_order)
 {
     if(name == null)
     {
@@ -148,14 +150,16 @@ async createCategory(name)
     {
         console.log("Soy menor de 3")
         return 1
-    }
+    }else if(display_order <= 0 || isNaN(display_order)){
+        return 1
+    }   
     else
     {
-        return await eventRepository.createCategory(name)
+        return await eventRepository.createCategory(name, display_order)
     }
 }
 
-async editCategory(id, name)
+async editCategory(id, name, display_order)
 {
     if(name == null)
     {
@@ -164,14 +168,16 @@ async editCategory(id, name)
     else if(name.length < 3)
     {
         return 1
-    }
+    }else if(display_order <= 0 || isNaN(display_order)){
+        return 1
+    }   
     else if((await eventRepository.getOneCategory(id)) == null)
     {
         return 2
     }
     else
     {
-        return await eventRepository.editCategory(id, name)
+        return await eventRepository.editCategory(id, name, display_order)
     }
 }
 

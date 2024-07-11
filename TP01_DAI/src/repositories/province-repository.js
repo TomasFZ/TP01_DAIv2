@@ -51,7 +51,7 @@ async getLocationsById(id, limit, offset){
 	        return result.rows
         }else
         {
-            return  "No existen Provincias con ese ID"
+            return  "No existen locations en esa provincia"
         }
     }
     catch (error){

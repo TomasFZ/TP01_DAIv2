@@ -1,6 +1,7 @@
 import express from "express";
 import ProvinceService from "../servicios/servicios-Provincia.js";
 import EventService from "../servicios/servicios-Eventos.js";
+import { validacionLimit, validacionOffset } from "../funciones.js";
 
 const pController = express.Router();
 const provinceService = new ProvinceService();
@@ -8,10 +9,8 @@ const provinceService = new ProvinceService();
 pController.get("/", async (req, res) => {
     var limit = Number(req.query.limit);
     var offset = Number(req.query.offset);
-    if (isNaN(limit) || isNaN(offset)) {
-        limit = 100;
-        offset = 1;
-    }
+    limit = validacionLimit(limit)
+    offset = validacionOffset(offset)
     console.log("LIMIT: " + limit)
     const listaProvincias = await provinceService.getAllProvincias(limit, offset);
     console.log("listaProvincias: " + listaProvincias)
@@ -29,10 +28,8 @@ pController.get("/:id", async (req, res) => {
 pController.get("/:id/locations", async (req, res) => {
     var limit = Number(req.query.limit);
     var offset = Number(req.query.offset);
-    if (isNaN(limit) || isNaN(offset)) {
-        limit = 100;
-        offset = 1;
-    }
+    limit = validacionLimit(limit)
+    offset = validacionOffset(offset)
     const provincia = await provinceService.getLocationsPorId(req.params.id, limit, offset);
     if (!provincia) {
         return res.status(404).send("Provincia inexistente")
@@ -72,7 +69,7 @@ pController.put("/", async (req, res) => {
         const display_order = Number(req.body.display_order);
 
         
-        if (!ValidacionBody(name, latitude, longitude, full_name, display_order)) {
+        if (!ValidacionBody(name, full_name, latitude, longitude, display_order)) {
             return res.status(400).send("Bad request");
         }
         const provincia = await provinceService.getProvinciaPorId(req.params.id);

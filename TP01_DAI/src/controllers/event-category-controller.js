@@ -1,19 +1,19 @@
 import express from "express";
 import EventService from "../servicios/servicios-Eventos.js"
 import {DecryptToken} from "../Middleware.js" 
-import {validacionToken} from "../funciones.js" 
+import {validacionToken, validacionLimit, validacionOffset} from "../funciones.js" 
 
 const elController = express.Router(); //hacer gitignore para el module
 
 const eventService = new EventService();
 
 elController.get("/event-category", DecryptToken, async (req,res) => {
-    const limit = Number(req.query.limit);
-    const offset = Number(req.query.offset);
-    if(limit >= 0 & offset >= 0)
-    {
+    var limit = Number(req.query.limit);
+    var offset = Number(req.query.offset);
+    limit = validacionLimit(limit)
+    offset = validacionOffset(offset)
+    console.log("limit controller: " + limit)
     return res.status(200).send(await eventService.getAllCategories(limit, offset))
-    }else return res.send("Offset o limit invalidos")
 })
 
 elController.get("/event-category/:id", DecryptToken, async (req,res) => {
@@ -34,10 +34,11 @@ elController.get("/event-category/:id", DecryptToken, async (req,res) => {
 elController.post("/event-category", DecryptToken, async (req,res) => {
 
     const name = req.body.name
-    const output = await eventService.createCategory(name)
+    const display_order = Number(req.body.display_order)
+    const output = await eventService.createCategory(name, display_order)
     if (output == "1")
     {
-        return res.status(400).send("El nombre está vacío o tiene menos de tres letras")
+        return res.status(400).send("El nombre está vacío o tiene menos de tres letras o el display_order está mal.")
     }
     else
     {
@@ -48,9 +49,10 @@ elController.post("/event-category", DecryptToken, async (req,res) => {
 
 elController.put("/event-category", DecryptToken, async (req,res) => {
 
-    const idCat = Number(req.query.id)
-    const name = req.query.name
-    const harvest = eventService.editCategory(idCat, name)
+    const idCat = Number(req.body.id)
+    const name = req.body.name
+    const display_order = req.body.display_order
+    const harvest = eventService.editCategory(idCat, name, display_order)
     if(harvest == 1)
     {
         return res.status(400).send("El nombre (name) está vacío o tiene menos de tres letras.")
@@ -66,9 +68,10 @@ elController.put("/event-category", DecryptToken, async (req,res) => {
 
 })
 
-elController.delete("/event-category", DecryptToken, async (req,res) => {
+elController.delete("/event-category/:id", DecryptToken, async (req,res) => {
 
-    const idToKill = Number(req.query.id)
+    const idToKill = Number(req.params.id)
+    console.log("id en controller:" + idToKill)
     const crimeScene = eventService.killCategory(idToKill)
     if(crimeScene == 1)
     {
