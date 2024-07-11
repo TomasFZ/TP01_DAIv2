@@ -21,11 +21,10 @@ export default class EventService{
             "pagination": {
                 "limit": limit,
                 "offset": offset,
-                "nextPage": nextPage, //poner el http 
+                "nextPage": nextPage
         }
       }}
     
-
       async getEventBuscado(nombre, categoria, fecha, tag, limit, offset) {
         const eventoBuscado = await eventRepository.getEventoBuscado(nombre, categoria, fecha, tag, limit, offset);
         return eventoBuscado;

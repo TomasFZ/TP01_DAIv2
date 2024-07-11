@@ -39,14 +39,13 @@ lController.get("/:id", async (req, res) =>{
 lController.get("/:id/event-location", DecryptToken, async (req, res) =>{
   const userId = req.user?.id; //
     console.log("User ID de token: ", userId);
-    
-    if (!userId) {
-        return res.status(400).send("Usuario no encontrado");
-    }
   
   validacionToken(req, res)  
-  const limit = req.params.limit;
-    const offset = req.params.offset;
+  var limit = req.params.limit;
+    var offset = req.params.offset;
+    limit = validacionLimit(limit);
+    offset = validacionOffset(offset);
+    
     try {
         const locationId = req.params.id;
     
@@ -55,8 +54,11 @@ lController.get("/:id/event-location", DecryptToken, async (req, res) =>{
           return res.status(404).send({ error: 'Location no existe' });
         }
     
-        const eventLocations = await locationService.getAllLocationsMatchingId(limit, offset, locationId);
-    
+        const eventLocations = await locationService.getAllLocationsMatchingId(limit, offset, locationId, userId);
+        
+        if (!eventLocations || !Array.isArray(eventLocations.rows) || eventLocations.rows.length === 0) {
+          return res.status(404).send({error: "No hay match o no se encontraron event locations"});
+        }
         return res.status(200).send(eventLocations);
       } catch (error) {
         console.error(error);

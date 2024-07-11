@@ -26,9 +26,9 @@ async getLocation(id){
         return location
 }
 
-async getAllLocationsMatchingId(limit, offset, id){
+async getAllLocationsMatchingId(limit, offset, id, userId){
     const locationRepository = new LocationRepository(); 
-    const listaLocations = await locationRepository.getAllLocationsMatchingId(id);
+    const listaLocations = await locationRepository.getAllLocationsMatchingId(limit, offset, id, userId);
 
     const nextPage = `${"http://localhost:3000/api/location/:id/event-location"}?limit=${limit}&offset=${offset + 1}`;
     return {

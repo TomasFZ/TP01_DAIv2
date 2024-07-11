@@ -46,30 +46,12 @@ async getLocationById(id){
     }}
 
 
-async getAllLocationsMatchingId(id){
+async getAllLocationsMatchingId(limit, offset, id, userId){
+    console.log("id_location:")
     const sql = `
-      SELECT 
-        e.id,
-        e.name,
-        e.description,
-        e.id_event_category,
-        e.id_event_location,
-        e.start_date,
-        e.duration_in_minutes,
-        e.price,
-        e.enabled_for_enrollment,
-        e.max_assistance,
-        e.id_creator_user
-      FROM 
-        events e
-      JOIN 
-        event_locations el ON e.id_event_location = el.id
-      WHERE 
-        el.id_location = $1
-    `;
+      select * from event_locations where id_location = $1 and id_creator_user = $2 limit $3 offset $4`;
     try{
-        const locations = await this.DBClient.query(sql, [id]);
-        
+        const locations = await this.DBClient.query(sql, [id, userId, limit, offset]);
         return locations.rows
     }catch(e){
         console.error("Error al obtener locations:", e);
