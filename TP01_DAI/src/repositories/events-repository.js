@@ -17,37 +17,42 @@ constructor(){
 
 async getAllEvents(limit, offset) {
     try {
-        const sql = `
-            SELECT
-                e.id AS id,
-                e.name AS name,
-                e.description AS description,
-                JSON_BUILD_OBJECT('id', ec.id, 'name', ec.name) AS event_category,
-                JSON_BUILD_OBJECT('id', el.id, 'name', el.name, 'full_address', el.full_address, 'max_capacity', el.max_capacity, 'latitude', el.latitude, 'longitude', el.longitude, 
-                    'location', JSON_BUILD_OBJECT('id', l.id, 'name', l.name, 'latitude', l.latitude, 'longitude', l.longitude, 'province', JSON_BUILD_OBJECT('id', p.id, 'name', p.full_name, 'latitude', p.latitude, 'longitude', p.longitude, 'display_order', p.display_order))) AS event_location,
-                e.start_date AS start_date,
-                e.duration_in_minutes AS duration_in_minutes,
-                e.price AS price,
-                e.enabled_for_enrollment AS enabled_for_enrollment,
-                e.max_assistance AS max_assistance,
-                JSON_BUILD_OBJECT('id', u.id, 'username', u.username, 'first_name', u.first_name, 'last_name', u.last_name) AS creator_user,
-                JSON_AGG(JSON_BUILD_OBJECT('id', t.id, 'name', t.name)) AS tags
-            FROM
-                events e
-                INNER JOIN event_categories ec ON e.id_event_category = ec.id
-                INNER JOIN event_locations el ON e.id_event_location = el.id
-                INNER JOIN locations l ON l.id = el.id_location
-                INNER JOIN provinces p ON p.id = l.id_province
-                INNER JOIN users u ON u.id = e.id_creator_user
-                LEFT JOIN event_tags et ON et.id_event = e.id
-                LEFT JOIN tags t ON t.id = et.id_tag
-            GROUP BY
-                e.id, ec.id, ec.name, el.id, el.name, el.full_address, el.max_capacity, el.latitude, el.longitude, l.id, l.name, l.latitude, l.longitude, p.id, p.full_name, p.latitude, p.longitude, p.display_order, u.id, u.username, u.first_name, u.last_name, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance
-            order by e.id asc OFFSET $1 LIMIT $2;`;
+        // const sql = `
+        //     SELECT
+        //         e.id AS id,
+        //         e.name AS name,
+        //         e.description AS description,
+        //         JSON_BUILD_OBJECT('id', ec.id, 'name', ec.name) AS event_category,
+        //         JSON_BUILD_OBJECT('id', el.id, 'name', el.name, 'full_address', el.full_address, 'max_capacity', el.max_capacity, 'latitude', el.latitude, 'longitude', el.longitude, 
+        //             'location', JSON_BUILD_OBJECT('id', l.id, 'name', l.name, 'latitude', l.latitude, 'longitude', l.longitude, 'province', JSON_BUILD_OBJECT('id', p.id, 'name', p.full_name, 'latitude', p.latitude, 'longitude', p.longitude, 'display_order', p.display_order))) AS event_location,
+        //         e.start_date AS start_date,
+        //         e.duration_in_minutes AS duration_in_minutes,
+        //         e.price AS price,
+        //         e.enabled_for_enrollment AS enabled_for_enrollment,
+        //         e.max_assistance AS max_assistance,
+        //         JSON_BUILD_OBJECT('id', u.id, 'username', u.username, 'first_name', u.first_name, 'last_name', u.last_name) AS creator_user,
+        //         JSON_AGG(JSON_BUILD_OBJECT('id', t.id, 'name', t.name)) AS tags
+        //     FROM
+        //         events e
+        //         INNER JOIN event_categories ec ON e.id_event_category = ec.id
+        //         INNER JOIN event_locations el ON e.id_event_location = el.id
+        //         INNER JOIN locations l ON l.id = el.id_location
+        //         INNER JOIN provinces p ON p.id = l.id_province
+        //         INNER JOIN users u ON u.id = e.id_creator_user
+        //         LEFT JOIN event_tags et ON et.id_event = e.id
+        //         LEFT JOIN tags t ON t.id = et.id_tag
+        //     GROUP BY
+        //         e.id, ec.id, ec.name, el.id, el.name, el.full_address, el.max_capacity, el.latitude, el.longitude, l.id, l.name, l.latitude, l.longitude, p.id, p.full_name, p.latitude, p.longitude, p.display_order, u.id, u.username, u.first_name, u.last_name, e.start_date, e.duration_in_minutes, e.price, e.enabled_for_enrollment, e.max_assistance
+        //     order by e.id asc OFFSET $1 LIMIT $2;`;
+        const sql = "select * from events limit $1 offset $2"
         
-        const eventos = await this.DBClient.query(sql, [ offset, limit ]);
-        
-        const eventosMapeados = eventos.rows.map(event => ({
+        const eventos = await this.DBClient.query(sql, [ limit, offset ]);
+        console.log("eventos repository: " + eventos.rows)
+        //cambiar por 
+        // eventos.rows.forEach(event => {
+        //     event.tags = event.tags.some(tag => tag.id !== null) ? event.tags : [];
+        // });
+        const eventosMapeados = eventos.rows.map(event => ({ 
             id: event.id,
             name: event.name,
             description: event.description,
@@ -478,7 +483,6 @@ async murderLoc(id)
 {
     const updateEventsSql = "UPDATE events SET id_event_location = NULL WHERE id_event_location = $1";
     await this.DBClient.query(updateEventsSql, [id]);
-    
     const sql = "Delete From event_locations Where id = $1"
     const params = [id]
     return await this.DBClient.query(sql, params)

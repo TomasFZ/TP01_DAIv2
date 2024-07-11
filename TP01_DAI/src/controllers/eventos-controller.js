@@ -29,17 +29,11 @@ controller.get("/", async (req, res) => {
         }
         else
         {
-            //     {
             const allEvents = await eventService.getAllEvents(limit, offset); //aca van todos los events
+            console.log("allEvents en controller: " + allEvents)
             return res.send(allEvents);
         }
-        // else
-        // {
-        //     return res.send("Offset o limit invalidos")
-        // }
         }
-    
-    
     );
 //getEventDetails
 controller.get("/:id", async (req, res) =>{ //cuando se quiere buscar uno por id o lo que sea por params y no por query escrita por el usuario, se pone en postman http://localhost:3000/event/1 en lugar de poner una key con value. 
