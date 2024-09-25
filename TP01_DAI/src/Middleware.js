@@ -1,6 +1,6 @@
 import express from "express";
 import jwt from 'jsonwebtoken';
-
+import cors from 'cors';
 export function DecryptToken(req, res, next) {
     const secretKey = "batmanbtamnfisnf";
     

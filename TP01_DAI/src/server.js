@@ -1,5 +1,5 @@
 import express from "express";
-
+import cors from 'cors';
 import controller from "./controllers/eventos-controller.js";
 import UserController from "./controllers/usuarios-controller.js";
 import pController from "./controllers/provincias-controller.js";
@@ -10,7 +10,8 @@ import locController from "./controllers/event-location-controller.js";
 // import { connectToDatabase } from './repositories/db.js'; //mjs
 //mjs
 
-const app = express(); 
+const app = express();
+app.use(cors()); 
 
 app.use(express.json()); //este tambien es middleware. 
 
