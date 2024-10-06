@@ -18,16 +18,15 @@ UserController.post("/register", async(req, res) => {
         return res.status(400).send("Error en el registro. Uno o más de los campos no cumple. ")
     }
 
-
     try{
         const nuevoUsuario = await userService.createUser(first_name, last_name, username, password);
         console.log("nuevo usuario: " + username) //funciona. si el username ya existe no lo crea. lo unico que falta seria comunicarlo por pantalla cuando suceda, porque ahora mismo trae un [object: promise]. Pero reitero que funciona
-        return res.send("Usuario creado. " + nuevoUsuario)
+        return res.status(201).send("Usuario creado. " + nuevoUsuario);
     }
     catch(e){
         console.log(e)
         //res.status(400).send(e.message);
-        return res.status(201).send(e + "Error")
+        return res.status(500).send(e + "Error")
     }
 });
 
