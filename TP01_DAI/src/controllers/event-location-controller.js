@@ -34,7 +34,7 @@ locController.get("/:id", DecryptToken, async (req,res) => {
     const loc = await eventService.getOneLocation(idLoc, userId)
     if(!loc || loc.length === 0)
     {
-        res.status(404).send("No se encontró una categoría con ese ID o el local no es suyo")
+        return res.status(404).send("No se encontró una categoría con ese ID o el local no es suyo")
     }
     return res.status(200).send(loc)
 
