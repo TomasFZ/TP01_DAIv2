@@ -432,24 +432,34 @@ async getAllLocations(userId, limit, offset)
 
 async getOneLocation(id, id_creator_user)
 {
-    if(id){ //OG line: if(id_creator_user === null)
+    //la consigna de efsi está mal. No se puede hacer el punto 2 sin modificar el back. 
+    // if(id){ //OG line: if(id_creator_user === null)
+    // const sql = "Select * From event_locations Where id = $1"
+    // console.log("HOLLASK SIFJSKHFUSH AQUI SFL "+sql)
+    // const params = [id]
+    // console.log("Hace console log de id " + id)
+    // const result = await this.DBClient.query(sql, params)
+    // //console.log(result.rows[id-1].name)
+    // console.log("el id es: " + id)
+    // return result.rows
+    // }else{
+    // const sql = "Select * From event_locations Where id = $1 and id_creator_user = $2"
+    //     console.log("IDCREATORUSER NO ES NULL: " + id_creator_user)
+    // console.log("pregunta"+sql)
+    // const params = [id, id_creator_user]
+    // console.log("Hace console log de id " + id)
+    // const result = await this.DBClient.query(sql, params)
+    // console.log("nombre de la location: "+result)
+    // return result.rows
+    // }
     const sql = "Select * From event_locations Where id = $1"
     console.log("HOLLASK SIFJSKHFUSH AQUI SFL "+sql)
     const params = [id]
     console.log("Hace console log de id " + id)
     const result = await this.DBClient.query(sql, params)
-    console.log(result.rows[id-1].name)
+    //console.log(result.rows[id-1].name)
+    console.log("el id es: " + id)
     return result.rows
-    }else{
-    const sql = "Select * From event_locations Where id = $1 and id_creator_user = $2"
-        console.log("IDCREATORUSER NO ES NULL: " + id_creator_user)
-    console.log("HOLLASK SIFJSKHFUSH AQUI SFL "+sql)
-    const params = [id, id_creator_user]
-    console.log("Hace console log de id " + id)
-    const result = await this.DBClient.query(sql, params)
-    console.log("nombre de la location: "+result)
-    return result.rows
-    }
 }
 
 async locationCheck(id_location)
