@@ -45,4 +45,18 @@ UserController.post("/login",  async (req, res) => { //loguea exitosamente al us
     }
 })
 
+
+//nuevo endpoint exclusivo del tp nuevo de efsi (dlc): 
+
+UserController.get("/getUserID", async(req, res) => {
+    const username = req.query.username 
+    console.log("Hola yo recibo sas (en el controller): " + username)
+    const user = await userService.findUserByUsername(username)
+    const userId = user.rows[0].id;
+    console.log("En hiatus por (en el controller): " + userId)
+    return res.send("userId: "+userId)
+})
+
+
+
 export default UserController
