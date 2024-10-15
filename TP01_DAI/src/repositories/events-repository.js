@@ -204,9 +204,10 @@ async getAllEvents(limit, offset) {
             event_categories ec ON e.id_event_category = ec.id
         WHERE 
             e.id = $1`//Select * From events Where id = $1
-            const evento = await this.DBClient.query(sql, [id]);
             console.log("id: " + id)
-            //console.log("nombre evento 1: " + evento.rows[0].name + " Es undefined?:" + evento.enabled_for_enrollment)
+            const evento = await this.DBClient.query(sql, [id]);
+            
+            console.log("nombre evento 1: " + evento.rows[0].event_name + " Es undefined?:" + evento.enabled_for_enrollment)
             return evento.rows[0]
         }catch(e){
             console.error("Error al obtener eventos:", e);

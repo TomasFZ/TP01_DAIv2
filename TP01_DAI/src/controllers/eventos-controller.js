@@ -167,17 +167,18 @@ controller.delete("/:id", DecryptToken, async (req, res) => {
 controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
     const userId = req.user?.id; 
     console.log("User ID de token: ", userId);
+    console.log("-------------ID DEL EVENTO LA Piiiipp" + req.params.id)
     
     if (!userId) {
         return res.status(400).send("Usuario no encontrado");
     }
 
     try {
-        const evento = await eventService.getEventDetails(req.params.id);
-        //console.log("enabled para enrollment: " + evento.enabled_for_enrollment)
+        const evento = await eventService.getEventDetails(req.params.id); //acá
+        console.log("ANDA POR FAVOR " + evento.event_name)
         const user = await userService.getUserById(userId);
         console.log("USER: " + userId);
-        
+        console.log("evento: " + evento.rows)
         if (!user) {
             return res.status(404).send("Usuario no encontrado");
         }
@@ -191,6 +192,7 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
         }
 
         if (!evento) {
+            console.log("DOUDOUDOUDODUODUODOUDUODOUD")
             return res.status(404).send("Evento no encontrado");
         }
 
@@ -201,10 +203,11 @@ controller.post("/:id/enrollment", DecryptToken, async (req, res) => {
         const fechaHoy = new Date();
         const eventStartDate = new Date(evento.start_date);
         if (eventStartDate <= fechaHoy) {
+            console.log("FECHAFECHAFECHAFECHAFECHA")
             return res.status(400).json({ error: 'Evento ya iniciado' });
         }
-
         await eventService.enrollUserToEvent(evento.event_id, userId, fechaHoy);
+        console.log("QUEPASAAAAAAAAA")
         return res.status(201).send("Usuario registrado en el evento.");
     } catch (e) {
         console.error(e);
